@@ -1,5 +1,5 @@
 package model;
 
 public interface AttackTower {
-    void attack();
+    void attack(Mob b);
 }

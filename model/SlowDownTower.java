@@ -1,5 +1,5 @@
 package model;
 
 public interface SlowDownTower {
-    void slowDown();
+    void slowDown(Mob b);
 }
