@@ -54,4 +54,19 @@ public class Board {
         }
         return null;
     }
+
+    /* Returns the list of mobs that are in range from a specific center */
+
+    public List<Mob> getMobsInRange(Coordinates center, int range) {
+        if(center == null) return null;
+
+        List<Mob> mobsInRange = new LinkedList<Mob>();
+        for(Mob mob : this.currentMobs) {
+            if(mob.getPosition().isInRange(center, range)) {
+                mobsInRange.add(mob);
+            }
+        }
+
+        return mobsInRange;
+    }
 }
