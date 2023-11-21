@@ -6,7 +6,7 @@ public class Trap extends Item implements SingleTargetDamage {
 
     private Coordinates teleportationPoint;
 
-    public Trap(Coordinates currentPosition, Coordinates teleportationPoint) {
+    public Trap(Coordinates teleportationPoint) {
         this.teleportationPoint = teleportationPoint;
     }
 
