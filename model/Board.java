@@ -1,6 +1,5 @@
 package model;
 
-
 import tools.*;
 
 import java.util.List;
@@ -49,7 +48,7 @@ public class Board {
     }
 
     public Cell getCell(Coordinates c) {
-        if(c.isInBounds(width, height)) {
+        if (c.isInBounds(width, height)) {
             return grid[c.getX()][c.getY()];
         }
         return null;
@@ -58,11 +57,12 @@ public class Board {
     /* Returns the list of mobs that are in range from a specific center */
 
     public List<Mob> getMobsInRange(Coordinates center, int range) {
-        if(center == null) return null;
+        if (center == null)
+            return null;
 
         List<Mob> mobsInRange = new LinkedList<Mob>();
-        for(Mob mob : this.currentMobs) {
-            if(mob.getPosition().isInRange(center, range)) {
+        for (Mob mob : this.currentMobs) {
+            if (mob.getPosition().isInRange(center, range)) {
                 mobsInRange.add(mob);
             }
         }

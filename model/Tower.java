@@ -29,17 +29,20 @@ public abstract class Tower {
     public int getRange() {
         return range;
     }
-    /*Setters */
+
+    /* Setters */
     public void setNbOfAttacks(int nbOfAttacks) {
         this.nbOfAttacks = nbOfAttacks;
     }
-    public void setPosition(int x,int y) {
-        this.position.setX(x);
-        this.position.setY(y);
+
+    public void setPosition(Coordinates position) {
+        this.position = position;
     }
+
     public void setRange(int range) {
         this.range = range;
     }
-    /*Abstract methods */
-    abstract void upgrade(); //Uprade les tours
+
+    /* Abstract methods */
+    abstract void upgrade(); // Uprade les tours
 }

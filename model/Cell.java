@@ -19,10 +19,10 @@ public class Cell {
 
     @Override
     public String toString() {
-        if(this.isBase) {
+        if (this.isBase) {
             return "B";
         }
-        if(this.isPath) {
+        if (this.isPath) {
             return "+";
         }
         return ".";

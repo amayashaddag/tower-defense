@@ -1,10 +1,13 @@
 package model;
 
+import tools.Coordinates;
+
 public class SimpleMob extends Mob {
-    SimpleMob(int x,int y , int hp,int speed){
-        super(x, y, hp, speed);
-    }
-    void move(){
-        
+
+    private static int SIMPLE_MOB_HP = 5;
+    private static int SIMPLE_MOB_SPEED = 3;
+
+    SimpleMob(Coordinates position) {
+        super(position, SIMPLE_MOB_HP, SIMPLE_MOB_SPEED);
     }
 }
