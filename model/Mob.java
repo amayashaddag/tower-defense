@@ -44,4 +44,7 @@ public abstract class Mob {
     public boolean isDead() {
         return (this.hp <= 0);
     }
+    public void beingAttacked(int damage){
+        this.hp=this.hp-damage;
+    }
 }
