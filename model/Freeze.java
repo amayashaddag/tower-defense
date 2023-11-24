@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Freeze extends Item implements SingleTargetDamage { 
-    private static int FREEZE_DURATION = 5;
-    Freeze(int level){
-        super(FREEZE_DURATION+level*1, null, level);
+public class Freeze extends Item implements SingleTargetDamage {
+    private static final int FREEZE_DURATION = 5;
+    private static final int DURATION_UPGRADE_VALUE = 1;
+
+    private int freezeDuration = FREEZE_DURATION;
+
+    Freeze(int level) {
+        super(FREEZE_DURATION + level * 1, null, level);
     }
+
     @Override
     public void attack(Mob mob) {
-        if(mob != null) {
+        if (mob != null) {
             int currentMobSpeed = mob.getSpeed();
             mob.setSpeed(0);
             (new Timer()).schedule(new TimerTask() {
@@ -19,14 +24,16 @@ public class Freeze extends Item implements SingleTargetDamage {
                 public void run() {
                     mob.setSpeed(currentMobSpeed);
                 }
-            }, FREEZE_DURATION);
+            }, freezeDuration);
         }
     }
+
     @Override
     void upgrade() {
-        FREEZE_DURATION++;
+        freezeDuration += DURATION_UPGRADE_VALUE;
         this.level++;
     }
+
     @Override
     void doWhenDead(List<Mob> targetsMob) {
         return;

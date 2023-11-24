@@ -3,8 +3,12 @@ package model;
 import java.util.List;
 
 public class Bomb extends Item implements ZoneDamage {
-    private static int BOMB_DAMAGE = 5;
-    private static int range  =5;
+    private static final int INITIAL_BOMB_DAMAGE = 5;
+    private static final int range = 5;
+    private static final int DAMAGE_UPGRADE_VALUE = 10;
+
+    private int damage = INITIAL_BOMB_DAMAGE;
+
 
     Bomb(int dureeDeclenchement, List<Mob> targetMobs, int level) {
         super(dureeDeclenchement, targetMobs, level);
@@ -13,7 +17,7 @@ public class Bomb extends Item implements ZoneDamage {
     @Override
     public void attack(List<Mob> targetMobs) {
         for (Mob mob : targetMobs) {
-            mob.beingAttacked(BOMB_DAMAGE);
+            mob.beingAttacked(this.damage);
         }
     }
 
@@ -25,7 +29,7 @@ public class Bomb extends Item implements ZoneDamage {
     @Override
     void upgrade() {
         this.level++;
-        BOMB_DAMAGE = +10;
+        this.damage += DAMAGE_UPGRADE_VALUE;
     }
     public static int getRange() {
         return range;

@@ -4,19 +4,26 @@ import java.util.List;
 
 public class Trap extends Item implements SingleTargetDamage {
     private int damage;
-    Trap(List<Mob> targetMobs,int level){
-        super(10+level, targetMobs, level);
-    }   
+
+    private final static int DAMAGE_UPGRADE_VALUE = 5;
+    private final static int DURATION_UPGRADE_VALUE = 1;
+
+    Trap(List<Mob> targetMobs, int level) {
+        super(10 + level, targetMobs, level);
+    }
+
     @Override
     void upgrade() {
         this.level++;
-        this.damage+=5;
-        this.dureeDeVie+=1;
+        this.damage += DAMAGE_UPGRADE_VALUE;
+        this.dureeDeVie += DURATION_UPGRADE_VALUE;
     }
+
     @Override
     void doWhenDead(List<Mob> targetsMob) {
-        this.damage=0; //Solution temporaire
+        this.damage = 0; // Solution temporaire
     }
+
     @Override
     public void attack(Mob mob) {
         this.targetMobs.get(0).beingAttacked(this.damage);
