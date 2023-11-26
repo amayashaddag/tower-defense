@@ -8,7 +8,7 @@ public class Trap extends Item implements SingleTargetDamage {
     private final static int DAMAGE_UPGRADE_VALUE = 5;
     private final static int DURATION_UPGRADE_VALUE = 1;
 
-    Trap(List<Mob> targetMobs, int level) {
+    public Trap(List<Mob> targetMobs, int level) {
         super(10 + level, targetMobs, level);
     }
 
@@ -17,11 +17,6 @@ public class Trap extends Item implements SingleTargetDamage {
         this.level++;
         this.damage += DAMAGE_UPGRADE_VALUE;
         this.dureeDeVie += DURATION_UPGRADE_VALUE;
-    }
-
-    @Override
-    void doWhenDead(List<Mob> targetsMob) {
-        this.damage = 0; // Solution temporaire
     }
 
     @Override

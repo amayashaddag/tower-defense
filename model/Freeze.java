@@ -1,6 +1,5 @@
 package model;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,7 +9,7 @@ public class Freeze extends Item implements SingleTargetDamage {
 
     private int freezeDuration = FREEZE_DURATION;
 
-    Freeze(int level) {
+    public Freeze(int level) {
         super(FREEZE_DURATION + level * 1, null, level);
     }
 
@@ -32,10 +31,5 @@ public class Freeze extends Item implements SingleTargetDamage {
     void upgrade() {
         freezeDuration += DURATION_UPGRADE_VALUE;
         this.level++;
-    }
-
-    @Override
-    void doWhenDead(List<Mob> targetsMob) {
-        return;
     }
 }

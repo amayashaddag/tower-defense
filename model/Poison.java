@@ -7,7 +7,7 @@ public class Poison extends Item implements ZoneDamage {
 
     private final static int DAMAGE_UPGRADE_VALUE = 2;
 
-    Poison(int dureeDeVie, List<Mob> targetMobs, int level) {
+    public Poison(int dureeDeVie, List<Mob> targetMobs, int level) {
         super(dureeDeVie, targetMobs, level);
         this.damage = 10 + this.level * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
         // pour chaque level
@@ -17,11 +17,6 @@ public class Poison extends Item implements ZoneDamage {
     void upgrade() {
         this.level++;
         this.damage += DAMAGE_UPGRADE_VALUE;
-    }
-
-    @Override
-    void doWhenDead(List<Mob> targetsMob) {
-        this.damage = 0; // Solution temporaire
     }
 
     @Override

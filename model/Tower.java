@@ -44,5 +44,5 @@ public abstract class Tower {
     }
 
     /* Abstract methods */
-    abstract void upgrade(); // Uprade les tours
+    public abstract void upgrade(); // Uprade les tours
 }

@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 import tools.*;
 
 public class Hole extends Item implements SingleTargetDamage {
@@ -12,7 +10,7 @@ public class Hole extends Item implements SingleTargetDamage {
     private static int dureeDeVie = 10;
 
     public Hole(Coordinates teleportationPoint, int level) {
-        super(dureeDeVie+level, null, level);
+        super(dureeDeVie + level, null, level);
         this.teleportationPoint = teleportationPoint;
     }
 
@@ -22,13 +20,10 @@ public class Hole extends Item implements SingleTargetDamage {
             mob.setPosition(teleportationPoint);
         }
     }
+
     @Override
     void upgrade() {
         this.level++;
         dureeDeVie += DURATION_UPGRADE_VALUE;
-    }
-    @Override
-    void doWhenDead(List<Mob> targetsMob) {
-        return;
     }
 }

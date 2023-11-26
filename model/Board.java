@@ -47,11 +47,57 @@ public class Board {
         return this.currentMobs;
     }
 
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
     public Cell getCell(Coordinates c) {
         if (c.isInBounds(width, height)) {
             return grid[c.getX()][c.getY()];
         }
         return null;
+    }
+
+    public Tower getTower(Coordinates c) {
+        for (Tower tower : this.currentTowers) {
+            Coordinates towerPosition = tower.getPosition();
+            if (towerPosition != null && towerPosition.equals(c)) {
+                return tower;
+            }
+        }
+        return null;
+    }
+
+    public Mob getMob(Coordinates c) {
+        for (Mob mob : this.currentMobs) {
+            Coordinates mobPosition = mob.getPosition();
+            if (mobPosition != null && mobPosition.equals(c)) {
+                return mob;
+            }
+        }
+        return null;
+    }
+
+    public boolean addMob(Mob mob) {
+        if (mob == null)
+            return false;
+        mob.setPosition(startingCoordinates);
+        this.currentMobs.add(mob);
+        return true;
+    }
+
+    public boolean addTower(Tower tower) {
+        Coordinates position = tower.getPosition();
+        if (position == null) {
+            return false;
+        }
+        if(this.grid[position.getX()][position.getY()].isPath()) return false;
+        this.currentTowers.add(tower);
+        return true;
     }
 
     /* Returns the list of mobs that are in range from a specific center */
@@ -68,5 +114,111 @@ public class Board {
         }
 
         return mobsInRange;
+    }
+
+    public static Board boardExample() {
+        return new Board(new Cell[][] {
+                {
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, true),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                }
+        }, new Coordinates(2, 4), new Coordinates(0, 0), new Base(50));
+    }
+
+    @Override
+    public String toString() {
+        String horizontalSpace = "    ", s = horizontalSpace;
+        for(int i = 0; i < this.height; i++) {
+            s += String.format("  %d   ", i + 1);
+        }
+        s += "\n";
+        char letter = 'A';
+        for (int i = 0; i < this.width; i++) {
+            s += horizontalSpace;
+            for (int j = 0; j < this.height; j++) {
+                for (int k = 0; k < 3; k++) {
+                    s += this.grid[i][j].toString() + " ";
+                }
+            }
+            s += "\n " + letter + "  ";
+            for (int j = 0; j < this.height; j++) {
+                s += this.grid[i][j].toString() + " ";
+                if (this.grid[i][j].isPath()) {
+                    Mob mob = this.getMob(new Coordinates(i, j));
+                    if (mob != null)
+                        s += "M ";
+                    else
+                        s += this.grid[i][j].toString() + " ";
+                } else {
+                    Tower t = this.getTower(new Coordinates(i, j));
+                    if (t != null)
+                        s += "T ";
+                    else
+                        s += this.grid[i][j].toString() + " ";
+                }
+                s += this.grid[i][j].toString() + " ";
+            }
+            s += "\n" + horizontalSpace;
+            for (int j = 0; j < this.height; j++) {
+                for (int k = 0; k < 3; k++) {
+                    s += this.grid[i][j].toString() + " ";
+                }
+            }
+            s += "\n";
+            letter++;
+        }
+        return s;
     }
 }

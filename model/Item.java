@@ -9,7 +9,7 @@ public abstract class Item {
 
     /* Constructeur */
 
-    Item(int dureeDeVie, List<Mob> targetMobs, int level) {
+    public Item(int dureeDeVie, List<Mob> targetMobs, int level) {
         this.dureeDeVie = dureeDeVie;
         this.targetMobs = targetMobs;
         this.level = level;
@@ -24,8 +24,6 @@ public abstract class Item {
         this.targetMobs = targetMobs;
     }
     /* Abstract methods */
-
-    abstract void doWhenDead(List<Mob> targetsMob);
 
     abstract void upgrade(); // On pourra upgrade level d'un item.
 

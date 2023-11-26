@@ -6,12 +6,14 @@ public abstract class Mob {
     private int hp; // Nombre d'HP d'un mob
     private int speed; // Vitesse du mob
     private Coordinates position; // Cordonnées de la position du mob
+    private int damage;
 
     /* Constructeur */
-    Mob(Coordinates position, int hp, int speed) {
+    public Mob(Coordinates position, int hp, int speed, int damage) {
         this.hp = hp;
         this.speed = speed;
         this.position = position;
+        this.damage = damage;
     }
 
     /* Getters */
@@ -21,6 +23,10 @@ public abstract class Mob {
 
     public int getSpeed() {
         return speed;
+    }
+
+    public int getDamage() {
+        return this.damage;
     }
 
     public Coordinates getPosition() { // On crée un nouvel objet
@@ -44,7 +50,8 @@ public abstract class Mob {
     public boolean isDead() {
         return (this.hp <= 0);
     }
-    public void beingAttacked(int damage){
-        this.hp=this.hp-damage;
+
+    public void beingAttacked(int damage) {
+        this.hp = this.hp - damage;
     }
 }

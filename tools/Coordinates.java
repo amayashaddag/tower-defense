@@ -1,7 +1,7 @@
 package tools;
 
-public class Coordinates {
-    private int x, y;
+public class Coordinates implements Cloneable {
+    private final int x, y;
 
     public Coordinates(int x, int y) {
         this.x = x;
@@ -24,8 +24,8 @@ public class Coordinates {
 
     @Override
     public boolean equals(Object o) {
-        if (!super.equals(o))
-            return false;
+        if (super.equals(o))
+            return true;
         if (!(o instanceof Coordinates))
             return false;
         Coordinates c = (Coordinates) o;
@@ -41,5 +41,10 @@ public class Coordinates {
         if (center == null)
             return false;
         return Math.abs(this.x - center.x) <= range && Math.abs(this.y - center.y) <= range;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.x + ", " + this.y + ")";
     }
 }
