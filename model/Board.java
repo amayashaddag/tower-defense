@@ -57,7 +57,8 @@ public class Board {
 
     public Cell getCell(Coordinates c) {
         if (c.isInBounds(width, height)) {
-            return grid[c.getX()][c.getY()];
+            IntCoordinates roundedCoordinates = c.round();
+            return grid[roundedCoordinates.getX()][roundedCoordinates.getY()];
         }
         return null;
     }
@@ -95,7 +96,8 @@ public class Board {
         if (position == null) {
             return false;
         }
-        if(this.grid[position.getX()][position.getY()].isPath()) return false;
+        IntCoordinates roundedCoordinates = position.round();
+        if(this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath()) return false;
         this.currentTowers.add(tower);
         return true;
     }

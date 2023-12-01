@@ -1,22 +1,22 @@
 package tools;
 
 public class Coordinates implements Cloneable {
-    private final int x, y;
+    private final double x, y;
 
-    public Coordinates(int x, int y) {
+    public Coordinates(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public double getX() {
         return this.x;
     }
 
-    public int getY() {
+    public double getY() {
         return this.y;
     }
 
-    public boolean isInBounds(int supX, int supY) {
+    public boolean isInBounds(double supX, double supY) {
         return this.x >= 0 && this.x < supX && this.y >= 0 && this.y < supY;
     }
 
@@ -41,6 +41,10 @@ public class Coordinates implements Cloneable {
         if (center == null)
             return false;
         return Math.abs(this.x - center.x) <= range && Math.abs(this.y - center.y) <= range;
+    }
+
+    public IntCoordinates round() {
+        return new IntCoordinates((int) Math.round(this.x), (int) Math.round(this.y));
     }
 
     @Override
