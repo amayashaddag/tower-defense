@@ -18,8 +18,8 @@ public class Board {
 
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
         this.grid = grid;
-        this.width = grid.length;
-        this.height = this.width > 0 ? grid[0].length : 0;
+        this.height = grid.length;
+        this.width = this.height > 0 ? grid[0].length : 0;
         this.baseCoordinates = baseCoordinates;
         this.startingCoordinates = startingCoordinates;
         this.currentBase = base;
@@ -56,7 +56,7 @@ public class Board {
     }
 
     public Cell getCell(Coordinates c) {
-        if (c.isInBounds(width, height)) {
+        if (c.isInBounds(height, width)) {
             IntCoordinates roundedCoordinates = c.round();
             return grid[roundedCoordinates.getX()][roundedCoordinates.getY()];
         }
@@ -182,20 +182,20 @@ public class Board {
     @Override
     public String toString() {
         String horizontalSpace = "    ", s = horizontalSpace;
-        for(int i = 0; i < this.height; i++) {
+        for(int i = 0; i < this.width; i++) {
             s += String.format("  %d   ", i + 1);
         }
         s += "\n";
         char letter = 'A';
-        for (int i = 0; i < this.width; i++) {
+        for (int i = 0; i < this.height; i++) {
             s += horizontalSpace;
-            for (int j = 0; j < this.height; j++) {
+            for (int j = 0; j < this.width; j++) {
                 for (int k = 0; k < 3; k++) {
                     s += this.grid[i][j].toString() + " ";
                 }
             }
             s += "\n " + letter + "  ";
-            for (int j = 0; j < this.height; j++) {
+            for (int j = 0; j < this.width; j++) {
                 s += this.grid[i][j].toString() + " ";
                 if (this.grid[i][j].isPath()) {
                     Mob mob = this.getMob(new Coordinates(i, j));
@@ -213,7 +213,7 @@ public class Board {
                 s += this.grid[i][j].toString() + " ";
             }
             s += "\n" + horizontalSpace;
-            for (int j = 0; j < this.height; j++) {
+            for (int j = 0; j < this.width; j++) {
                 for (int k = 0; k < 3; k++) {
                     s += this.grid[i][j].toString() + " ";
                 }

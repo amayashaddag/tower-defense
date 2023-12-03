@@ -11,4 +11,8 @@ public class Base {
     public int getHp() {
         return hp;
     }
+
+    public void decrementHp(int decrement) {
+        this.hp -= decrement;
+    }
 }

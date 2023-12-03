@@ -32,4 +32,9 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
             mob.beingAttacked(this.damage);
         }
     }
+
+    @Override
+    public String toString() {
+        return "SimpleTower (2 damage points)";
+    }
 }

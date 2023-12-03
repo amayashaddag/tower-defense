@@ -54,4 +54,10 @@ public abstract class Mob {
     public void beingAttacked(int damage) {
         this.hp = this.hp - damage;
     }
+
+    public void attackBase(Base b) {
+        if(b != null) {
+            b.decrementHp(damage);
+        }
+    }
 }

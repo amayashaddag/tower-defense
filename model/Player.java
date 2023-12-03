@@ -29,7 +29,7 @@ public class Player {
         return this.itemsInventory;
     }
 
-    public void removeFromTowersInventory(Tower t) {
+    private void removeFromTowersInventory(Tower t) {
         this.towersInventory.remove(t);
     }
 
@@ -56,5 +56,11 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    public Tower getTowerFromIndex(int index) {
+        Tower t = this.towersInventory.get(index);
+        this.removeFromTowersInventory(t);
+        return t;
     }
 }
