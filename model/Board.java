@@ -118,6 +118,12 @@ public class Board {
         return mobsInRange;
     }
 
+    public Mob getMobTargetInRange(Coordinates center, int range) {
+        List<Mob> mobsInRange = this.getMobsInRange(center, range);
+        if(mobsInRange == null || mobsInRange.isEmpty()) return null;
+        return mobsInRange.get(0);
+    }
+
     public static Board boardExample() {
         return new Board(new Cell[][] {
                 {
