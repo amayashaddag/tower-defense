@@ -9,8 +9,8 @@ public class Hole extends Item implements SingleTargetDamage {
     private Coordinates teleportationPoint;
     private static int dureeDeVie = 10;
 
-    public Hole(Coordinates teleportationPoint, int level) {
-        super(dureeDeVie + level, null, level);
+    public Hole(Coordinates position, Coordinates teleportationPoint, int level) {
+        super(dureeDeVie + level, level, position);
         this.teleportationPoint = teleportationPoint;
     }
 

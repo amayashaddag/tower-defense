@@ -1,27 +1,23 @@
 package model;
 
-import java.util.List;
+import tools.Coordinates;
 
 public abstract class Item {
     protected int dureeDeVie; // durée de vie de l'item
-    protected List<Mob> targetMobs;// Listes des mobs à attaquer
     protected int level; // Chaque item aura un level, on commence par 0.
+    protected final Coordinates position;
 
     /* Constructeur */
 
-    public Item(int dureeDeVie, List<Mob> targetMobs, int level) {
+    public Item(int dureeDeVie, int level, Coordinates position) {
         this.dureeDeVie = dureeDeVie;
-        this.targetMobs = targetMobs;
         this.level = level;
+        this.position = position;
     }
 
     /* Concrete functions */
     boolean finDureeDeVie() {
         return this.dureeDeVie <= 0;
-    }
-
-    void setTargetMobs(List<Mob> targetMobs) {
-        this.targetMobs = targetMobs;
     }
     /* Abstract methods */
 

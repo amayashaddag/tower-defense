@@ -2,6 +2,8 @@ package model;
 
 import java.util.List;
 
+import tools.Coordinates;
+
 public class Bomb extends Item implements ZoneDamage {
     private static final int INITIAL_BOMB_DAMAGE = 5;
     private static final int RANGE = 5;
@@ -10,8 +12,8 @@ public class Bomb extends Item implements ZoneDamage {
     private int damage = INITIAL_BOMB_DAMAGE;
 
 
-    public Bomb(int dureeDeclenchement, List<Mob> targetMobs, int level) {
-        super(dureeDeclenchement, targetMobs, level);
+    public Bomb(int dureeDeclenchement, int level, Coordinates position) {
+        super(dureeDeclenchement, level, position);
     }
 
     @Override

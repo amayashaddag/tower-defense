@@ -1,6 +1,6 @@
 package model;
 
-import java.util.List;
+import tools.Coordinates;
 
 public class Trap extends Item implements SingleTargetDamage {
     private int damage;
@@ -8,8 +8,8 @@ public class Trap extends Item implements SingleTargetDamage {
     private final static int DAMAGE_UPGRADE_VALUE = 5;
     private final static int DURATION_UPGRADE_VALUE = 1;
 
-    public Trap(List<Mob> targetMobs, int level) {
-        super(10 + level, targetMobs, level);
+    public Trap(int level, Coordinates position) {
+        super(10 + level, level, position);
     }
 
     @Override
@@ -21,6 +21,6 @@ public class Trap extends Item implements SingleTargetDamage {
 
     @Override
     public void attack(Mob mob) {
-        this.targetMobs.get(0).beingAttacked(this.damage);
+        mob.beingAttacked(this.damage);
     }
 }
