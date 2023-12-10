@@ -7,7 +7,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import model.Board;
+import model.*;
+
 
 public class GameView extends JFrame {
     private class MapView extends JPanel {
@@ -18,7 +19,9 @@ public class GameView extends JFrame {
             if (currentBoard != null) {
                 for (int i = 0; i < currentBoard.getHeight(); i++) {
                     for (int j = 0; j < currentBoard.getWidth(); j++) {
-                        ImageIcon image = new ImageIcon("resources/grass.png");
+                        ImageIcon image;
+                        String url = "resources/" + this.urlToFrame(i, j);
+                        image = new ImageIcon(url);
                         Image cellTexture = image.getImage();
 
                         int width = cellTexture.getWidth(this);
@@ -27,6 +30,23 @@ public class GameView extends JFrame {
                         g.drawImage(cellTexture, j * width, i * height, width, height, this);
                     }
                 }
+            }
+        }
+
+        private String urlToFrame(int i, int j) {
+            switch(currentBoard.cellType(i, j)) {
+                case "PLUS" : return "plusPath.png";
+                case "NORTH-T" : return "north-t-path.png";
+                case "SOUTH-T" : return "south-t-path.png";
+                case "EAST-T" : return "east-t-path.png";
+                case "WEST-T" : return "west-t-path.png";
+                case "NORTH-WEST" : return "north-west-path.png";
+                case "SOUTH-WEST" : return "south-west-path.png";
+                case "NORTH-EAST" : return "north-east-path.png";
+                case "SOUTH-EAST" : return "south-east-path.png";
+                case "HORIZONTAL" : return "horizontal-path.png";
+                case "VERTICAL" : return "vertical-path.png";
+                default : return "grass.png";
             }
         }
     }

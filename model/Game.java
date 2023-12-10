@@ -64,15 +64,7 @@ public class Game {
         }
     }
 
-    /* Cette méthode sera responsable de l'interaction avec le joueur en lui demandant ce qu'il va faire
-     * Par exemple, soit il pose une tour, soit une bombe ... etc, pour l'instant il s'agit d'une version
-     * "assez primitive" du truc
-     */
-    // TODO : Une fois la méthode principale qui va faire dérouler le jeu sera implémentée, déplacer la méthode qui print le board.
-    // TODO : Est-ce que le jeu sera interrompu pendant le choix de l'action dans la version terminale ? (Si non il faudra trouver une méthode pour faire les deux au même temps).
-
     public void playerAction() { 
-
         System.out.println(this.currentBoard);
         System.out.println("Enter 't' to put a tower, 'q' to quit.");
 

@@ -1,17 +1,39 @@
 package debug;
 
+import java.util.Scanner;
+
+import javax.swing.SwingUtilities;
+
 import model.*;
-import tools.Coordinates;
+import tools.*;
+import view.GameView;
 
 // Ceci est un fichier de test
 public class Debug {
     public static void main(String[] args) {
-        Player player = new Player("Amayas");
-        player.addToTowersInventory(new SimpleTower());
-        Board board = Board.boardExample();
-        SimpleMob mob = new SimpleMob(new Coordinates(0.5, 0.5));
-        board.addMob(mob);
-        Game game = new Game(player, board);
-        game.playerAction();
+        graphicalVersion();
+    }
+
+    public static void consoleVersion() {
+        Board b = Board.boardExample();
+        Mob mob = new SimpleMob(new Coordinates(0, 0));
+        b.addMob(mob);
+        Scanner scanner = new Scanner(System.in);
+        String quit = "";
+        while(!quit.equals("q")) {
+            System.out.println(b);
+            quit = scanner.next();
+            b.updateMobsPosition();
+        }
+        scanner.close();
+        System.out.println(b.cellType(2, 3));
+    }
+
+    public static void graphicalVersion() {
+        Board b = Board.boardExample();
+        GameView view = new GameView(b);
+        SwingUtilities.invokeLater(() -> {
+            view.setVisible(true);
+        });
     }
 }

@@ -7,6 +7,7 @@ public abstract class Mob {
     private int speed; // Vitesse du mob
     private Coordinates position; // Cordonnées de la position du mob
     private int damage;
+    private Direction direction;
 
     /* Constructeur */
     public Mob(Coordinates position, int hp, int speed, int damage) {
@@ -55,9 +56,21 @@ public abstract class Mob {
         this.hp = this.hp - damage;
     }
 
+    public Direction getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(Direction d) {
+        this.direction = d;
+    }
+
     public void attackBase(Base b) {
         if(b != null) {
             b.decrementHp(damage);
         }
+    }
+
+    public void updatePosition() {
+
     }
 }
