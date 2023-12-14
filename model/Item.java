@@ -3,24 +3,39 @@ package model;
 import tools.Coordinates;
 
 public abstract class Item {
-    protected int dureeDeVie; // durée de vie de l'item
-    protected int level; // Chaque item aura un level, on commence par 0.
-    protected final Coordinates position;
+    private int lifeDuration; // durée de vie de l'item
+    private int level; // Chaque item aura un level, on commence par 0.
+    private final Coordinates position;
 
     /* Constructeur */
 
-    public Item(int dureeDeVie, int level, Coordinates position) {
-        this.dureeDeVie = dureeDeVie;
+    public Item(int lifeDuration, int level, Coordinates position) {
+        this.lifeDuration = lifeDuration;
         this.level = level;
         this.position = position;
     }
 
     /* Concrete functions */
-    boolean finDureeDeVie() {
-        return this.dureeDeVie <= 0;
+    boolean endOfLifeDuration() {
+        return this.lifeDuration <= 0;
     }
     /* Abstract methods */
 
-    abstract void upgrade(); // On pourra upgrade level d'un item.
+    public Coordinates getPosition() {
+        return this.position;
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public int getLifeDuration() {
+        return this.lifeDuration;
+    }
+
+    public void upgrade() {
+        this.level++;
+        this.lifeDuration++;
+    } // On pourra upgrade level d'un item.
 
 }

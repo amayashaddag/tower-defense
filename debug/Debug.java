@@ -1,12 +1,10 @@
 package debug;
 
-import java.util.Scanner;
-
 import javax.swing.SwingUtilities;
 
 import model.*;
-import tools.*;
-import view.GameView;
+import tools.Coordinates;
+import view.*;
 
 // Ceci est un fichier de test
 public class Debug {
@@ -16,17 +14,11 @@ public class Debug {
 
     public static void consoleVersion() {
         Board b = Board.boardExample();
-        Mob mob = new SimpleMob(new Coordinates(0, 0));
-        b.addMob(mob);
-        Scanner scanner = new Scanner(System.in);
-        String quit = "";
-        while(!quit.equals("q")) {
-            System.out.println(b);
-            quit = scanner.next();
-            b.updateMobsPosition();
-        }
-        scanner.close();
-        System.out.println(b.cellType(2, 3));
+        b.addMob(new SimpleMob(new Coordinates(0, 0)));
+        Player p = new Player("Amayas");
+        Game game = new Game(p, b);
+
+        game.play();
     }
 
     public static void graphicalVersion() {

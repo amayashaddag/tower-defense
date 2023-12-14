@@ -77,9 +77,9 @@ public class Board {
         return null;
     }
 
-    public Mob getMob(Coordinates c) {
+    public Mob getMob(IntCoordinates c) {
         for (Mob mob : this.currentMobs) {
-            Coordinates mobPosition = mob.getPosition();
+            IntCoordinates mobPosition = mob.getPosition().round();
             if (mobPosition != null && mobPosition.equals(c)) {
                 return mob;
             }
@@ -156,14 +156,22 @@ public class Board {
         return cells;
     }
 
+    //FIXME: This function should adapt to mob speed
+    /* A potential idea is to set a maximum value for fastest mob
+    this one is moving cell-per-cell and make other mobs move : their speed / max speed cell 
+
+    Potential problem : while having max speed = 3 and mob speed = 1 which will make
+    them move 1/3 cell
+    */
+
     public void updateMobsPosition() {
         for(Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if(adjacentCells.size() > 0) {
-                IntCoordinates nextPosition = adjacentCells.get(random.nextInt(adjacentCells.size()));
-                Direction direction = nextPosition.getDirectionFrom(m.getPosition().round());
+                IntCoordinates nextCell = adjacentCells.get(random.nextInt(adjacentCells.size()));
+                Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
                 m.setDirection(direction);
-                m.setPosition(new Coordinates(nextPosition.getX(), nextPosition.getY()));
+                m.setPosition(m.getPosition().plus(Coordinates.getUnit(direction)));
             }
         }
     }
@@ -283,7 +291,7 @@ public class Board {
             for (int j = 0; j < this.width; j++) {
                 s += this.grid[i][j].toString() + " ";
                 if (this.grid[i][j].isPath()) {
-                    Mob mob = this.getMob(new Coordinates(i, j));
+                    Mob mob = this.getMob(new IntCoordinates(i, j));
                     if (mob != null)
                         s += "M ";
                     else
@@ -308,6 +316,8 @@ public class Board {
         }
         return s;
     }
+
+    /* Needed in graphical interface display */
 
     public String cellType(int i, int j) {
         if(i < 0 || i > height || j < 0 || j > width

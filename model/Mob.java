@@ -9,6 +9,8 @@ public abstract class Mob {
     private int damage;
     private Direction direction;
 
+    public final static int MAX_ALLOWED_SPEED = 10;
+
     /* Constructeur */
     public Mob(Coordinates position, int hp, int speed, int damage) {
         this.hp = hp;

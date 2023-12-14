@@ -58,22 +58,32 @@ public class Game {
             return;
         }
         Coordinates c = this.readCoordinates();
+        if(c == null) return;
         t.setPosition(c);
         if (!this.currentBoard.addTower(t)) {
             System.out.println("Error! Tower can't be added to board.");
         }
     }
 
-    public void playerAction() { 
-        System.out.println(this.currentBoard);
-        System.out.println("Enter 't' to put a tower, 'q' to quit.");
+    public void playerAction() {
+        System.out.println("[T] Adding tower.\n[I] Adding item.\n[N] Next step.\n[Q] Cancel.");
 
         char instruction = this.scanner.next().charAt(0);
-        if(instruction == 'q') return;
-        else {
-            if(instruction == 't') {
-                this.addTower();
-            }
+        if(instruction == 't') {
+            this.addTower();
+        } else if(instruction == 'q') {
+            this.gameFinished = true;
+        } else {
+
+        }
+    }
+
+    public void play() {
+        while(!gameFinished) {
+            System.out.print("\033[H\033[2J");
+            System.out.println(this.currentBoard);
+            this.playerAction();
+            this.currentBoard.updateMobsPosition();
         }
     }
 }

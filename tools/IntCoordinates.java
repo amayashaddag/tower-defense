@@ -55,4 +55,14 @@ public class IntCoordinates {
     public String toString() {
         return "(" + this.x + ", " + this.y + ")";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (super.equals(o))
+            return true;
+        if (!(o instanceof IntCoordinates))
+            return false;
+        IntCoordinates c = (IntCoordinates) o;
+        return this.x == c.x && this.y == c.y;
+    }
 }

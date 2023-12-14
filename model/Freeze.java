@@ -31,8 +31,8 @@ public class Freeze extends Item implements SingleTargetDamage {
     }
 
     @Override
-    void upgrade() {
+    public void upgrade() {
+        super.upgrade();
         freezeDuration += DURATION_UPGRADE_VALUE;
-        this.level++;
     }
 }

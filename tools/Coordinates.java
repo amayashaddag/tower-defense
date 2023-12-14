@@ -1,7 +1,14 @@
 package tools;
 
+import model.Direction;
+
 public class Coordinates implements Cloneable {
     private final double x, y;
+
+    public static final Coordinates NORTH_UNIT = new Coordinates(-1, 0);
+    public static final Coordinates SOUTH_UNIT = new Coordinates(1, 0);
+    public static final Coordinates EAST_UNIT = new Coordinates(0, 1);
+    public static final Coordinates WEST_UNIT = new Coordinates(0, -1);
 
     public Coordinates(double x, double y) {
         this.x = x;
@@ -45,6 +52,24 @@ public class Coordinates implements Cloneable {
 
     public IntCoordinates round() {
         return new IntCoordinates((int) Math.round(this.x), (int) Math.round(this.y));
+    }
+
+    public Coordinates times(double value) {
+        return new Coordinates(this.x * value, this.y * value);
+    }
+
+    public static Coordinates getUnit(Direction d) {
+        switch(d) {
+            case EAST: return EAST_UNIT;
+            case NORTH: return NORTH_UNIT;
+            case SOUTH: return SOUTH_UNIT;
+            case WEST: return WEST_UNIT;
+            default: return null;
+        }
+    }
+
+    public Coordinates plus(Coordinates c) {
+        return new Coordinates(x + c.x, y + c.y);
     }
 
     @Override

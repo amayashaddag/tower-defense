@@ -13,13 +13,13 @@ public class Poison extends Item implements ZoneDamage {
 
     public Poison(int dureeDeVie, int level, Coordinates position) {
         super(dureeDeVie, level, position);
-        this.damage = 10 + this.level * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
+        this.damage = 10 + this.getLevel() * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
         // pour chaque level
     }
 
     @Override
-    void upgrade() {
-        this.level++;
+    public void upgrade() {
+        super.upgrade();
         this.damage += DAMAGE_UPGRADE_VALUE;
     }
 
@@ -33,7 +33,7 @@ public class Poison extends Item implements ZoneDamage {
                     mob.beingAttacked(damage);
                 }
             }, 
-            dureeDeVie);
+            this.getLifeDuration());
         }
     }
 

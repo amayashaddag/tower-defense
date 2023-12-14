@@ -22,8 +22,8 @@ public class Hole extends Item implements SingleTargetDamage {
     }
 
     @Override
-    void upgrade() {
-        this.level++;
+    public void upgrade() {
+        super.upgrade();
         dureeDeVie += DURATION_UPGRADE_VALUE;
     }
 }

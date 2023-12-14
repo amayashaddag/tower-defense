@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-import tools.Coordinates;
+import tools.*;
 
 public class ItemTower<T extends Item & ZoneDamage> extends Tower implements ZoneDamage {
     private T item;

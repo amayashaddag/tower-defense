@@ -24,8 +24,8 @@ public class Bomb extends Item implements ZoneDamage {
     }
 
     @Override
-    void upgrade() {
-        this.level++;
+    public void upgrade() {
+        super.upgrade();
         this.damage += DAMAGE_UPGRADE_VALUE;
     }
 
