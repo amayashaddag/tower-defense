@@ -3,7 +3,7 @@ package debug;
 import javax.swing.SwingUtilities;
 
 import model.*;
-import tools.Coordinates;
+import tools.*;
 import view.*;
 
 // Ceci est un fichier de test
@@ -23,7 +23,20 @@ public class Debug {
 
     public static void graphicalVersion() {
         Board b = Board.boardExample();
-        GameView view = new GameView(b);
+        Player p = new Player("Amayas");
+        Game game = new Game(p, b);
+
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+
+        p.addToItemsInventory(new Freeze(0, null));
+
+        GameView view = new GameView(game);
         SwingUtilities.invokeLater(() -> {
             view.setVisible(true);
         });

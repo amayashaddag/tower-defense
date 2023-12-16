@@ -320,6 +320,9 @@ public class Board {
     /* Needed in graphical interface display */
 
     public String cellType(int i, int j) {
+
+        if(this.grid[i][j].isBase()) return "BASE";
+
         if(i < 0 || i > height || j < 0 || j > width
         || !this.grid[i][j].isPath()) return "NAP";
 
