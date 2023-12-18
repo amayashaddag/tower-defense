@@ -58,7 +58,8 @@ public class Game {
             return;
         }
         Coordinates c = this.readCoordinates();
-        if(c == null) return;
+        if (c == null)
+            return;
         t.setPosition(c);
         if (!this.currentBoard.addTower(t)) {
             System.out.println("Error! Tower can't be added to board.");
@@ -69,9 +70,9 @@ public class Game {
         System.out.println("[T] Adding tower.\n[I] Adding item.\n[N] Next step.\n[Q] Cancel.");
 
         char instruction = this.scanner.next().charAt(0);
-        if(instruction == 't') {
+        if (instruction == 't') {
             this.addTower();
-        } else if(instruction == 'q') {
+        } else if (instruction == 'q') {
             this.gameFinished = true;
         } else {
 
@@ -79,7 +80,7 @@ public class Game {
     }
 
     public void play() {
-        while(!gameFinished) {
+        while (!gameFinished) {
             System.out.print("\033[H\033[2J");
             System.out.println(this.currentBoard);
             this.playerAction();

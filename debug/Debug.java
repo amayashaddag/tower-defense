@@ -33,8 +33,9 @@ public class Debug {
         p.addToTowersInventory(new SimpleTower());
         p.addToTowersInventory(new SimpleTower());
         p.addToTowersInventory(new SimpleTower());
-
         p.addToItemsInventory(new Freeze(0, null));
+        
+        b.addMob(new SimpleMob(new Coordinates(0, 0)));
 
         GameView view = new GameView(game);
         SwingUtilities.invokeLater(() -> {

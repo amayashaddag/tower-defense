@@ -19,6 +19,9 @@ public class Board {
 
     private Random random;
 
+    private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.01;
+    private static final double SPEED_EQUATION_FACTOR = 1E-9;
+
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
         this.grid = grid;
         this.height = grid.length;
@@ -137,7 +140,7 @@ public class Board {
 
     public Mob getMobTargetInRange(Coordinates center, int range) {
         List<Mob> mobsInRange = this.getMobsInRange(center, range);
-        if(mobsInRange == null || mobsInRange.isEmpty()) return null;
+        if (mobsInRange == null || mobsInRange.isEmpty()) return null;
         return mobsInRange.get(0);
     }
     
@@ -146,9 +149,9 @@ public class Board {
     
     public List<IntCoordinates> adjacentCellsToReach(IntCoordinates currentCell, Direction direction) {
         List<IntCoordinates> cells = new LinkedList<>();
-        for(Direction d : direction.potentialDirections()) {
+        for (Direction d : direction.potentialDirections()) {
             IntCoordinates cell = currentCell.plus(d);
-            if(cell.isInBounds(height, width) 
+            if (cell.isInBounds(height, width) 
             && this.grid[cell.getX()][cell.getY()].isPath()) {
                 cells.add(cell);
             }
@@ -160,18 +163,35 @@ public class Board {
     /* A potential idea is to set a maximum value for fastest mob
     this one is moving cell-per-cell and make other mobs move : their speed / max speed cell 
 
-    Potential problem : while having max speed = 3 and mob speed = 1 which will make
+    Potential solution : while having max speed = 3 and mob speed = 1 which will make
     them move 1/3 cell
     */
 
     public void updateMobsPosition() {
-        for(Mob m : this.currentMobs) {
+        for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
-            if(adjacentCells.size() > 0) {
+            if (!adjacentCells.isEmpty()) {
                 IntCoordinates nextCell = adjacentCells.get(random.nextInt(adjacentCells.size()));
                 Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
                 m.setDirection(direction);
                 m.setPosition(m.getPosition().plus(Coordinates.getUnit(direction)));
+            }
+        }
+    }
+
+
+    //FIXME : Solve problem while mob can reach an already-visited cell
+    public void updateMobsPosition(long deltaT) {
+        for (Mob m : this.currentMobs) {
+            List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
+            if (!adjacentCells.isEmpty()) {
+                IntCoordinates nextCell = adjacentCells.get(this.random.nextInt(adjacentCells.size()));
+                Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
+
+                if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)) {
+                    m.setDirection(direction);
+                }
+                m.setPosition(m.getPosition().plus(Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR)));
             }
         }
     }

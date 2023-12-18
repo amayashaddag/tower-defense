@@ -76,4 +76,9 @@ public class Coordinates implements Cloneable {
     public String toString() {
         return "(" + this.x + ", " + this.y + ")";
     }
+
+    public boolean distanceFromCenterIsInRange(double d) {
+        return Math.abs(this.x - ((int) Math.round(this.x))) < d 
+        && Math.abs(this.y - ((int) Math.round(this.y))) < d; 
+    }
 }

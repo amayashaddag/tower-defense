@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
 import model.*;
@@ -21,13 +22,24 @@ public class GameView extends JFrame {
     private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
 
+    private class SelectionFrame {
+        private Image image;
+        private IntCoordinates position;
+
+        public SelectionFrame(Image selectionFrameImage) {
+            this.image = selectionFrameImage;
+        }
+
+        public void setPosition(int x, int y) {
+            this.position = new IntCoordinates(x, y);
+        }
+    }
+
     private class GameCursor implements MouseInputListener {
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
-            if (isInPanel(mapView, arg0.getPoint())) {
-                System.out.println("Clicked at " + arg0.getX() / IMAGE_WIDTH + " " + arg0.getY() / IMAGE_HEIGHT);
-            }
+            
         }
 
         @Override
@@ -57,35 +69,58 @@ public class GameView extends JFrame {
 
         @Override
         public void mouseMoved(MouseEvent arg0) {
-            if (isInPanel(mapView, arg0.getPoint())) {
-                mapView.selectionFrame.setPosition((arg0.getX() - mapView.getX()) / IMAGE_WIDTH, (arg0.getY() - mapView.getY()) / IMAGE_HEIGHT);
-                mapView.repaint();
-            }
+            selectionFrame.setPosition(arg0.getX() / IMAGE_WIDTH, arg0.getY() / IMAGE_HEIGHT);
+            repaint();
         }
     }
 
     private class MapView extends JPanel {
-        private class SelectionFrame {
-            private Image image;
-            private IntCoordinates position;
 
-            public SelectionFrame(Image selectionFrameImage) {
-                this.image = selectionFrameImage;
-            }
+        private class MobDisplay {
+            private Image mobImage;
+            private Mob mob;
 
-            public void setPosition(int x, int y) {
-                this.position = new IntCoordinates(x, y);
+            public MobDisplay(Mob mob) {
+                this.mob = mob;
+                this.mobImage = EntityGraphicsFactory.loadMobImage(mob);
             }
         }
 
         private Image[][] map;
-        private SelectionFrame selectionFrame;
+        private List<MobDisplay> mobDisplays;
 
         public MapView() {
             super();
             this.map = MapGraphicsFactory.loadMap(currentBoard);
-            this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
+            this.mobDisplays = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
+        }
+
+        private void updateMobDisplaysList() {
+            for (Mob m : currentBoard.getCurrentMobs()) {
+                if (!this.mobDisplayExists(m)) {
+                    this.mobDisplays.add(new MobDisplay(m));
+                }
+            }
+        }
+
+        private boolean mobDisplayExists(Mob mob) {
+            for (MobDisplay mobDisplay : this.mobDisplays) {
+                if (mobDisplay.mob == mob) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void updateMobsPosition(Graphics g) {
+            for (MobDisplay mobDisplay : this.mobDisplays) {
+                g.drawImage(mobDisplay.mobImage, 
+                (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH), 
+                (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT),
+                IMAGE_WIDTH,
+                IMAGE_HEIGHT, this);
+            }
         }
 
         @Override
@@ -101,12 +136,13 @@ public class GameView extends JFrame {
                 }
             }
 
-            // Drawing selection frame
-
-            if(selectionFrame.position != null) {
-                g.drawImage(selectionFrame.image, selectionFrame.position.getX() * IMAGE_WIDTH, 
-                selectionFrame.position.getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
+            if (selectionFrame.position != null) {
+                g.drawImage(selectionFrame.image, selectionFrame.position.getX() * IMAGE_WIDTH,
+                        selectionFrame.position.getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
+
+            this.updateMobDisplaysList();
+            this.updateMobsPosition(g);
         }
     }
 
@@ -142,11 +178,11 @@ public class GameView extends JFrame {
         }
 
         public void copyInventories() {
-            for(Tower t : currentPlayer.getTowersInventory()) {
+            for (Tower t : currentPlayer.getTowersInventory()) {
                 this.towersInventory.add(new InventoryTower(t));
             }
 
-            for(Item i : currentPlayer.getItemsInventory()) {
+            for (Item i : currentPlayer.getItemsInventory()) {
                 this.itemsInventory.add(new InventoryItem(i));
             }
         }
@@ -155,18 +191,26 @@ public class GameView extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            for(int j = 0; j < this.towersInventory.size(); j++) {
-                g.drawImage(this.towersInventory.get(j).image, j * INVENTORY_FRAME_WIDTH, mapView.getHeight(), INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
+            for (int j = 0; j < this.towersInventory.size(); j++) {
+                g.drawImage(this.towersInventory.get(j).image, j * INVENTORY_FRAME_WIDTH, mapView.getHeight(),
+                        INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
             }
 
-            for(int j = 0; j < this.itemsInventory.size(); j++) {
-                g.drawImage(this.itemsInventory.get(j).image, j * INVENTORY_FRAME_WIDTH, mapView.getHeight() + INVENTORY_FRAME_HEIGHT, INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
+            for (int j = 0; j < this.itemsInventory.size(); j++) {
+                g.drawImage(this.itemsInventory.get(j).image, j * INVENTORY_FRAME_WIDTH,
+                        mapView.getHeight() + INVENTORY_FRAME_HEIGHT, INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT,
+                        this);
+            }
+
+            if (selectionFrame.position != null) {
+                g.drawImage(selectionFrame.image, selectionFrame.position.getX() * IMAGE_WIDTH,
+                        selectionFrame.position.getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
         }
 
         public void removeTower(Tower t) {
-            for(InventoryTower invTower : this.towersInventory) {
-                if(invTower.tower.equals(t)) {
+            for (InventoryTower invTower : this.towersInventory) {
+                if (invTower.tower.equals(t)) {
                     this.towersInventory.remove(invTower);
                     return;
                 }
@@ -174,8 +218,8 @@ public class GameView extends JFrame {
         }
 
         public void removeItem(Item i) {
-            for(InventoryItem invItem : this.itemsInventory) {
-                if(invItem.item.equals(i)) {
+            for (InventoryItem invItem : this.itemsInventory) {
+                if (invItem.item.equals(i)) {
                     this.itemsInventory.remove(invItem);
                     return;
                 }
@@ -189,15 +233,16 @@ public class GameView extends JFrame {
 
     private MapView mapView;
     private InventoryView inventoryView;
-    private GameCursor cursor;
+    private SelectionFrame selectionFrame;
 
     public GameView(Game game) {
         this.game = game;
         this.currentBoard = game.getCurrentBoard();
         this.currentPlayer = game.getCurrentPlayer();
 
-        this.mapView = new MapView();
         this.setLayout(new BorderLayout());
+        
+        this.mapView = new MapView();
         this.add(this.mapView);
 
         this.inventoryView = new InventoryView();
@@ -207,9 +252,11 @@ public class GameView extends JFrame {
         this.setTitle(WINDOW_TITLE);
         this.setResizable(RESIZABILITY);
 
-        this.cursor = new GameCursor();
+        GameCursor cursor = new GameCursor();
         this.addMouseListener(cursor);
         this.addMouseMotionListener(cursor);
+
+        this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
 
         this.setSize(this.mapView.getWidth(), this.mapView.getHeight() + this.inventoryView.getHeight());
     }
@@ -231,9 +278,11 @@ public class GameView extends JFrame {
     }
 
     private static boolean isInPanel(JPanel panel, Point p) {
-        if (panel == null || p == null) return false;
+        if (panel == null || p == null)
+            return false;
         return p.getX() >= panel.getX() && p.getY() >= panel.getY()
-        && p.getX() < panel.getX() + panel.getWidth()
-        && p.getY() < panel.getY() + panel.getHeight();
+                && p.getX() < panel.getX() + panel.getWidth()
+                && p.getY() < panel.getY() + panel.getHeight();
     }
+
 }
