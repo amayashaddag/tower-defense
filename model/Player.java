@@ -63,4 +63,10 @@ public class Player {
         this.removeFromTowersInventory(t);
         return t;
     }
+
+    public Item getItemFromIndex(int index) {
+        Item i = this.itemsInventory.get(index);
+        this.removeFromItemsInventory(i);
+        return i;
+    }
 }

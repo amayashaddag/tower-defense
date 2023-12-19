@@ -15,4 +15,9 @@ public class Base {
     public void decrementHp(int decrement) {
         this.hp -= decrement;
     }
+
+    @Override
+    public String toString() {
+        return "Health points : " + hp;
+    }
 }

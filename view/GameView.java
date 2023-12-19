@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
 import model.*;
@@ -39,7 +38,7 @@ public class GameView extends JFrame {
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
-            
+
         }
 
         @Override
@@ -115,11 +114,11 @@ public class GameView extends JFrame {
 
         public void updateMobsPosition(Graphics g) {
             for (MobDisplay mobDisplay : this.mobDisplays) {
-                g.drawImage(mobDisplay.mobImage, 
-                (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH), 
-                (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT),
-                IMAGE_WIDTH,
-                IMAGE_HEIGHT, this);
+                g.drawImage(mobDisplay.mobImage,
+                        (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH),
+                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT),
+                        IMAGE_WIDTH,
+                        IMAGE_HEIGHT, this);
             }
         }
 
@@ -235,30 +234,34 @@ public class GameView extends JFrame {
     private InventoryView inventoryView;
     private SelectionFrame selectionFrame;
 
+
+    //FIXME : find a solution for window size not including the toolbar height to its getHeight()
     public GameView(Game game) {
         this.game = game;
         this.currentBoard = game.getCurrentBoard();
         this.currentPlayer = game.getCurrentPlayer();
 
         this.setLayout(new BorderLayout());
-        
+
         this.mapView = new MapView();
-        this.add(this.mapView);
 
         this.inventoryView = new InventoryView();
-        this.add(this.inventoryView);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle(WINDOW_TITLE);
         this.setResizable(RESIZABILITY);
+        this.setSize(mapView.getWidth(),mapView.getHeight()+inventoryView.getHeight()+37);
 
         GameCursor cursor = new GameCursor();
         this.addMouseListener(cursor);
         this.addMouseMotionListener(cursor);
+        this.add(this.mapView);
+        this.add(this.inventoryView);
+
+
 
         this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
 
-        this.setSize(this.mapView.getWidth(), this.mapView.getHeight() + this.inventoryView.getHeight());
     }
 
     public JPanel getMapView() {

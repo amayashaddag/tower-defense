@@ -5,7 +5,7 @@ import tools.Coordinates;
 public abstract class Item {
     private int lifeDuration; // durée de vie de l'item
     private int level; // Chaque item aura un level, on commence par 0.
-    private final Coordinates position;
+    private Coordinates position;
 
     /* Constructeur */
 
@@ -31,6 +31,10 @@ public abstract class Item {
 
     public int getLifeDuration() {
         return this.lifeDuration;
+    }
+
+    public void setPosition(Coordinates position) {
+        this.position = position;
     }
 
     public void upgrade() {

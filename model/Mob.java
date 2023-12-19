@@ -2,21 +2,27 @@ package model;
 
 import tools.Coordinates;
 
-public abstract class Mob {
+public class Mob {
+
+
+    private static final int INITIAL_HP = 1;
+    private static final int INITIAL_SPEED = 1;
+    private static final int INITIAL_DAMAGE = 1;
+    public static final int MAX_LEVEL = 2;
+
+    private int level;
     private int hp; // Nombre d'HP d'un mob
     private int speed; // Vitesse du mob
     private Coordinates position; // Cordonnées de la position du mob
     private int damage;
     private Direction direction;
 
-    public final static int MAX_ALLOWED_SPEED = 10;
-
     /* Constructeur */
-    public Mob(Coordinates position, int hp, int speed, int damage) {
-        this.hp = hp;
-        this.speed = speed;
-        this.position = position;
-        this.damage = damage;
+    public Mob(int level) {
+        this.hp = INITIAL_HP + level;
+        this.speed = INITIAL_SPEED + level;
+        this.damage = INITIAL_DAMAGE + level;
+        this.level = level;
     }
 
     /* Getters */
@@ -72,7 +78,16 @@ public abstract class Mob {
         }
     }
 
+    public int getLevel() {
+        return this.level;
+    }
+
     public void updatePosition() {
 
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(hp);
     }
 }

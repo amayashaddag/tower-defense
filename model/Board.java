@@ -10,11 +10,12 @@ public class Board {
     private Cell[][] grid;
     private int width, height;
 
-    private Coordinates baseCoordinates;
+    private final Coordinates baseCoordinates;
     private Coordinates startingCoordinates;
 
     private Base currentBase;
     private List<Tower> currentTowers;
+    private List<Item> currentItems;
     private List<Mob> currentMobs;
 
     private Random random;
@@ -31,6 +32,7 @@ public class Board {
         this.currentBase = base;
         this.currentTowers = new LinkedList<Tower>();
         this.currentMobs = new LinkedList<Mob>();
+        this.currentItems = new LinkedList<>();
         this.random = new Random();
     }
 
@@ -52,6 +54,10 @@ public class Board {
 
     public List<Mob> getCurrentMobs() {
         return this.currentMobs;
+    }
+
+    public List<Item> getCurrentItems() {
+        return this.currentItems;
     }
 
     public int getWidth() {
@@ -90,6 +96,19 @@ public class Board {
         return null;
     }
 
+    public void removeDeadMobs() {
+        List<Mob> mobsToEliminate = new LinkedList<>();
+        for (Mob m : currentMobs) {
+            if (m.isDead()) {
+                mobsToEliminate.add(m);
+            }
+        }
+
+        for (Mob m : mobsToEliminate) {
+            currentMobs.remove(m);
+        }
+    }
+
     public boolean addMob(Mob mob) {
         if (mob == null)
             return false;
@@ -122,6 +141,17 @@ public class Board {
         return true;
     }
 
+    public boolean addItem(Item i) {
+        Coordinates position = i.getPosition();
+        if (position == null) {
+            return false;
+        }
+        IntCoordinates roundedCoordinates = position.round();
+        if(this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath()) return false;
+        this.currentItems.add(i);
+        return true;
+    }
+
     /* Returns the list of mobs that are in range from a specific center */
 
     public List<Mob> getMobsInRange(Coordinates center, int range) {
@@ -134,6 +164,7 @@ public class Board {
                 mobsInRange.add(mob);
             }
         }
+        
 
         return mobsInRange;
     }
@@ -141,7 +172,7 @@ public class Board {
     public Mob getMobTargetInRange(Coordinates center, int range) {
         List<Mob> mobsInRange = this.getMobsInRange(center, range);
         if (mobsInRange == null || mobsInRange.isEmpty()) return null;
-        return mobsInRange.get(0);
+        return mobsInRange.get(random.nextInt(mobsInRange.size()));
     }
     
     /* The idea in this function is that the adjacent cells to reach are all
@@ -160,14 +191,12 @@ public class Board {
     }
 
     //FIXME: This function should adapt to mob speed
-    /* A potential idea is to set a maximum value for fastest mob
-    this one is moving cell-per-cell and make other mobs move : their speed / max speed cell 
-
-    Potential solution : while having max speed = 3 and mob speed = 1 which will make
-    them move 1/3 cell
-    */
+    /* Faire correspondre la vitesse des mobs avec le nombre de cases qu'ils parcourent */
 
     public void updateMobsPosition() {
+
+        List<Mob> mobsToEliminate = new LinkedList<>();
+
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
@@ -175,12 +204,25 @@ public class Board {
                 Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
                 m.setDirection(direction);
                 m.setPosition(m.getPosition().plus(Coordinates.getUnit(direction)));
+
+                if (m.getPosition().equals(baseCoordinates)) {
+                    m.attackBase(currentBase);
+                    mobsToEliminate.add(m);
+                }
+
             }
+        }
+
+        //FIXME : Factoriser ce code avec celui de la méthode removeDeadMobs
+
+        for (Mob m : mobsToEliminate) {
+            currentMobs.remove(m);
         }
     }
 
 
     //FIXME : Solve problem while mob can reach an already-visited cell
+    /* Idea : stock the last visited cell coordinates to prevent mob reaching it again */
     public void updateMobsPosition(long deltaT) {
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
@@ -192,6 +234,10 @@ public class Board {
                     m.setDirection(direction);
                 }
                 m.setPosition(m.getPosition().plus(Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR)));
+
+                if (m.getPosition().equals(baseCoordinates)) {
+                    m.attackBase(currentBase);
+                }
             }
         }
     }
@@ -313,7 +359,7 @@ public class Board {
                 if (this.grid[i][j].isPath()) {
                     Mob mob = this.getMob(new IntCoordinates(i, j));
                     if (mob != null)
-                        s += "M ";
+                        s += mob.toString() + " ";
                     else
                         s += this.grid[i][j].toString() + " ";
                 } else {
