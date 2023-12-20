@@ -4,32 +4,29 @@ import tools.*;
 
 public class SimpleTower extends Tower implements SingleTargetDamage {
 
-    private static final int NB_OF_ATTACKS = 20;
-    private static final int RANGE = 3;
-    private static final int DAMAGE = 2;
+    private static int DAMAGE = 1;
+    private static int CURRENT_LEVEL = 0;
 
-    private int damage;
+    private static final int RANGE = 3;
+    private static final int RATE_OF_FIRE = 1;
+
 
     public SimpleTower(Coordinates position) {
-        super(position, NB_OF_ATTACKS, RANGE);
-        this.damage = DAMAGE;
+        super(position, RANGE, CURRENT_LEVEL, RATE_OF_FIRE);
     }
 
     public SimpleTower() {
-        super(null, NB_OF_ATTACKS, RANGE);
-        this.damage = DAMAGE;
+        super(null, RANGE, CURRENT_LEVEL, RATE_OF_FIRE);
     }
 
-
-    // A implémenter plus tard ...
-
     public void upgrade() {
-
+        DAMAGE++;
+        CURRENT_LEVEL++;
     }
 
     public void attack(Mob mob) {
         if(mob != null) {
-            mob.beingAttacked(this.damage);
+            mob.beingAttacked(DAMAGE);
         }
     }
 

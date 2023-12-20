@@ -4,13 +4,17 @@ import tools.*;
 
 public abstract class Tower {
     private Coordinates position;
-    private int nbOfAttacks;
+    private int rateOfFire;
     private int range; // Rayon du perimètre sur lequel il attaque
+    private int level;
 
-    public Tower(Coordinates position, int nbOfAttacks, int range) {
+    public final static int MAX_LEVEL = 3;
+
+    public Tower(Coordinates position,int range, int rateOfFire, int level) {
         this.position = position;
-        this.nbOfAttacks = nbOfAttacks;
         this.range = range;
+        this.level = level;
+        this.rateOfFire = rateOfFire;
     }
     /* Getters */
 
@@ -18,23 +22,23 @@ public abstract class Tower {
         return this.position;
     }
 
-    public int getNbOfAttacks() {
-        return this.nbOfAttacks;
-    }
+  
 
-    public boolean outOfAttack() {
-        return this.nbOfAttacks <= 0;
-    }
 
     public int getRange() {
         return range;
     }
 
-    /* Setters */
-    public void setNbOfAttacks(int nbOfAttacks) {
-        this.nbOfAttacks = nbOfAttacks;
+    public int getLevel() {
+        return level;
     }
 
+    public int getRateOfFire() {
+        return rateOfFire;
+    }
+
+    /* Setters */
+  
     public void setPosition(Coordinates position) {
         this.position = position;
     }

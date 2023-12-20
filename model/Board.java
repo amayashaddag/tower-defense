@@ -119,11 +119,12 @@ public class Board {
     }
 
     private void initMobPosition(Mob m) {
-        if(m == null) return;
-        for(Direction d : Direction.allDirections()) {
+        if (m == null)
+            return;
+        for (Direction d : Direction.allDirections()) {
             IntCoordinates c = m.getPosition().round().plus(d);
-            if(c.isInBounds(height, width) 
-            && this.grid[c.getX()][c.getY()].isPath()) {
+            if (c.isInBounds(height, width)
+                    && this.grid[c.getX()][c.getY()].isPath()) {
                 m.setDirection(d);
                 return;
             }
@@ -136,7 +137,8 @@ public class Board {
             return false;
         }
         IntCoordinates roundedCoordinates = position.round();
-        if(this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath()) return false;
+        if (this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath())
+            return false;
         this.currentTowers.add(tower);
         return true;
     }
@@ -147,7 +149,8 @@ public class Board {
             return false;
         }
         IntCoordinates roundedCoordinates = position.round();
-        if(this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath()) return false;
+        if (this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath())
+            return false;
         this.currentItems.add(i);
         return true;
     }
@@ -164,34 +167,49 @@ public class Board {
                 mobsInRange.add(mob);
             }
         }
-        
 
         return mobsInRange;
     }
 
     public Mob getMobTargetInRange(Coordinates center, int range) {
         List<Mob> mobsInRange = this.getMobsInRange(center, range);
-        if (mobsInRange == null || mobsInRange.isEmpty()) return null;
+        if (mobsInRange == null || mobsInRange.isEmpty())
+            return null;
         return mobsInRange.get(random.nextInt(mobsInRange.size()));
     }
-    
-    /* The idea in this function is that the adjacent cells to reach are all
-    the adjacent cells except the one in the opposite direction */
-    
+
+    /*
+     * The idea in this function is that the adjacent cells to reach are all
+     * the adjacent cells except the one in the opposite direction
+     */
+
     public List<IntCoordinates> adjacentCellsToReach(IntCoordinates currentCell, Direction direction) {
         List<IntCoordinates> cells = new LinkedList<>();
         for (Direction d : direction.potentialDirections()) {
             IntCoordinates cell = currentCell.plus(d);
-            if (cell.isInBounds(height, width) 
-            && this.grid[cell.getX()][cell.getY()].isPath()) {
+            if (cell.isInBounds(height, width)
+                    && this.grid[cell.getX()][cell.getY()].isPath()) {
                 cells.add(cell);
             }
         }
         return cells;
     }
 
-    //FIXME: This function should adapt to mob speed
-    /* Faire correspondre la vitesse des mobs avec le nombre de cases qu'ils parcourent */
+    private void moveOneCell(Mob m) {
+        List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
+        if (!adjacentCells.isEmpty()) {
+            IntCoordinates nextCell = adjacentCells.get(random.nextInt(adjacentCells.size()));
+            Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
+            m.setDirection(direction);
+            m.setPosition(m.getPosition().plus(Coordinates.getUnit(direction)));
+        }
+    }
+
+    // FIXME: This function should adapt to mob speed
+    /*
+     * Faire correspondre la vitesse des mobs avec le nombre de cases qu'ils
+     * parcourent
+     */
 
     public void updateMobsPosition() {
 
@@ -200,12 +218,11 @@ public class Board {
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
-                IntCoordinates nextCell = adjacentCells.get(random.nextInt(adjacentCells.size()));
-                Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
-                m.setDirection(direction);
-                m.setPosition(m.getPosition().plus(Coordinates.getUnit(direction)));
-
-                if (m.getPosition().equals(baseCoordinates)) {
+                for (int i = 0; i < m.getSpeed(); i++) {
+                    moveOneCell(m);
+                }
+                
+                if (m.getPosition().greaterOrEquals(baseCoordinates)) {
                     m.attackBase(currentBase);
                     mobsToEliminate.add(m);
                 }
@@ -213,16 +230,18 @@ public class Board {
             }
         }
 
-        //FIXME : Factoriser ce code avec celui de la méthode removeDeadMobs
+        // FIXME : Factoriser ce code avec celui de la méthode removeDeadMobs
 
         for (Mob m : mobsToEliminate) {
             currentMobs.remove(m);
         }
     }
 
-
-    //FIXME : Solve problem while mob can reach an already-visited cell
-    /* Idea : stock the last visited cell coordinates to prevent mob reaching it again */
+    // FIXME : Solve problem while mob can reach an already-visited cell
+    /*
+     * Idea : stock the last visited cell coordinates to prevent mob reaching it
+     * again
+     */
     public void updateMobsPosition(long deltaT) {
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
@@ -233,7 +252,8 @@ public class Board {
                 if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)) {
                     m.setDirection(direction);
                 }
-                m.setPosition(m.getPosition().plus(Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR)));
+                m.setPosition(m.getPosition().plus(
+                        Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR)));
 
                 if (m.getPosition().equals(baseCoordinates)) {
                     m.attackBase(currentBase);
@@ -244,104 +264,104 @@ public class Board {
 
     public static Board boardExample() {
         return new Board(new Cell[][] {
-            {
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false)
-            },
-            {
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false)
-            },
-            {
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false)
-            },
-            {
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false)
-            },
-            {
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false)
-            },
-            {
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false)
-            },
-            {
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(false, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, false),
-                new Cell(true, true)
-            }
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, true)
+                }
         }, new Coordinates(6, 10), new Coordinates(0, 0), new Base(50));
     }
 
     @Override
     public String toString() {
         String horizontalSpace = "    ", s = horizontalSpace;
-        for(int i = 0; i < this.width; i++) {
+        for (int i = 0; i < this.width; i++) {
             s += String.format("  %d   ", i + 1);
         }
         s += "\n";
@@ -387,56 +407,69 @@ public class Board {
 
     public String cellType(int i, int j) {
 
-        if(this.grid[i][j].isBase()) return "BASE";
+        if (this.grid[i][j].isBase())
+            return "BASE";
 
-        if(i < 0 || i > height || j < 0 || j > width
-        || !this.grid[i][j].isPath()) return "NAP";
+        if (i < 0 || i > height || j < 0 || j > width
+                || !this.grid[i][j].isPath())
+            return "NAP";
 
-        if(i > 0 && j > 0 && i < height - 1 && j < width - 1
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i][j - 1].isPath()
-        && this.grid[i + 1][j].isPath()
-        && this.grid[i][j + 1].isPath()) return "PLUS";
-        
-        if(j > 0 && i < height - 1 && j < width - 1 
-        && this.grid[i][j - 1].isPath()
-        && this.grid[i + 1][j].isPath()
-        && this.grid[i][j + 1].isPath()) return "SOUTH-T";
+        if (i > 0 && j > 0 && i < height - 1 && j < width - 1
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i][j - 1].isPath()
+                && this.grid[i + 1][j].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "PLUS";
 
-        if(i > 0 && j > 0 && j < width - 1
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i][j - 1].isPath()
-        && this.grid[i][j + 1].isPath()) return "NORTH-T";
+        if (j > 0 && i < height - 1 && j < width - 1
+                && this.grid[i][j - 1].isPath()
+                && this.grid[i + 1][j].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "SOUTH-T";
 
-        if(i > 0 && j > 0 && i < height - 1
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i][j - 1].isPath()
-        && this.grid[i + 1][j].isPath()) return "WEST-T";
+        if (i > 0 && j > 0 && j < width - 1
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i][j - 1].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "NORTH-T";
 
-        if(i > 0 && i < height - 1 && j < width - 1 
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i + 1][j].isPath()
-        && this.grid[i][j + 1].isPath()) return "EAST-T";
+        if (i > 0 && j > 0 && i < height - 1
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i][j - 1].isPath()
+                && this.grid[i + 1][j].isPath())
+            return "WEST-T";
 
-        if(i > 0 && j > 0
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i][j - 1].isPath()) return "NORTH-WEST";
+        if (i > 0 && i < height - 1 && j < width - 1
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i + 1][j].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "EAST-T";
 
-        if(i > 0 && j < width - 1 
-        && this.grid[i - 1][j].isPath()
-        && this.grid[i][j + 1].isPath()) return "NORTH-EAST";
+        if (i > 0 && j > 0
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i][j - 1].isPath())
+            return "NORTH-WEST";
 
-        if(i < height - 1 && j < width - 1 
-        && this.grid[i + 1][j].isPath()
-        && this.grid[i][j + 1].isPath()) return "SOUTH-EAST";
+        if (i > 0 && j < width - 1
+                && this.grid[i - 1][j].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "NORTH-EAST";
 
-        if(i < height - 1 && j > 0 
-        && this.grid[i + 1][j].isPath()
-        && this.grid[i][j - 1].isPath()) return "SOUTH-WEST";
+        if (i < height - 1 && j < width - 1
+                && this.grid[i + 1][j].isPath()
+                && this.grid[i][j + 1].isPath())
+            return "SOUTH-EAST";
 
-        if((i > 0 && this.grid[i - 1][j].isPath())
-        || (i < height - 1 && this.grid[i + 1][j].isPath())) return "VERTICAL";
+        if (i < height - 1 && j > 0
+                && this.grid[i + 1][j].isPath()
+                && this.grid[i][j - 1].isPath())
+            return "SOUTH-WEST";
 
-        else return "HORIZONTAL";
+        if ((i > 0 && this.grid[i - 1][j].isPath())
+                || (i < height - 1 && this.grid[i + 1][j].isPath()))
+            return "VERTICAL";
+
+        else
+            return "HORIZONTAL";
     }
 }

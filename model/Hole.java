@@ -4,13 +4,12 @@ import tools.*;
 
 public class Hole extends Item implements SingleTargetDamage {
 
-    private static final int DURATION_UPGRADE_VALUE = 1;
-
+    public static int CURRENT_LEVEL = 0;
+    
     private Coordinates teleportationPoint;
-    private static int dureeDeVie = 10;
 
     public Hole(Coordinates position, Coordinates teleportationPoint, int level) {
-        super(dureeDeVie + level, level, position);
+        super(position);
         this.teleportationPoint = teleportationPoint;
     }
 
@@ -23,7 +22,6 @@ public class Hole extends Item implements SingleTargetDamage {
 
     @Override
     public void upgrade() {
-        super.upgrade();
-        dureeDeVie += DURATION_UPGRADE_VALUE;
+        
     }
 }

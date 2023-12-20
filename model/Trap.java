@@ -8,7 +8,7 @@ public class Trap extends Item implements SingleTargetDamage {
     private final static int DAMAGE_UPGRADE_VALUE = 5;
 
     public Trap(int level, Coordinates position) {
-        super(10 + level, level, position);
+        super(position);
     }
 
     @Override

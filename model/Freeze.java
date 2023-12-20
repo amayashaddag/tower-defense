@@ -10,9 +10,10 @@ public class Freeze extends Item implements SingleTargetDamage {
     private static final int DURATION_UPGRADE_VALUE = 1;
 
     private int freezeDuration = FREEZE_DURATION;
+    public static int CURRENT_LEVEL = 0;
 
     public Freeze(int level, Coordinates position) {
-        super(FREEZE_DURATION + level * 1, level, position);
+        super(position);
     }
 
     @Override

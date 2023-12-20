@@ -9,11 +9,14 @@ import tools.Coordinates;
 public class Poison extends Item implements ZoneDamage {
     private int damage;
 
+    public static int CURRENT_LEVEL = 0;
+    private static int POISON_DURATION;
+
     private final static int DAMAGE_UPGRADE_VALUE = 2;
 
     public Poison(int dureeDeVie, int level, Coordinates position) {
-        super(dureeDeVie, level, position);
-        this.damage = 10 + this.getLevel() * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
+        super(position);
+        this.damage = 10 + CURRENT_LEVEL * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
         // pour chaque level
     }
 
@@ -33,7 +36,7 @@ public class Poison extends Item implements ZoneDamage {
                     mob.beingAttacked(damage);
                 }
             }, 
-            this.getLifeDuration());
+            POISON_DURATION);
         }
     }
 

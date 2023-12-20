@@ -109,7 +109,7 @@ public class GameView extends JFrame {
                     return true;
                 }
             }
-            return false;
+            return false;   
         }
 
         public void updateMobsPosition(Graphics g) {

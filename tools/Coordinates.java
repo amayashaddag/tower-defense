@@ -38,6 +38,11 @@ public class Coordinates implements Cloneable {
         Coordinates c = (Coordinates) o;
         return this.x == c.x && this.y == c.y;
     }
+    
+    public boolean greaterOrEquals(Coordinates c) {
+        return this.x >= c.x && this.y >= c.y;
+    }
+
 
     /*
      * Returns wether the current coordinate is in the square of radius r and center
