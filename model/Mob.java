@@ -1,6 +1,7 @@
 package model;
 
 import tools.Coordinates;
+import tools.IntCoordinates;
 
 public class Mob {
 
@@ -16,6 +17,7 @@ public class Mob {
     private Coordinates position; // Cordonnées de la position du mob
     private int damage;
     private Direction direction;
+    private IntCoordinates lastVisitedCell;
 
     /* Constructeur */
     public Mob(int level) {
@@ -80,6 +82,14 @@ public class Mob {
 
     public int getLevel() {
         return this.level;
+    }
+
+    public void setLastVisitedCell(IntCoordinates lastVisitedCell) {
+        this.lastVisitedCell = lastVisitedCell;
+    }
+
+    public IntCoordinates getLastVisitedCell() {
+        return lastVisitedCell;
     }
 
     public void updatePosition() {

@@ -12,6 +12,8 @@ public class Poison extends Item implements ZoneDamage {
     public static int CURRENT_LEVEL = 0;
     private static int POISON_DURATION;
 
+    private final int RANGE = 3;;
+
     private final static int DAMAGE_UPGRADE_VALUE = 2;
 
     public Poison(int dureeDeVie, int level, Coordinates position) {
@@ -38,6 +40,10 @@ public class Poison extends Item implements ZoneDamage {
             }, 
             POISON_DURATION);
         }
+    }
+
+    public int getRange() {
+        return RANGE;
     }
 
 }

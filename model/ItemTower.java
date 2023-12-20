@@ -26,14 +26,18 @@ public class ItemTower<T extends Item & ZoneDamage> extends Tower implements Zon
     }
 
     public void attack(List<Mob> mobs) {
-        
+        this.item.attack(mobs);
+    }
+
+    public int getRange() {
+        return item.getRange();
     }
 
     public void upgrade() {
         
     }
 
-    public ItemTower<Bomb> bombTower() {
+    public static ItemTower<Bomb> bombTower() {
         Bomb bomb = new Bomb();
         return new ItemTower<Bomb>(bomb);
     }

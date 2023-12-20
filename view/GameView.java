@@ -6,10 +6,13 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
+import javax.swing.Timer;
 
 import model.*;
 import tools.*;
@@ -69,7 +72,7 @@ public class GameView extends JFrame {
         @Override
         public void mouseMoved(MouseEvent arg0) {
             selectionFrame.setPosition(arg0.getX() / IMAGE_WIDTH, arg0.getY() / IMAGE_HEIGHT);
-            repaint();
+            // repaint();
         }
     }
 
@@ -109,7 +112,7 @@ public class GameView extends JFrame {
                     return true;
                 }
             }
-            return false;   
+            return false;
         }
 
         public void updateMobsPosition(Graphics g) {
@@ -234,8 +237,11 @@ public class GameView extends JFrame {
     private InventoryView inventoryView;
     private SelectionFrame selectionFrame;
 
+    private long lastTime;
+    private Timer timer;
 
-    //FIXME : find a solution for window size not including the toolbar height to its getHeight()
+    // FIXME : find a solution for window size not including the toolbar height to
+    // its getHeight()
     public GameView(Game game) {
         this.game = game;
         this.currentBoard = game.getCurrentBoard();
@@ -244,13 +250,12 @@ public class GameView extends JFrame {
         this.setLayout(new BorderLayout());
 
         this.mapView = new MapView();
-
         this.inventoryView = new InventoryView();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle(WINDOW_TITLE);
         this.setResizable(RESIZABILITY);
-        this.setSize(mapView.getWidth(),mapView.getHeight()+inventoryView.getHeight()+37);
+        this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
 
         GameCursor cursor = new GameCursor();
         this.addMouseListener(cursor);
@@ -258,9 +263,22 @@ public class GameView extends JFrame {
         this.add(this.mapView);
         this.add(this.inventoryView);
 
-
-
         this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
+
+        this.timer = new Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                long currentTime = System.nanoTime();
+                if (lastTime == 0) {
+                    lastTime = currentTime;
+                } else {
+                    long deltaT = currentTime - lastTime;
+                    lastTime = currentTime;
+                    update(deltaT);
+                }
+            }
+        });
+        timer.start();
 
     }
 
@@ -278,6 +296,11 @@ public class GameView extends JFrame {
 
     public Game getGame() {
         return this.game;
+    }
+
+    public void update(long deltaT) {
+        currentBoard.updateMobsPosition(deltaT);
+        mapView.repaint();
     }
 
     private static boolean isInPanel(JPanel panel, Point p) {

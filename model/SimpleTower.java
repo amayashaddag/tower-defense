@@ -8,15 +8,15 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
     private static int CURRENT_LEVEL = 0;
 
     private static final int RANGE = 3;
-    private static final int RATE_OF_FIRE = 1;
+    private static final int RATE_OF_FIRE = 2;
 
 
     public SimpleTower(Coordinates position) {
-        super(position, RANGE, CURRENT_LEVEL, RATE_OF_FIRE);
+        super(position, RANGE, RATE_OF_FIRE, CURRENT_LEVEL);
     }
 
     public SimpleTower() {
-        super(null, RANGE, CURRENT_LEVEL, RATE_OF_FIRE);
+        super(null, RANGE, RATE_OF_FIRE, CURRENT_LEVEL);
     }
 
     public void upgrade() {

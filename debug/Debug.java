@@ -12,15 +12,16 @@ import view.*;
 // Ceci est un fichier de test
 public class Debug {
     public static void main(String[] args) {
-        consoleVersion();
+        graphicalVersion();
     }
 
     public static void consoleVersion() {
         Board b = Board.boardExample();
+        b.addMob(new Mob(0));
 
         Player p = new Player("Amayas");
         p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(ItemTower.bombTower());
         p.addToTowersInventory(new SimpleTower());
 
         Triplet tr = new Triplet(2, 2, 1);
@@ -34,21 +35,16 @@ public class Debug {
 
     public static void graphicalVersion() {
         Board b = Board.boardExample();
+        b.addMob(new Mob(0));
+
         Player p = new Player("Amayas");
         Game game = new Game(p, b, null);
 
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToItemsInventory(new Freeze(0, null));
+        GameView view = new GameView(game);
 
         SwingUtilities.invokeLater(() -> {
-            GameView view = new GameView(game);
             view.setVisible(true);
         });
+
     }
 }

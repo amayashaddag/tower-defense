@@ -246,14 +246,20 @@ public class Board {
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
-                IntCoordinates nextCell = adjacentCells.get(this.random.nextInt(adjacentCells.size()));
-                Direction direction = nextCell.getDirectionFrom(m.getPosition().round());
+                IntCoordinates currentCell = m.getPosition().round();
 
-                if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)) {
+                IntCoordinates nextCell = adjacentCells.get(this.random.nextInt(adjacentCells.size()));
+                Direction direction = nextCell.getDirectionFrom(currentCell);
+
+                if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)
+                && !nextCell.equals(m.getLastVisitedCell())) {
                     m.setDirection(direction);
                 }
-                m.setPosition(m.getPosition().plus(
-                        Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR)));
+                Coordinates nextPos = m.getPosition().plus(Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR));
+                if (!nextPos.round().equals(currentCell)) {
+                    m.setLastVisitedCell(currentCell);
+                }
+                m.setPosition(nextPos);
 
                 if (m.getPosition().equals(baseCoordinates)) {
                     m.attackBase(currentBase);

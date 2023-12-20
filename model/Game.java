@@ -37,7 +37,8 @@ public class Game {
         return this.gameFinished;
     }
 
-    //FIXME : Fix reading coordinates while having a more than 2 integer in y coordinates
+    // FIXME : Fix reading coordinates while having a more than 2 integer in y
+    // coordinates
 
     public Coordinates readCoordinates() {
         System.out.print("Enter coordinates : ");
@@ -76,26 +77,6 @@ public class Game {
         }
     }
 
-    public void addItem() {
-        System.out.println(this.currentPlayer.getItemsInventory());
-        System.out.print("Enter inventory slot : ");
-        int itemsInventoryIndex = scanner.nextInt();
-        Item i;
-        try {
-            i = this.currentPlayer.getItemFromIndex(itemsInventoryIndex);
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Error! Slot doesn't exist.");
-            return;
-        }
-        Coordinates c = this.readCoordinates();
-        if (c == null)
-            return;
-        i.setPosition(c);
-        if (!this.currentBoard.addItem(i)) {
-            System.out.println("Error! Tower can't be added to board.");
-        }
-    }
-
     public boolean roundFinished() {
         return currentBoard.getCurrentBase().getHp() <= 0
                 || (waves.isEmpty() && currentBoard.getCurrentMobs().isEmpty());
@@ -107,33 +88,30 @@ public class Game {
         System.out.println(this.currentBoard);
 
         initRound();
+        int iter = 1;
         while (!this.roundFinished()) {
 
-            System.out.print("\033[H\033[2J");
-            System.out.println(this.currentBoard);
+            System.out.print("\033[H\033[2J");            System.out.println(this.currentBoard);
             System.out.println(currentBoard.getCurrentBase());
 
             if (!waves.isEmpty()) {
                 addMob();
             }
-
             for (Tower t : currentBoard.getCurrentTowers()) {
                 Mob mob = currentBoard.getMobTargetInRange(t.getPosition(), t.getRange());
-                if (mob != null) {
+                if (mob != null && (iter % (t.getRateOfFire()) == 0)) {
                     if (t instanceof SingleTargetDamage targetTower) {
                         targetTower.attack(mob);
                     } else if (t instanceof ZoneDamage zoneTower) {
                         List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
                         zoneTower.attack(mobsInRange);
                     }
+                    
                     currentBoard.removeDeadMobs();
                 }
             }
-
-            //TODO : Implement items attacking
-
+            iter++;
             currentBoard.updateMobsPosition();
-
             scanner.nextLine();
 
         }
@@ -174,20 +152,6 @@ public class Game {
             System.out.println(this.currentBoard);
         } while (answer);
 
-        answer = false;
-
-        do {
-            System.out.println("Do you want to place an item? (y | n).");
-            String playerAction = this.scanner.nextLine();
-            if (playerAction.equals("y")) {
-                this.addItem();
-                answer = true;
-            } else {
-                answer = false;
-            }
-            System.out.print("\033[H\033[2J");
-            System.out.println(this.currentBoard);
-        } while (answer);
     }
 
 }
