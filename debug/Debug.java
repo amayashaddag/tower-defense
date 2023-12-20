@@ -44,6 +44,7 @@ public class Debug {
 
         SwingUtilities.invokeLater(() -> {
             view.setVisible(true);
+            view.startGame();
         });
 
     }

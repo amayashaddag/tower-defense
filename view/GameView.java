@@ -24,6 +24,8 @@ public class GameView extends JFrame {
     private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
     private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
+    private static final int MOB_ANIMATION_DELAY = 50;
+
 
     private class SelectionFrame {
         private Image image;
@@ -85,7 +87,9 @@ public class GameView extends JFrame {
             private Image[] eastFrames;
             private Image[] westFrames;
 
+            private Image currentFrame;
             private int frameIndex = 0;
+            private Timer animationTimer;
 
             private Mob mob;
 
@@ -95,9 +99,41 @@ public class GameView extends JFrame {
                 this.westFrames = EntityGraphicsFactory.loadWestFrames(mob);
                 this.southFrames = EntityGraphicsFactory.loadSouthFrames(mob);
                 this.eastFrames = EntityGraphicsFactory.loadEastFrames(mob);
+                this.animationTimer = new Timer(MOB_ANIMATION_DELAY, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Image[] currentFrames;
+                        switch (mob.getDirection()) {
+                            case EAST:
+                                currentFrames = eastFrames;
+                                break;
+                            case NORTH:
+                                currentFrames = northFrames;
+                                break;
+                            case SOUTH:
+                                currentFrames = southFrames;
+                                break;
+                            default:
+                                currentFrames = westFrames;
+                                break;
+                        }
+                        currentFrame = currentFrames[frameIndex];
+                        frameIndex++;
+                        frameIndex %= EntityGraphicsFactory.NB_OF_FRAMES;
+                    }
+                });
+            }
 
+            public void startMobAnimation() {
+                this.animationTimer.start();
+            }
+
+            public void stopMobAnimation() {
+                this.animationTimer.stop();
             }
         }
+
+        //FIXME: Add dead mobs handling in mobDisplays list
 
         private Image[][] map;
         private List<MobDisplay> mobDisplays;
@@ -112,7 +148,9 @@ public class GameView extends JFrame {
         private void updateMobDisplaysList() {
             for (Mob m : currentBoard.getCurrentMobs()) {
                 if (!this.mobDisplayExists(m)) {
-                    this.mobDisplays.add(new MobDisplay(m));
+                    MobDisplay mobDisplay = new MobDisplay(m);
+                    this.mobDisplays.add(mobDisplay);
+                    mobDisplay.startMobAnimation();
                 }
             }
         }
@@ -129,29 +167,12 @@ public class GameView extends JFrame {
         public void updateMobsPosition(Graphics g) {
 
             for (MobDisplay mobDisplay : this.mobDisplays) {
-                Image[] currentFrames;
-                switch (mobDisplay.mob.getDirection()) {
-                    case EAST:
-                        currentFrames = mobDisplay.eastFrames;
-                        break;
-                    case NORTH:
-                        currentFrames = mobDisplay.northFrames;
-                        break;
-                    case SOUTH:
-                        currentFrames = mobDisplay.southFrames;
-                        break;
-                    default:
-                        currentFrames = mobDisplay.westFrames;
-                        break;
-                }
-
-                g.drawImage(currentFrames[mobDisplay.frameIndex],
+                g.drawImage(mobDisplay.currentFrame,
                         (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
-                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT) + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
+                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT)
+                                + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
                         MOB_IMAGE_WIDTH,
                         MOB_IMAGE_HEIGHT, this);
-                mobDisplay.frameIndex++;
-                mobDisplay.frameIndex %= EntityGraphicsFactory.NB_OF_FRAMES;
             }
         }
 
@@ -268,7 +289,7 @@ public class GameView extends JFrame {
     private SelectionFrame selectionFrame;
 
     private long lastTime;
-    private Timer timer;
+    private Timer gameTimer;
 
     // FIXME : find a solution for window size not including the toolbar height to
     // its getHeight()
@@ -295,7 +316,7 @@ public class GameView extends JFrame {
 
         this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
 
-        this.timer = new Timer(0, new ActionListener() {
+        this.gameTimer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 long currentTime = System.nanoTime();
@@ -308,8 +329,6 @@ public class GameView extends JFrame {
                 }
             }
         });
-        timer.start();
-
     }
 
     public JPanel getMapView() {
@@ -326,6 +345,14 @@ public class GameView extends JFrame {
 
     public Game getGame() {
         return this.game;
+    }
+
+    public void startGame() {
+        this.gameTimer.start();
+    }
+
+    public void stopGame() {
+        this.gameTimer.stop();
     }
 
     public void update(long deltaT) {
