@@ -8,6 +8,8 @@ import model.*;
 public class EntityGraphicsFactory {
 
     private static final String ENTITIES_RESOURCES_REPOSITORY = "resources/entity/";
+    private final static String SKELTON_FRAMES_REPOSITORY = "skelton-frames/";
+    public final static int NB_OF_FRAMES = 9;
 
     //TODO: A implémenter
     public static Image laodTowerInventoryIcon(Tower t) {
@@ -23,10 +25,60 @@ public class EntityGraphicsFactory {
         return itemImage;
     }
 
-    //TODO: A implémenter
-    public static Image loadMobImage(Mob m) {
-        String url = ENTITIES_RESOURCES_REPOSITORY + "mob-try.png";
-        Image mobImage = new ImageIcon(url).getImage();
-        return mobImage;
+    // FIXME : Factoriser le code des 4 fonctions des frames
+    public static Image[] loadNorthFrames(Mob mob) {
+        String url = ENTITIES_RESOURCES_REPOSITORY;
+        Image[] frames = new Image[NB_OF_FRAMES];
+
+        if (mob.getLevel() == 0) {
+            url += SKELTON_FRAMES_REPOSITORY;
+        }
+        for (int i = 0; i < NB_OF_FRAMES; i++) {
+            Image image = new ImageIcon(url + "north-" + (i + 1) + ".png").getImage();
+            frames[i] = image;
+        }
+        return frames;
+    }
+
+    public static Image[] loadEastFrames(Mob mob) {
+        String url = ENTITIES_RESOURCES_REPOSITORY;
+        Image[] frames = new Image[NB_OF_FRAMES];
+
+        if (mob.getLevel() == 0) {
+            url += SKELTON_FRAMES_REPOSITORY;
+        }
+        for (int i = 0; i < NB_OF_FRAMES; i++) {
+            Image image = new ImageIcon(url + "east-" + (i + 1) + ".png").getImage();
+            frames[i] = image;
+        }
+        return frames;
+    }
+
+    public static Image[] loadWestFrames(Mob mob) {
+        String url = ENTITIES_RESOURCES_REPOSITORY;
+        Image[] frames = new Image[NB_OF_FRAMES];
+
+        if (mob.getLevel() == 0) {
+            url += SKELTON_FRAMES_REPOSITORY;
+        }
+        for (int i = 0; i < NB_OF_FRAMES; i++) {
+            Image image = new ImageIcon(url + "west-" + (i + 1) + ".png").getImage();
+            frames[i] = image;
+        }
+        return frames;
+    }
+
+    public static Image[] loadSouthFrames(Mob mob) {
+        String url = ENTITIES_RESOURCES_REPOSITORY;
+        Image[] frames = new Image[NB_OF_FRAMES];
+
+        if (mob.getLevel() == 0) {
+            url += SKELTON_FRAMES_REPOSITORY;
+        }
+        for (int i = 0; i < NB_OF_FRAMES; i++) {
+            Image image = new ImageIcon(url + "south-" + (i + 1) + ".png").getImage();
+            frames[i] = image;
+        }
+        return frames;
     }
 }

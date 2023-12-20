@@ -23,6 +23,7 @@ public class GameView extends JFrame {
     private static final String WINDOW_TITLE = "Tower Defense Game - Le titre est à changer";
     private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
+    private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
 
     private class SelectionFrame {
         private Image image;
@@ -79,12 +80,22 @@ public class GameView extends JFrame {
     private class MapView extends JPanel {
 
         private class MobDisplay {
-            private Image mobImage;
+            private Image[] northFrames;
+            private Image[] southFrames;
+            private Image[] eastFrames;
+            private Image[] westFrames;
+
+            private int frameIndex = 0;
+
             private Mob mob;
 
             public MobDisplay(Mob mob) {
                 this.mob = mob;
-                this.mobImage = EntityGraphicsFactory.loadMobImage(mob);
+                this.northFrames = EntityGraphicsFactory.loadNorthFrames(mob);
+                this.westFrames = EntityGraphicsFactory.loadWestFrames(mob);
+                this.southFrames = EntityGraphicsFactory.loadSouthFrames(mob);
+                this.eastFrames = EntityGraphicsFactory.loadEastFrames(mob);
+
             }
         }
 
@@ -116,12 +127,31 @@ public class GameView extends JFrame {
         }
 
         public void updateMobsPosition(Graphics g) {
+
             for (MobDisplay mobDisplay : this.mobDisplays) {
-                g.drawImage(mobDisplay.mobImage,
-                        (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH),
-                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT),
-                        IMAGE_WIDTH,
-                        IMAGE_HEIGHT, this);
+                Image[] currentFrames;
+                switch (mobDisplay.mob.getDirection()) {
+                    case EAST:
+                        currentFrames = mobDisplay.eastFrames;
+                        break;
+                    case NORTH:
+                        currentFrames = mobDisplay.northFrames;
+                        break;
+                    case SOUTH:
+                        currentFrames = mobDisplay.southFrames;
+                        break;
+                    default:
+                        currentFrames = mobDisplay.westFrames;
+                        break;
+                }
+
+                g.drawImage(currentFrames[mobDisplay.frameIndex],
+                        (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
+                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT) + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
+                        MOB_IMAGE_WIDTH,
+                        MOB_IMAGE_HEIGHT, this);
+                mobDisplay.frameIndex++;
+                mobDisplay.frameIndex %= EntityGraphicsFactory.NB_OF_FRAMES;
             }
         }
 
