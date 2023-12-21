@@ -25,6 +25,8 @@ public class GameView extends JFrame {
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
     private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
     private static final int MOB_ANIMATION_DELAY = 50;
+    private static final int FPS = 60;
+    private static final int PERIOD = 1000 / FPS;
 
 
     private class SelectionFrame {
@@ -323,14 +325,14 @@ public class GameView extends JFrame {
         this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
 
         GameCursor cursor = new GameCursor();
-        this.addMouseListener(cursor);
-        this.addMouseMotionListener(cursor);
+        // this.addMouseListener(cursor);
+        // this.addMouseMotionListener(cursor);
         this.add(this.mapView);
         this.add(this.inventoryView);
 
         this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
 
-        this.gameTimer = new Timer(0, new ActionListener() {
+        this.gameTimer = new Timer(PERIOD, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 long currentTime = System.nanoTime();
