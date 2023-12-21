@@ -20,8 +20,8 @@ public class Board {
 
     private Random random;
 
-    private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.01;
-    private static final double SPEED_EQUATION_FACTOR = 1E-9;
+    private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.05;
+    private static final double SPEED_EQUATION_FACTOR = 0.7E-9;
 
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
         this.grid = grid;
@@ -205,15 +205,21 @@ public class Board {
         }
     }
 
-    // FIXME: This function should adapt to mob speed
-    /*
-     * Faire correspondre la vitesse des mobs avec le nombre de cases qu'ils
-     * parcourent
-     */
+    public void eliminateMobs() {
+        List<Mob> mobsToEliminate = new LinkedList<>();
+
+        for (Mob m : currentMobs) {
+            if (m.isToEliminate(baseCoordinates)) {
+                mobsToEliminate.add(m);
+            }
+        }
+
+        for (Mob m : mobsToEliminate) {
+            currentMobs.remove(m);
+        }
+    }
 
     public void updateMobsPosition() {
-
-        List<Mob> mobsToEliminate = new LinkedList<>();
 
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
@@ -224,26 +230,17 @@ public class Board {
                 
                 if (m.getPosition().greaterOrEquals(baseCoordinates)) {
                     m.attackBase(currentBase);
-                    mobsToEliminate.add(m);
                 }
 
             }
         }
 
-        // FIXME : Factoriser ce code avec celui de la méthode removeDeadMobs
-
-        for (Mob m : mobsToEliminate) {
-            currentMobs.remove(m);
-        }
+        eliminateMobs();
     }
 
-    // FIXME : Solve problem while mob can reach an already-visited cell
-    /*
-     * Idea : stock the last visited cell coordinates to prevent mob reaching it
-     * again
-     */
     public void updateMobsPosition(long deltaT) {
         for (Mob m : this.currentMobs) {
+
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
                 IntCoordinates currentCell = m.getPosition().round();
@@ -261,11 +258,13 @@ public class Board {
                 }
                 m.setPosition(nextPos);
 
-                if (m.getPosition().equals(baseCoordinates)) {
+                if ((m.getPosition().round()).equals(baseCoordinates.round())) {
                     m.attackBase(currentBase);
                 }
             }
         }
+
+        eliminateMobs();
     }
 
     public static Board boardExample() {

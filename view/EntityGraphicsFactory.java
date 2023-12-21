@@ -9,6 +9,8 @@ public class EntityGraphicsFactory {
 
     private static final String ENTITIES_RESOURCES_REPOSITORY = "resources/entity/";
     private final static String SKELTON_FRAMES_REPOSITORY = "skelton-frames/";
+    private final static String SOLDIER_FRAMES_REPOSITORY = "soldier-frames/";
+    private final static String KNIGHT_FRAMES_REPOSITORY = "knight-frames/";
     public final static int NB_OF_FRAMES = 9;
 
     //TODO: A implémenter
@@ -32,6 +34,11 @@ public class EntityGraphicsFactory {
 
         if (mob.getLevel() == 0) {
             url += SKELTON_FRAMES_REPOSITORY;
+        }else if (mob.getLevel()==1){
+            url+=SOLDIER_FRAMES_REPOSITORY;
+        }else{
+            url+=KNIGHT_FRAMES_REPOSITORY;
+
         }
         for (int i = 0; i < NB_OF_FRAMES; i++) {
             Image image = new ImageIcon(url + "north-" + (i + 1) + ".png").getImage();
@@ -47,6 +54,12 @@ public class EntityGraphicsFactory {
         if (mob.getLevel() == 0) {
             url += SKELTON_FRAMES_REPOSITORY;
         }
+        else if (mob.getLevel()==1){
+            url+=SOLDIER_FRAMES_REPOSITORY;
+        }else{
+            url+=KNIGHT_FRAMES_REPOSITORY;
+
+        }
         for (int i = 0; i < NB_OF_FRAMES; i++) {
             Image image = new ImageIcon(url + "east-" + (i + 1) + ".png").getImage();
             frames[i] = image;
@@ -60,6 +73,11 @@ public class EntityGraphicsFactory {
 
         if (mob.getLevel() == 0) {
             url += SKELTON_FRAMES_REPOSITORY;
+        }else if (mob.getLevel()==1){
+            url+=SOLDIER_FRAMES_REPOSITORY;
+        }else{
+            url+=KNIGHT_FRAMES_REPOSITORY;
+
         }
         for (int i = 0; i < NB_OF_FRAMES; i++) {
             Image image = new ImageIcon(url + "west-" + (i + 1) + ".png").getImage();
@@ -74,6 +92,11 @@ public class EntityGraphicsFactory {
 
         if (mob.getLevel() == 0) {
             url += SKELTON_FRAMES_REPOSITORY;
+        }else if (mob.getLevel()==1){
+            url+=SOLDIER_FRAMES_REPOSITORY;
+        }else{
+            url+=KNIGHT_FRAMES_REPOSITORY;
+
         }
         for (int i = 0; i < NB_OF_FRAMES; i++) {
             Image image = new ImageIcon(url + "south-" + (i + 1) + ".png").getImage();

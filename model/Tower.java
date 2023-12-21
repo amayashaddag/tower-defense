@@ -5,10 +5,11 @@ import tools.*;
 public abstract class Tower {
     private Coordinates position;
     private int rateOfFire;
-    private int range; // Rayon du perimètre sur lequel il attaque
+    private int range; 
     private int level;
-
     public final static int MAX_LEVEL = 3;
+
+    /*Constructeur */
 
     public Tower(Coordinates position,int range, int rateOfFire, int level) {
         this.position = position;
@@ -16,14 +17,11 @@ public abstract class Tower {
         this.level = level;
         this.rateOfFire = rateOfFire;
     }
-    /* Getters */
+    /*Getters */
 
     public Coordinates getPosition() {
         return this.position;
     }
-
-  
-
 
     public int getRange() {
         return range;
@@ -47,6 +45,8 @@ public abstract class Tower {
         this.range = range;
     }
 
+
     /* Abstract methods */
+
     public abstract void upgrade(); // Uprade les tours
 }

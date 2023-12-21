@@ -36,6 +36,9 @@ public class Debug {
     public static void graphicalVersion() {
         Board b = Board.boardExample();
         b.addMob(new Mob(0));
+        b.addMob(new Mob(1));
+        b.addMob(new Mob(2));
+
 
         Player p = new Player("Amayas");
         Game game = new Game(p, b, null);

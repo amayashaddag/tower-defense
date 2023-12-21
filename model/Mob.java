@@ -92,8 +92,8 @@ public class Mob {
         return lastVisitedCell;
     }
 
-    public void updatePosition() {
-
+    public boolean isToEliminate(Coordinates baseCoordinates) {
+        return isDead() || this.position.round().equals(baseCoordinates.round());
     }
 
     @Override

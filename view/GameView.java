@@ -145,7 +145,7 @@ public class GameView extends JFrame {
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
         }
 
-        private void updateMobDisplaysList() {
+        public void addMissingMobs() {
             for (Mob m : currentBoard.getCurrentMobs()) {
                 if (!this.mobDisplayExists(m)) {
                     MobDisplay mobDisplay = new MobDisplay(m);
@@ -153,6 +153,20 @@ public class GameView extends JFrame {
                     mobDisplay.startMobAnimation();
                 }
             }
+        }
+
+        public void removeEliminatedMobs() {
+            for (MobDisplay mobDisplay : mobDisplays) {
+                if (!currentBoard.getCurrentMobs().contains(mobDisplay.mob)) {
+                    mobDisplays.remove(mobDisplay);
+                    mobDisplay.stopMobAnimation();
+                }
+            }
+        }
+
+        public void updateMobDisplaysList() {
+            removeEliminatedMobs();
+            addMissingMobs();
         }
 
         private boolean mobDisplayExists(Mob mob) {
