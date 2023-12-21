@@ -324,7 +324,7 @@ public class GameView extends JFrame {
         this.setResizable(RESIZABILITY);
         this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
 
-        GameCursor cursor = new GameCursor();
+        GameCursor cursor;
         // this.addMouseListener(cursor);
         // this.addMouseMotionListener(cursor);
         this.add(this.mapView);
