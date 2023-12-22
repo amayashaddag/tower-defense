@@ -210,7 +210,7 @@ public class GameView extends JFrame {
             private Tower tower;
 
             public InventoryTower(Tower t) {
-                this.image = EntityGraphicsFactory.laodTowerInventoryIcon(t);
+                this.image = EntityGraphicsFactory.loadTower(t);
                 this.tower = t;
             }
         }
@@ -227,11 +227,13 @@ public class GameView extends JFrame {
 
         private List<InventoryTower> towersInventory;
         private List<InventoryItem> itemsInventory;
+        private Image[][] inventoryBackground;
 
         public InventoryView() {
             this.towersInventory = new LinkedList<>();
             this.itemsInventory = new LinkedList<>();
             this.copyInventories();
+            this.inventoryBackground = InterfaceGraphicsFactory.loadInventoryBackground();
             this.setSize(mapView.getWidth(), 2 * INVENTORY_FRAME_HEIGHT);
         }
 
@@ -249,16 +251,23 @@ public class GameView extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
+            for (int i = 0; i < inventoryBackground.length; i++) {
+                for (int j = 0; j < inventoryBackground[i].length; j++) {
+                    g.drawImage(this.inventoryBackground[i][j], j * INVENTORY_FRAME_WIDTH, mapView.getHeight() + i * INVENTORY_FRAME_HEIGHT,
+                        INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
+                }
+            }
+
             for (int j = 0; j < this.towersInventory.size(); j++) {
                 g.drawImage(this.towersInventory.get(j).image, j * INVENTORY_FRAME_WIDTH, mapView.getHeight(),
                         INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
             }
 
-            for (int j = 0; j < this.itemsInventory.size(); j++) {
-                g.drawImage(this.itemsInventory.get(j).image, j * INVENTORY_FRAME_WIDTH,
-                        mapView.getHeight() + INVENTORY_FRAME_HEIGHT, INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT,
-                        this);
-            }
+            // for (int j = 0; j < this.itemsInventory.size(); j++) {
+            //     g.drawImage(this.itemsInventory.get(j).image, j * INVENTORY_FRAME_WIDTH,
+            //             mapView.getHeight() + INVENTORY_FRAME_HEIGHT, INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT,
+            //             this);
+            // }
 
             if (selectionFrame.getPosition() != null) {
                 g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,

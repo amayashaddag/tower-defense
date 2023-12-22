@@ -2,15 +2,13 @@ package model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Player {
     private String pseudo;
     private List<Tower> towersInventory;
     private List<Item> itemsInventory;
 
-    private static int TOWERS_INVENTORY_SIZE = 8;
-    private static int ITEMS_INVENTORY_SIZE = 4;
+    public static int INVENTORY_SIZE = 11;
 
     public Player(String pseudo) {
         this.pseudo = pseudo;
@@ -44,7 +42,7 @@ public class Player {
      * ajouter quelque chose à un des inventaires */
 
     public boolean addToTowersInventory(Tower t) {
-        if(this.towersInventory.size() < TOWERS_INVENTORY_SIZE) {
+        if(this.towersInventory.size() < INVENTORY_SIZE) {
             this.towersInventory.add(t);
             return true;
         }
@@ -52,7 +50,7 @@ public class Player {
     }
 
     public boolean addToItemsInventory(Item i) {
-        if(this.itemsInventory.size() < ITEMS_INVENTORY_SIZE) {
+        if(this.itemsInventory.size() < INVENTORY_SIZE) {
             this.itemsInventory.add(i);
             return true;
         }

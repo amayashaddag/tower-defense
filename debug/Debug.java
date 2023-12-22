@@ -38,9 +38,17 @@ public class Debug {
     public static void graphicalVersion() {
         Board b = Board.boardExample();
         Player p = new Player("Amayas");
+        Mob m0 = new Mob(0);
+        Mob m1 = new Mob(1);
+        Mob m2 = new Mob(2);
+        b.addMob(m0);
+        b.addMob(m1);
+        b.addMob(m2);
+
         p.addToTowersInventory(new SimpleTower());
         p.addToTowersInventory(new SimpleTower());
         p.addToTowersInventory(new SimpleTower());
+
         Game game = new Game(p, b, null);
 
         GameView view = new GameView(game);

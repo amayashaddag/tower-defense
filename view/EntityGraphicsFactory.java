@@ -15,13 +15,6 @@ public class EntityGraphicsFactory {
     public final static int NB_OF_FRAMES = 9;
 
     // TODO: A implémenter
-    public static Image laodTowerInventoryIcon(Tower t) {
-        String url = ENTITIES_RESOURCES_REPOSITORY + "slot.png";
-        Image towerImage = new ImageIcon(url).getImage();
-        return towerImage;
-    }
-
-    // TODO: A implémenter
     public static Image loadItemInventoryIcon(Item i) {
         String url = ENTITIES_RESOURCES_REPOSITORY + "slot.png";
         Image itemImage = new ImageIcon(url).getImage();
