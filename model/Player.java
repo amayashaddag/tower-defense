@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Player {
@@ -13,8 +14,8 @@ public class Player {
 
     public Player(String pseudo) {
         this.pseudo = pseudo;
-        this.towersInventory = new LinkedList<Tower>();
-        this.itemsInventory = new LinkedList<Item>();
+        this.towersInventory = new ArrayList<Tower>();
+        this.itemsInventory = new ArrayList<Item>();
     }
 
     public String getPseudo() {

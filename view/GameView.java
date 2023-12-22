@@ -5,82 +5,24 @@ import java.util.LinkedList;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.event.MouseInputListener;
 import javax.swing.Timer;
 
 import model.*;
-import tools.*;
+import tools.IntCoordinates;
 
 public class GameView extends JFrame {
 
-    private static final int IMAGE_WIDTH = 96, IMAGE_HEIGHT = 96;
+    public static final int IMAGE_WIDTH = 96, IMAGE_HEIGHT = 96;
     private static final String WINDOW_TITLE = "Tower Defense Game - Le titre est à changer";
     private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
     private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
     private static final int TOWER_IMAGE_WIDTH = 96, TOWER_IMAGE_HEIGHT = 96;
     private static final int MOB_ANIMATION_DELAY = 50;
-    private static final int FPS = 60;
-    private static final int PERIOD = 1000 / FPS;
-
-
-    private class SelectionFrame {
-        private Image image;
-        private IntCoordinates position;
-
-        public SelectionFrame(Image selectionFrameImage) {
-            this.image = selectionFrameImage;
-        }
-
-        public void setPosition(int x, int y) {
-            this.position = new IntCoordinates(x, y);
-        }
-    }
-
-    private class GameCursor implements MouseInputListener {
-
-        @Override
-        public void mouseClicked(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent arg0) {
-
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent arg0) {
-            selectionFrame.setPosition(arg0.getX() / IMAGE_WIDTH, arg0.getY() / IMAGE_HEIGHT);
-            // repaint();
-        }
-    }
 
     private class MapView extends JPanel {
 
@@ -228,7 +170,8 @@ public class GameView extends JFrame {
         public void updateTowersPosition(Graphics g) {
             for (TowerDisplay towerDisplay : towerDisplays) {
                 g.drawImage(towerDisplay.towerFrame,
-                        (int) (towerDisplay.tower.getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - TOWER_IMAGE_WIDTH) / 2,
+                        (int) (towerDisplay.tower.getPosition().getY() * IMAGE_WIDTH)
+                                + (IMAGE_WIDTH - TOWER_IMAGE_WIDTH) / 2,
                         (int) (towerDisplay.tower.getPosition().getX() * IMAGE_HEIGHT)
                                 + (IMAGE_HEIGHT - TOWER_IMAGE_HEIGHT) / 2,
                         TOWER_IMAGE_WIDTH,
@@ -249,9 +192,9 @@ public class GameView extends JFrame {
                 }
             }
 
-            if (selectionFrame.position != null) {
-                g.drawImage(selectionFrame.image, selectionFrame.position.getX() * IMAGE_WIDTH,
-                        selectionFrame.position.getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
+            if (selectionFrame.getPosition() != null) {
+                g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,
+                        selectionFrame.getPosition().getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
 
             this.updateMobDisplaysList();
@@ -317,9 +260,9 @@ public class GameView extends JFrame {
                         this);
             }
 
-            if (selectionFrame.position != null) {
-                g.drawImage(selectionFrame.image, selectionFrame.position.getX() * IMAGE_WIDTH,
-                        selectionFrame.position.getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
+            if (selectionFrame.getPosition() != null) {
+                g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,
+                        selectionFrame.getPosition().getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
         }
 
@@ -350,9 +293,6 @@ public class GameView extends JFrame {
     private InventoryView inventoryView;
     private SelectionFrame selectionFrame;
 
-    private long lastTime;
-    private Timer gameTimer;
-
     // FIXME : find a solution for window size not including the toolbar height to
     // its getHeight()
     public GameView(Game game) {
@@ -370,27 +310,10 @@ public class GameView extends JFrame {
         this.setResizable(RESIZABILITY);
         this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
 
-        GameCursor cursor;
-        // this.addMouseListener(cursor);
-        // this.addMouseMotionListener(cursor);
         this.add(this.mapView);
         this.add(this.inventoryView);
 
-        this.selectionFrame = new SelectionFrame(InterfaceGraphicsFactory.loadSelectionFrame());
-
-        this.gameTimer = new Timer(PERIOD, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                long currentTime = System.nanoTime();
-                if (lastTime == 0) {
-                    lastTime = currentTime;
-                } else {
-                    long deltaT = currentTime - lastTime;
-                    lastTime = currentTime;
-                    update(deltaT);
-                }
-            }
-        });
+        this.selectionFrame = new SelectionFrame();
     }
 
     public JPanel getMapView() {
@@ -409,25 +332,23 @@ public class GameView extends JFrame {
         return this.game;
     }
 
-    public void startGame() {
-        this.gameTimer.start();
+    public SelectionFrame getSelectionFrame() {
+        return this.selectionFrame;
     }
 
-    public void stopGame() {
-        this.gameTimer.stop();
+    public boolean inInvetory(IntCoordinates position) {
+        return inTowersInventory(position) || inItemsInventory(position);
     }
 
-    public void update(long deltaT) {
-        currentBoard.updateMobsPosition(deltaT);
-        mapView.repaint();
+    public boolean inMap(IntCoordinates position) {
+        return !inInvetory(position);
     }
 
-    private static boolean isInPanel(JPanel panel, Point p) {
-        if (panel == null || p == null)
-            return false;
-        return p.getX() >= panel.getX() && p.getY() >= panel.getY()
-                && p.getX() < panel.getX() + panel.getWidth()
-                && p.getY() < panel.getY() + panel.getHeight();
+    public boolean inTowersInventory(IntCoordinates position) {
+        return position.getY() / GameView.IMAGE_HEIGHT - (this.getMapView().getHeight() / GameView.IMAGE_HEIGHT) == 0;
     }
 
+    public boolean inItemsInventory(IntCoordinates position) {
+        return position.getY() / GameView.IMAGE_HEIGHT - (this.getMapView().getHeight() / GameView.IMAGE_HEIGHT) == 1;
+    }
 }

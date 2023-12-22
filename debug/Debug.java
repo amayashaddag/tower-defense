@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import control.GameControl;
 import model.*;
 import tools.Coordinates;
 import tools.Triplet;
@@ -36,25 +37,18 @@ public class Debug {
 
     public static void graphicalVersion() {
         Board b = Board.boardExample();
-        b.addMob(new Mob(0));
-        b.addMob(new Mob(1));
-        b.addMob(new Mob(2));
-
-        SimpleTower tower = new SimpleTower(new Coordinates(1, 3));
-        tower.upgrade();
-
-        b.addTower(new SimpleTower(new Coordinates(0, 1)));
-        b.addTower(tower);
-
-
         Player p = new Player("Amayas");
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
+        p.addToTowersInventory(new SimpleTower());
         Game game = new Game(p, b, null);
 
         GameView view = new GameView(game);
+        GameControl gameControl = new GameControl(game, view);
 
         SwingUtilities.invokeLater(() -> {
             view.setVisible(true);
-            view.startGame();
+            gameControl.startGame();
         });
 
     }
