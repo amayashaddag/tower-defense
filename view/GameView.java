@@ -24,6 +24,7 @@ public class GameView extends JFrame {
     private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
     private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
+    private static final int TOWER_IMAGE_WIDTH = 96, TOWER_IMAGE_HEIGHT = 96;
     private static final int MOB_ANIMATION_DELAY = 50;
     private static final int FPS = 60;
     private static final int PERIOD = 1000 / FPS;
@@ -135,15 +136,25 @@ public class GameView extends JFrame {
             }
         }
 
-        //FIXME: Add dead mobs handling in mobDisplays list
+        private class TowerDisplay {
+            private Image towerFrame;
+            private Tower tower;
+
+            public TowerDisplay(Tower t) {
+                this.tower = t;
+                this.towerFrame = EntityGraphicsFactory.loadTower(t);
+            }
+        }
 
         private Image[][] map;
         private List<MobDisplay> mobDisplays;
+        private List<TowerDisplay> towerDisplays;
 
         public MapView() {
             super();
             this.map = MapGraphicsFactory.loadMap(currentBoard);
             this.mobDisplays = new LinkedList<>();
+            this.towerDisplays = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
         }
 
@@ -153,6 +164,15 @@ public class GameView extends JFrame {
                     MobDisplay mobDisplay = new MobDisplay(m);
                     this.mobDisplays.add(mobDisplay);
                     mobDisplay.startMobAnimation();
+                }
+            }
+        }
+
+        public void addMissingTowers() {
+            for (Tower t : currentBoard.getCurrentTowers()) {
+                if (!towerDisplayExists(t)) {
+                    TowerDisplay towerDisplay = new TowerDisplay(t);
+                    this.towerDisplays.add(towerDisplay);
                 }
             }
         }
@@ -171,9 +191,22 @@ public class GameView extends JFrame {
             addMissingMobs();
         }
 
+        public void updateTowerDisplays() {
+            addMissingTowers();
+        }
+
         private boolean mobDisplayExists(Mob mob) {
             for (MobDisplay mobDisplay : this.mobDisplays) {
                 if (mobDisplay.mob == mob) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean towerDisplayExists(Tower t) {
+            for (TowerDisplay towerDisplay : towerDisplays) {
+                if (towerDisplay.tower == t) {
                     return true;
                 }
             }
@@ -189,6 +222,17 @@ public class GameView extends JFrame {
                                 + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
                         MOB_IMAGE_WIDTH,
                         MOB_IMAGE_HEIGHT, this);
+            }
+        }
+
+        public void updateTowersPosition(Graphics g) {
+            for (TowerDisplay towerDisplay : towerDisplays) {
+                g.drawImage(towerDisplay.towerFrame,
+                        (int) (towerDisplay.tower.getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - TOWER_IMAGE_WIDTH) / 2,
+                        (int) (towerDisplay.tower.getPosition().getX() * IMAGE_HEIGHT)
+                                + (IMAGE_HEIGHT - TOWER_IMAGE_HEIGHT) / 2,
+                        TOWER_IMAGE_WIDTH,
+                        TOWER_IMAGE_HEIGHT, this);
             }
         }
 
@@ -211,7 +255,9 @@ public class GameView extends JFrame {
             }
 
             this.updateMobDisplaysList();
+            this.updateTowerDisplays();
             this.updateMobsPosition(g);
+            this.updateTowersPosition(g);
         }
     }
 

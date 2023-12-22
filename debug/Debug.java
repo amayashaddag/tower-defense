@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import model.*;
+import tools.Coordinates;
 import tools.Triplet;
 import view.*;
 
@@ -38,6 +39,12 @@ public class Debug {
         b.addMob(new Mob(0));
         b.addMob(new Mob(1));
         b.addMob(new Mob(2));
+
+        SimpleTower tower = new SimpleTower(new Coordinates(1, 3));
+        tower.upgrade();
+
+        b.addTower(new SimpleTower(new Coordinates(0, 1)));
+        b.addTower(tower);
 
 
         Player p = new Player("Amayas");
