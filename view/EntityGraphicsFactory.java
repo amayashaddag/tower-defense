@@ -20,6 +20,7 @@ public class EntityGraphicsFactory {
     private final static String BOMB_TOWER = "bomb-tower.png";
     private final static String UPGRADED_BOMB_TOWER = "advanced-bomb-tower.png";
     private final static String LOCKED_BOMB_TOWER = "bomb-tower-locked.png";
+    private final static String BULLET = "bullet.png";
 
     public final static int NB_OF_FRAMES = 9;
 
@@ -123,5 +124,9 @@ public class EntityGraphicsFactory {
         else url += ITEM_FRAMES_REPOSITORY;
         Image slot = new ImageIcon(url).getImage();
         return slot;
+    }
+    public static Image loadBullet(){
+        String url = ENTITIES_RESOURCES_REPOSITORY + TOWER_FRAMES_REPOSITORY + BULLET;
+        return new ImageIcon(url).getImage();
     }
 }

@@ -2,6 +2,8 @@ package control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.Timer;
 
 import model.*;
@@ -10,7 +12,7 @@ import view.*;
 public class GameControl {
 
     private static final int FPS = 60;
-    private static final int PERIOD = 1000 / FPS;
+    public static final int PERIOD = 1000 / FPS;
 
     private Game gameModel;
     private GameView gameView;
@@ -41,6 +43,23 @@ public class GameControl {
     public void update(long deltaT) {
         gameModel.getCurrentBoard().updateMobsPosition(deltaT);
         gameView.getMapView().repaint();
+    }
+
+    public void updateTowers(){
+        Board currentBoard = gameModel.getCurrentBoard();
+          for (Tower t :  currentBoard.getCurrentTowers() ) {
+                Mob mob = currentBoard.getMobTargetInRange(t.getPosition(), t.getRange());
+                if (mob != null) {
+                    if (t instanceof SingleTargetDamage targetTower) {
+                        targetTower.attack(mob);
+                    } else if (t instanceof ZoneDamage zoneTower) {
+                        List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
+                        zoneTower.attack(mobsInRange);
+                    }
+                    
+                    currentBoard.removeDeadMobs();
+                }
+            }
     }
 
     public void startGame() {

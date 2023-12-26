@@ -21,7 +21,7 @@ public class Board {
     private Random random;
 
     private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.05;
-    private static final double SPEED_EQUATION_FACTOR = 0.7E-9;
+    public static final double SPEED_EQUATION_FACTOR = 0.7E-9;
 
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
         this.grid = grid;
@@ -266,6 +266,7 @@ public class Board {
 
         eliminateMobs();
     }
+    
 
     public static Board boardExample() {
         return new Board(new Cell[][] {

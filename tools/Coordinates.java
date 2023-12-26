@@ -86,4 +86,7 @@ public class Coordinates implements Cloneable {
         return Math.abs(this.x - ((int) Math.round(this.x))) < d 
         && Math.abs(this.y - ((int) Math.round(this.y))) < d; 
     }
+    public double distance (Coordinates other){
+        return Math.sqrt(Math.pow(this.getX()-other.getX(), 2)+Math.pow(this.getY()-other.getY(), 2));
+    }
 }

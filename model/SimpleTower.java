@@ -7,7 +7,7 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
     private static int DAMAGE = 1;
     private static int CURRENT_LEVEL = 0;
 
-    private static final int RANGE = 3;
+    private static final int RANGE = 2;
     private static final int RATE_OF_FIRE = 2;
 
 

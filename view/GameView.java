@@ -10,12 +10,14 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.*;
+import tools.Coordinates;
 import tools.IntCoordinates;
 
 public class GameView extends JFrame {
@@ -26,7 +28,9 @@ public class GameView extends JFrame {
     private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
     private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
     private static final int TOWER_IMAGE_WIDTH = 96, TOWER_IMAGE_HEIGHT = 96;
+    private static final int BULLET_IMAGE_WIDTH = 96, BULLET_IMAGE_HEIGHT = 96;
     private static final int MOB_ANIMATION_DELAY = 50;
+    private static final double BULLET_SPEED_FACTOR = 0.5;
 
     private class MapView extends JPanel {
 
@@ -96,12 +100,14 @@ public class GameView extends JFrame {
         private Image[][] map;
         private List<MobDisplay> mobDisplays;
         private List<TowerDisplay> towerDisplays;
+        private List<Bullet> bullets;
 
         public MapView() {
             super();
             this.map = MapGraphicsFactory.loadMap(currentBoard);
             this.mobDisplays = new LinkedList<>();
             this.towerDisplays = new LinkedList<>();
+            this.bullets = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
         }
 
@@ -125,11 +131,17 @@ public class GameView extends JFrame {
         }
 
         public void removeEliminatedMobs() {
+            List<MobDisplay> mobsToEliminate = new LinkedList<>();
+
             for (MobDisplay mobDisplay : mobDisplays) {
                 if (!currentBoard.getCurrentMobs().contains(mobDisplay.mob)) {
-                    mobDisplays.remove(mobDisplay);
+                    mobsToEliminate.add(mobDisplay);
                     mobDisplay.stopMobAnimation();
                 }
+            }
+
+            for (MobDisplay m : mobsToEliminate) {
+                mobDisplays.remove(m);
             }
         }
 
@@ -184,6 +196,18 @@ public class GameView extends JFrame {
             }
         }
 
+        public void updateBulletsPosition(Graphics g) {
+            for (Bullet b : bullets) {
+                g.drawImage(b.getImage(),
+                        (int) (b.getPosition().getY() * IMAGE_WIDTH)
+                                + (IMAGE_WIDTH - BULLET_IMAGE_WIDTH) / 2,
+                        (int) (b.getPosition().getX() * IMAGE_HEIGHT)
+                                + (IMAGE_HEIGHT - BULLET_IMAGE_HEIGHT) / 2,
+                        BULLET_IMAGE_WIDTH,
+                        BULLET_IMAGE_HEIGHT, this);
+            }
+        }
+
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -206,6 +230,7 @@ public class GameView extends JFrame {
             this.updateTowerDisplays();
             this.updateMobsPosition(g);
             this.updateTowersPosition(g);
+            this.updateBulletsPosition(g);
         }
     }
 
@@ -218,6 +243,8 @@ public class GameView extends JFrame {
                 this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked());
                 this.slot = slot;
                 this.setPreferredSize(new Dimension(INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT));
+                this.setContentAreaFilled(false);
+                this.setIcon(new ImageIcon(image));
             }
         }
 
@@ -232,7 +259,7 @@ public class GameView extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (!towerSlot.slot.isUnlocked()) {
-                            // FIXME IMPLEMENTER MESSAGE ERREUR 
+                            // FIXME IMPLEMENTER MESSAGE ERREUR
                             // Afficher un message d'erreur ... etc
                             return;
                         }
@@ -248,7 +275,7 @@ public class GameView extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (!itemSlot.slot.isUnlocked()) {
-                            // FIXME IMPLEMENTER MESSAGE ERREUR 
+                            // FIXME IMPLEMENTER MESSAGE ERREUR
                             // Afficher un message d'erreur ... etc
                             return;
                         }
@@ -257,8 +284,10 @@ public class GameView extends JFrame {
                     }
                 });
             }
-            this.setLayout(new GridLayout(InterfaceGraphicsFactory.INVENTORY_LINES, InterfaceGraphicsFactory.INVENTORY_COLUMNS));
-            this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH, InterfaceGraphicsFactory.INVENTORY_LINES * INVENTORY_FRAME_HEIGHT);
+            this.setLayout(new GridLayout(InterfaceGraphicsFactory.INVENTORY_LINES,
+                    InterfaceGraphicsFactory.INVENTORY_COLUMNS));
+            this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH,
+                    InterfaceGraphicsFactory.INVENTORY_LINES * INVENTORY_FRAME_HEIGHT);
             for (int i = 0; i < itemsInventory.length; i++) {
                 this.add(itemsInventory[i]);
             }
@@ -280,16 +309,6 @@ public class GameView extends JFrame {
             for (int i = 0; i < this.itemsInventory.length; i++) {
                 Slot slot = itemsInventory[i];
                 this.itemsInventory[i] = new InventorySlot(slot);
-            }
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-
-            if (selectionFrame.getPosition() != null) {
-                g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,
-                        selectionFrame.getPosition().getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
         }
     }
@@ -323,6 +342,25 @@ public class GameView extends JFrame {
         this.add(this.inventoryView, BorderLayout.SOUTH);
 
         this.selectionFrame = new SelectionFrame();
+    }
+
+    public void animateBullet(Coordinates startingPosition, Coordinates landingPosition) {
+        Coordinates deltaVector = new Coordinates(landingPosition.getX() - startingPosition.getX(),
+                landingPosition.getY() - startingPosition.getY()).times(BULLET_SPEED_FACTOR);
+        Bullet bullet = new Bullet(startingPosition);
+        mapView.bullets.add(bullet);
+        Timer bulletTimer = new Timer(control.GameControl.PERIOD, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (bullet.getPosition().distance(startingPosition) >= landingPosition.distance(startingPosition)) {
+                    ((Timer) e.getSource()).setRepeats(false);
+                    mapView.bullets.remove(bullet);
+                } else {
+                    bullet.setPosition(bullet.getPosition().plus(deltaVector));
+                }
+            }
+        });
+        bulletTimer.start();
     }
 
     public JPanel getMapView() {
