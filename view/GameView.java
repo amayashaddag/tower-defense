@@ -3,10 +3,14 @@ package view;
 import java.util.List;
 import java.util.LinkedList;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -84,7 +88,8 @@ public class GameView extends JFrame {
 
             public TowerDisplay(Tower t) {
                 this.tower = t;
-                this.towerFrame = EntityGraphicsFactory.loadTower(t);
+                String index = t instanceof SimpleTower ? Slot.SIMPLE_TOWER_INDEX : Slot.BOMB_TOWER_INDEX;
+                this.towerFrame = EntityGraphicsFactory.loadSlot(index, true);
             }
         }
 
@@ -205,45 +210,76 @@ public class GameView extends JFrame {
     }
 
     private class InventoryView extends JPanel {
-        private class InventoryTower {
+        private class InventorySlot extends JButton {
             private Image image;
-            private Tower tower;
+            private Slot slot;
 
-            public InventoryTower(Tower t) {
-                this.image = EntityGraphicsFactory.loadTower(t);
-                this.tower = t;
+            public InventorySlot(Slot slot) {
+                this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked());
+                this.slot = slot;
+                this.setPreferredSize(new Dimension(INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT));
             }
         }
 
-        private class InventoryItem {
-            private Image image;
-            private Item item;
-
-            public InventoryItem(Item i) {
-                this.image = EntityGraphicsFactory.loadItemInventoryIcon(i);
-                this.item = i;
-            }
-        }
-
-        private List<InventoryTower> towersInventory;
-        private List<InventoryItem> itemsInventory;
-        private Image[][] inventoryBackground;
+        private InventorySlot[] towersInventory;
+        private InventorySlot[] itemsInventory;
 
         public InventoryView() {
-            this.towersInventory = new LinkedList<>();
-            this.itemsInventory = new LinkedList<>();
-            this.copyInventories();
-            this.inventoryBackground = InterfaceGraphicsFactory.loadInventoryBackground();
-            this.setSize(mapView.getWidth(), 2 * INVENTORY_FRAME_HEIGHT);
+            this.towersInventory = new InventorySlot[model.Player.TOWERS_INVENTORY_SIZE];
+            this.copyTowersInventory();
+            for (InventorySlot towerSlot : towersInventory) {
+                towerSlot.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!towerSlot.slot.isUnlocked()) {
+                            // FIXME IMPLEMENTER MESSAGE ERREUR 
+                            // Afficher un message d'erreur ... etc
+                            return;
+                        }
+                        Tower t = towerSlot.slot.getTower();
+                        selectionFrame.setTower(t);
+                    }
+                });
+            }
+            this.itemsInventory = new InventorySlot[model.Player.ITEMS_INVENTORY_SIZE];
+            this.copyItemsInventory();
+            for (InventorySlot itemSlot : itemsInventory) {
+                itemSlot.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!itemSlot.slot.isUnlocked()) {
+                            // FIXME IMPLEMENTER MESSAGE ERREUR 
+                            // Afficher un message d'erreur ... etc
+                            return;
+                        }
+                        Item i = itemSlot.slot.getItem();
+                        selectionFrame.setItem(i);
+                    }
+                });
+            }
+            this.setLayout(new GridLayout(InterfaceGraphicsFactory.INVENTORY_LINES, InterfaceGraphicsFactory.INVENTORY_COLUMNS));
+            this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH, InterfaceGraphicsFactory.INVENTORY_LINES * INVENTORY_FRAME_HEIGHT);
+            for (int i = 0; i < itemsInventory.length; i++) {
+                this.add(itemsInventory[i]);
+            }
+            for (int i = 0; i < towersInventory.length; i++) {
+                this.add(towersInventory[i]);
+            }
         }
 
-        public void copyInventories() {
-            for (Tower t : currentPlayer.getTowersInventory()) {
-                this.towersInventory.add(new InventoryTower(t));
+        public void copyTowersInventory() {
+            Slot[] towersInventory = game.getCurrentPlayer().getTowersInventory();
+            for (int i = 0; i < this.towersInventory.length; i++) {
+                Slot slot = towersInventory[i];
+                this.towersInventory[i] = new InventorySlot(slot);
             }
+        }
 
-            for (Item i : currentPlayer.getItemsInventory()) {
-                this.itemsInventory.add(new InventoryItem(i));
+        public void copyItemsInventory() {
+            Slot[] itemsInventory = game.getCurrentPlayer().getItemsInventory();
+            for (int i = 0; i < this.itemsInventory.length; i++) {
+                Slot slot = itemsInventory[i];
+                this.itemsInventory[i] = new InventorySlot(slot);
             }
         }
 
@@ -251,45 +287,9 @@ public class GameView extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            for (int i = 0; i < inventoryBackground.length; i++) {
-                for (int j = 0; j < inventoryBackground[i].length; j++) {
-                    g.drawImage(this.inventoryBackground[i][j], j * INVENTORY_FRAME_WIDTH, mapView.getHeight() + i * INVENTORY_FRAME_HEIGHT,
-                        INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
-                }
-            }
-
-            for (int j = 0; j < this.towersInventory.size(); j++) {
-                g.drawImage(this.towersInventory.get(j).image, j * INVENTORY_FRAME_WIDTH, mapView.getHeight(),
-                        INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT, this);
-            }
-
-            // for (int j = 0; j < this.itemsInventory.size(); j++) {
-            //     g.drawImage(this.itemsInventory.get(j).image, j * INVENTORY_FRAME_WIDTH,
-            //             mapView.getHeight() + INVENTORY_FRAME_HEIGHT, INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT,
-            //             this);
-            // }
-
             if (selectionFrame.getPosition() != null) {
                 g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,
                         selectionFrame.getPosition().getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
-            }
-        }
-
-        public void removeTower(Tower t) {
-            for (InventoryTower invTower : this.towersInventory) {
-                if (invTower.tower.equals(t)) {
-                    this.towersInventory.remove(invTower);
-                    return;
-                }
-            }
-        }
-
-        public void removeItem(Item i) {
-            for (InventoryItem invItem : this.itemsInventory) {
-                if (invItem.item.equals(i)) {
-                    this.itemsInventory.remove(invItem);
-                    return;
-                }
             }
         }
     }
@@ -320,7 +320,7 @@ public class GameView extends JFrame {
         this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
 
         this.add(this.mapView);
-        this.add(this.inventoryView);
+        this.add(this.inventoryView, BorderLayout.SOUTH);
 
         this.selectionFrame = new SelectionFrame();
     }

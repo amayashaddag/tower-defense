@@ -12,14 +12,16 @@ public class EntityGraphicsFactory {
     private final static String SOLDIER_FRAMES_REPOSITORY = "soldier-frames/";
     private final static String KNIGHT_FRAMES_REPOSITORY = "knight-frames/";
     private final static String TOWER_FRAMES_REPOSITORY = "tower-frames/";
-    public final static int NB_OF_FRAMES = 9;
+    private final static String ITEM_FRAMES_REPOSITORY = "?";
 
-    // TODO: A implémenter
-    public static Image loadItemInventoryIcon(Item i) {
-        String url = ENTITIES_RESOURCES_REPOSITORY + "slot.png";
-        Image itemImage = new ImageIcon(url).getImage();
-        return itemImage;
-    }
+    private final static String SIMPLE_TOWER = "projectile-tower.png";
+    private final static String UPGRADED_SIMPLE_TOWER = "advanced-projectile-tower.png";
+
+    private final static String BOMB_TOWER = "bomb-tower.png";
+    private final static String UPGRADED_BOMB_TOWER = "advanced-bomb-tower.png";
+    private final static String LOCKED_BOMB_TOWER = "bomb-tower-locked.png";
+
+    public final static int NB_OF_FRAMES = 9;
 
     // FIXME : Factoriser le code des 4 fonctions des frames
     public static Image[] loadNorthFrames(Mob mob) {
@@ -98,25 +100,28 @@ public class EntityGraphicsFactory {
         return frames;
     }
 
-    public static Image loadTower(Tower t) {
-        if (t == null) {
-            return null;
-        }
-        String url = ENTITIES_RESOURCES_REPOSITORY + TOWER_FRAMES_REPOSITORY;
-        if (t instanceof SimpleTower) {
-            if (t.getLevel() == 0) {
-                url += "projectile-tower.png";
-            } else {
-                url += "advanced-projectile-tower.png";
+    public static Image loadSlot(String slotIndex, boolean isUnlocked) {
+        String url = ENTITIES_RESOURCES_REPOSITORY;
+        if (slotIndex.length() == 2) {
+            url += TOWER_FRAMES_REPOSITORY;
+            switch (slotIndex) {
+                case model.Slot.SIMPLE_TOWER_INDEX : 
+                    if (SimpleTower.getCurrentLevel() == 0) url += SIMPLE_TOWER;
+                    else url += UPGRADED_SIMPLE_TOWER;
+                    break;
+                case model.Slot.BOMB_TOWER_INDEX : 
+                    if (!isUnlocked) {
+                        url += LOCKED_BOMB_TOWER;
+                    } else {
+                        if (SimpleTower.getCurrentLevel() == 0) url += BOMB_TOWER;
+                        else url += UPGRADED_BOMB_TOWER;
+                    }
+                    break;
+                default : break;
             }
-        } else {
-            if (t.getLevel() == 0) {
-                url += "bomb-tower.png";
-            } else {
-                url += "advanced-bomb-tower.png";
-            }
         }
-        Image towerFrame = new ImageIcon(url).getImage();
-        return towerFrame;
+        else url += ITEM_FRAMES_REPOSITORY;
+        Image slot = new ImageIcon(url).getImage();
+        return slot;
     }
 }

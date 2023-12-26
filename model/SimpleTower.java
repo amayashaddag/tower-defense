@@ -34,4 +34,8 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
     public String toString() {
         return "SimpleTower (2 damage points)";
     }
+
+    public static int getCurrentLevel() {
+        return CURRENT_LEVEL;
+    }
 }

@@ -1,71 +1,67 @@
 package model;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class Player {
-    private String pseudo;
-    private List<Tower> towersInventory;
-    private List<Item> itemsInventory;
 
-    public static int INVENTORY_SIZE = 11;
+    private String pseudo;
+    private Slot[] towersInventory;
+    private Slot[] itemsInventory;
+
+    public static int TOWERS_INVENTORY_SIZE = 2;
+    public static int ITEMS_INVENTORY_SIZE = 5;
+
+    private static final Slot[] DEFAULT_TOWERS_INVENTORY = {
+        new Slot(Slot.SIMPLE_TOWER_INDEX, true),
+        new Slot(Slot.BOMB_TOWER_INDEX, false)
+    };
+
+    private static final Slot[] DEFAULT_ITEMS_INVENTORY = {
+        new Slot(Slot.BOMB_INDEX, false),
+        new Slot(Slot.FREEZE_INDEX, false),
+        new Slot(Slot.HOLE_INDEX, false),
+        new Slot(Slot.TRAP_INDEX, false),
+        new Slot(Slot.POISON_INDEX, false),
+    };
 
     public Player(String pseudo) {
         this.pseudo = pseudo;
-        this.towersInventory = new ArrayList<Tower>();
-        this.itemsInventory = new ArrayList<Item>();
+        this.towersInventory = DEFAULT_TOWERS_INVENTORY;
+        this.itemsInventory = DEFAULT_ITEMS_INVENTORY;
     }
 
     public String getPseudo() {
         return this.pseudo;
     }
 
-    public List<Tower> getTowersInventory() {
-        return this.towersInventory;
+    public Slot[] getTowersInventory() {
+        return towersInventory;
     }
 
-    public List<Item> getItemsInventory() {
-        return this.itemsInventory;
-    }
-
-    private void removeFromTowersInventory(Tower t) {
-        this.towersInventory.remove(t);
-    }
-
-    public void removeFromItemsInventory(Item i) {
-        this.itemsInventory.remove(i);
-    }
-
-    /* Ici les fonctions add renvoient des booleans pour le cas où
-     * on veut tester si l'inventaire serait rempli ou pas afin de
-     * pouvoir afficher un message dans le cas où le joueur ne peut pas
-     * ajouter quelque chose à un des inventaires */
-
-    public boolean addToTowersInventory(Tower t) {
-        if(this.towersInventory.size() < INVENTORY_SIZE) {
-            this.towersInventory.add(t);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean addToItemsInventory(Item i) {
-        if(this.itemsInventory.size() < INVENTORY_SIZE) {
-            this.itemsInventory.add(i);
-            return true;
-        }
-        return false;
+    public Slot[] getItemsInventory() {
+        return itemsInventory;
     }
 
     public Tower getTowerFromIndex(int index) {
-        Tower t = this.towersInventory.get(index);
-        this.removeFromTowersInventory(t);
+        Tower t;
+        String towerIndex = towersInventory[index].getIndex();
+        switch (towerIndex) {
+            case Slot.SIMPLE_TOWER_INDEX : 
+                t = new SimpleTower();
+                break;
+            default : return null;
+        }
         return t;
+
     }
 
     public Item getItemFromIndex(int index) {
-        Item i = this.itemsInventory.get(index);
-        this.removeFromItemsInventory(i);
+        Item i;
+        String itemIndex = itemsInventory[index].getIndex();
+        switch (itemIndex) {
+            case Slot.BOMB_INDEX : 
+                i = new Bomb();
+                break;
+            default : return null;
+        }
         return i;
     }
 }

@@ -22,10 +22,12 @@ public class SelectionFrame {
 
     public void setItem(Item isItem) {
         this.isItem = isItem;
+        this.isTower = null;
     }
 
     public void setTower(Tower isTower) {
         this.isTower = isTower;
+        this.isItem = null;
     }
 
     public Image getImage() {

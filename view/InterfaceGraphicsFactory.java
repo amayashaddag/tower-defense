@@ -8,7 +8,7 @@ public class InterfaceGraphicsFactory {
     private final static String GUI_RESOURCES_REPOSITORY = "resources/gui/";
 
     public final static int INVENTORY_LINES = 2;
-    public final static int INVENTORY_COLUMNS = model.Player.INVENTORY_SIZE;
+    public final static int INVENTORY_COLUMNS = 5;
 
     public static Image[][] loadInventoryBackground() {
         Image[][] inventoryBackground = new Image[INVENTORY_LINES][INVENTORY_COLUMNS];

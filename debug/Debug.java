@@ -11,7 +11,7 @@ import tools.Coordinates;
 import tools.Triplet;
 import view.*;
 
-// Ceci est un fichier de test
+// Ceci est un fichier de test"
 public class Debug {
     public static void main(String[] args) {
         graphicalVersion();
@@ -22,9 +22,6 @@ public class Debug {
         b.addMob(new Mob(0));
 
         Player p = new Player("Amayas");
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(ItemTower.bombTower());
-        p.addToTowersInventory(new SimpleTower());
 
         Triplet tr = new Triplet(2, 2, 1);
         List<Triplet> waves = new LinkedList<>();
@@ -44,10 +41,6 @@ public class Debug {
         b.addMob(m0);
         b.addMob(m1);
         b.addMob(m2);
-
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
-        p.addToTowersInventory(new SimpleTower());
 
         Game game = new Game(p, b, null);
 
