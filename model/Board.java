@@ -3,12 +3,8 @@ package model;
 import tools.*;
 
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Random;
-
-import javax.swing.Timer;
 
 public class Board {
     private Cell[][] grid;
@@ -90,10 +86,10 @@ public class Board {
         return null;
     }
 
-    public Mob getMob(IntCoordinates c) {
+    public Mob getMob(Coordinates c) {
         for (Mob mob : this.currentMobs) {
             IntCoordinates mobPosition = mob.getPosition().round();
-            if (mobPosition != null && mobPosition.equals(c)) {
+            if (mobPosition != null && mobPosition.equals(c.round())) {
                 return mob;
             }
         }
@@ -150,16 +146,19 @@ public class Board {
         return true;
     }
 
-    public boolean addItem(Item i) {
+    public void addItem(Item i) {
         Coordinates position = i.getPosition();
         if (position == null) {
-            return false;
+            return;
         }
         IntCoordinates roundedCoordinates = position.round();
         if (this.grid[roundedCoordinates.getX()][roundedCoordinates.getY()].isPath())
-            return false;
+            return;
         this.currentItems.add(i);
-        return true;
+    }
+
+    public void removeItem(Item i) {
+        
     }
 
     /* Returns the list of mobs that are in range from a specific center */
@@ -231,9 +230,7 @@ public class Board {
         for (Mob m : this.currentMobs) {
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
-                for (int i = 0; i < m.getSpeed(); i++) {
-                    moveOneCell(m);
-                }
+                moveOneCell(m);
 
                 if (m.getPosition().greaterOrEquals(baseCoordinates)) {
                     m.attackBase(currentBase);
@@ -390,7 +387,7 @@ public class Board {
             for (int j = 0; j < this.width; j++) {
                 s += this.grid[i][j].toString() + " ";
                 if (this.grid[i][j].isPath()) {
-                    Mob mob = this.getMob(new IntCoordinates(i, j));
+                    Mob mob = this.getMob(new Coordinates(i, j));
                     if (mob != null)
                         s += mob.toString() + " ";
                     else

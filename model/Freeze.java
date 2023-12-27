@@ -1,21 +1,28 @@
 package model;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import tools.Coordinates;
 
-public class Freeze extends Item implements SingleTargetDamage {
+public class Freeze extends Item implements ZoneDamage {
     private static int FREEZE_DURATION = 5;
-    public static int CURRENT_LEVEL = 0;
+    private static int CURRENT_LEVEL = 0;
+    private static int RANGE = 1;
 
     public Freeze(Coordinates position) {
         super(position);
     }
 
+    public Freeze() {
+        super(null);
+    }
+
     @Override
-    public void attack(Mob mob) {
-        if (mob != null) {
+    public void attack(List<Mob> mobs) {
+        for (Mob mob : mobs) {
+            if (mob != null) {
             double currentMobSpeed = mob.getSpeed();
             mob.setSpeed(0);
             Timer timer = new Timer();
@@ -24,12 +31,21 @@ public class Freeze extends Item implements SingleTargetDamage {
                 public void run() {
                     mob.setSpeed(currentMobSpeed);
                 }
-            }, FREEZE_DURATION);
+            }, FREEZE_DURATION * 1000);
+        }
         }
     }
 
     public static void upgrade() {
         FREEZE_DURATION++;
         CURRENT_LEVEL++;
+    }
+
+    public int getRange() {
+        return RANGE;
+    }
+
+    public int getLevel() {
+        return CURRENT_LEVEL;
     }
 }

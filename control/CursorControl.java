@@ -22,43 +22,75 @@ public class CursorControl {
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
-            IntCoordinates cursorPosition = new IntCoordinates(arg0.getX(), arg0.getY());
+            Board board = gameModel.getCurrentBoard();
+            Timer attackTimer;
+            Coordinates mapCoordinates = new Coordinates(arg0.getY() / GameView.IMAGE_HEIGHT,
+                    arg0.getX() / GameView.IMAGE_WIDTH);
             if (!gameView.getSelectionFrame().isEmpty()) {
                 Tower containtedTower = gameView.getSelectionFrame().getTower();
                 if (containtedTower != null) {
-                    Coordinates mapCoordinates = new Coordinates(cursorPosition.getY() / GameView.IMAGE_HEIGHT,
-                            cursorPosition.getX() / GameView.IMAGE_WIDTH);
-                    if (!gameModel.getCurrentBoard().getCell(mapCoordinates).isPath()) {
+                    if (!board.getCell(mapCoordinates).isPath()) {
                         containtedTower.setPosition(new Coordinates(mapCoordinates.getX(), mapCoordinates.getY()));
-                        Timer attackTimer = new Timer(containtedTower.getRateOfFire() * TIMER_SCALE,
+                        attackTimer = new Timer(containtedTower.getRateOfFire() * TIMER_SCALE,
                                 new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
-                                        Board currentBoard = gameModel.getCurrentBoard();
-                                        Mob mob = currentBoard.getMobTargetInRange(containtedTower.getPosition(),
+                                        Mob mob = board.getMobTargetInRange(containtedTower.getPosition(),
                                                 containtedTower.getRange());
                                         if (mob != null) {
 
                                             if (containtedTower instanceof SingleTargetDamage targetTower) {
-                                                gameView.animateBullet(containtedTower.getPosition(), mob.getPosition());
+                                                gameView.animateBullet(containtedTower.getPosition(),
+                                                        mob.getPosition());
                                                 targetTower.attack(mob);
                                             } else if (containtedTower instanceof ZoneDamage zoneTower) {
-                                                List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(),
+                                                List<Mob> mobsInRange = board.getMobsInRange(mob.getPosition(),
                                                         containtedTower.getRange());
                                                 zoneTower.attack(mobsInRange);
                                             }
 
-                                            currentBoard.removeDeadMobs();
+                                            board.removeDeadMobs();
                                         }
                                     };
                                 });
                         containtedTower.setTimer(attackTimer);
                         containtedTower.startAttack();
-                        gameModel.getCurrentBoard().addTower(containtedTower);
+                        board.addTower(containtedTower);
                         gameView.getSelectionFrame().removeTower();
-                        gameView.repaint();
                     }
                 }
+
+                Item containedItem = gameView.getSelectionFrame().getItem();
+                if (containedItem == null)
+                    return;
+                if (!board.getCell(mapCoordinates).isPath())
+                    return;
+
+                if (containedItem instanceof Trap) {
+                    Trap trap = (Trap) containedItem;
+                    attackTimer = new Timer(GameControl.PERIOD, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (trap.isDead()) {
+                                ((Timer) e.getSource()).setRepeats(false);
+                                board.removeItem(trap);
+                                return;
+                            }
+                            Mob mob = board.getMob(mapCoordinates);
+                            if (mob == null)
+                                return;
+                            trap.attack(mob);
+                        }
+                    });
+                    trap.setTimer(attackTimer);
+                    board.addItem(trap);
+                    trap.startAttack();
+                } else {
+                    ZoneDamage zoneDamage = (ZoneDamage) containedItem;
+                    List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
+                    zoneDamage.attack(mobsInRange);
+                }
             }
+            gameView.repaint();
         }
 
         @Override

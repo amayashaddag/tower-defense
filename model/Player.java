@@ -7,7 +7,7 @@ public class Player {
     private Slot[] itemsInventory;
 
     public static int TOWERS_INVENTORY_SIZE = 2;
-    public static int ITEMS_INVENTORY_SIZE = 5;
+    public static int ITEMS_INVENTORY_SIZE = 4;
 
     private static final Slot[] DEFAULT_TOWERS_INVENTORY = {
         new Slot(Slot.SIMPLE_TOWER_INDEX, true),
@@ -15,11 +15,10 @@ public class Player {
     };
 
     private static final Slot[] DEFAULT_ITEMS_INVENTORY = {
-        new Slot(Slot.BOMB_INDEX, false),
-        new Slot(Slot.FREEZE_INDEX, false),
-        new Slot(Slot.HOLE_INDEX, false),
-        new Slot(Slot.TRAP_INDEX, false),
-        new Slot(Slot.POISON_INDEX, false),
+        new Slot(Slot.BOMB_INDEX, true),
+        new Slot(Slot.FREEZE_INDEX, true),
+        new Slot(Slot.TRAP_INDEX, true),
+        new Slot(Slot.POISON_INDEX, true),
     };
 
     public Player(String pseudo) {

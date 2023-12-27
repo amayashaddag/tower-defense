@@ -6,7 +6,7 @@ import tools.Coordinates;
 
 public class Bomb extends Item implements ZoneDamage {
     private static int DAMAGE = 1;
-    private static final int RANGE = 3;
+    private static final int RANGE = 1;
     public static int CURRENT_LEVEL = 0;
 
 

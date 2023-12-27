@@ -7,7 +7,6 @@ public class Slot {
 
     public static final String BOMB_INDEX = "B";
     public static final String FREEZE_INDEX = "F";
-    public static final String HOLE_INDEX = "H";
     public static final String POISON_INDEX = "P";
     public static final String TRAP_INDEX = "T";
 
@@ -36,8 +35,13 @@ public class Slot {
         else return null;
     }
 
-    // FIXME A IMPLEMENTER PLEAAAAAAAAAAAAAAAAASE
     public Item getItem() {
-        return null;
+        switch (index) {
+            case BOMB_INDEX : return new Bomb();
+            case FREEZE_INDEX : return new Freeze();
+            case POISON_INDEX : return new Poison();
+            case TRAP_INDEX : return new Trap();
+            default : return null;
+        }
     }
 }

@@ -9,7 +9,7 @@ import tools.Coordinates;
 public class Poison extends Item implements ZoneDamage {
 
     private static int CURRENT_LEVEL = 0;
-    private static int POISON_DURATION = 5;
+    private static int POISON_DURATION = 3;
     private static int DAMAGE = 1;
 
     private final int RANGE = 3;
@@ -18,6 +18,10 @@ public class Poison extends Item implements ZoneDamage {
         super(position);
     }
 
+    public Poison() {
+        super(null);
+    }
+ 
     public static void upgrade() {
         DAMAGE++;
         POISON_DURATION ++;
@@ -33,7 +37,7 @@ public class Poison extends Item implements ZoneDamage {
                     mob.beingAttacked(DAMAGE);
                 }
             }, 
-            POISON_DURATION);
+            POISON_DURATION * 1000);
         }
     }
 
