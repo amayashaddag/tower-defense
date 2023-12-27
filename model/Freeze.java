@@ -16,7 +16,7 @@ public class Freeze extends Item implements SingleTargetDamage {
     @Override
     public void attack(Mob mob) {
         if (mob != null) {
-            int currentMobSpeed = mob.getSpeed();
+            double currentMobSpeed = mob.getSpeed();
             mob.setSpeed(0);
             Timer timer = new Timer();
             (timer).schedule(new TimerTask() {

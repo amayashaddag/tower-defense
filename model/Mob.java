@@ -49,7 +49,7 @@ public class Mob {
         this.hp = hp;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
