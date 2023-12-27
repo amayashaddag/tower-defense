@@ -1,8 +1,11 @@
 package model;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
 
 import tools.*;
 
@@ -13,8 +16,8 @@ public class Game {
     private boolean gameFinished;
     private Scanner scanner;
     private List<Triplet> waves;
-
     private Random random;
+    private final static int MOB_SPAWNING_DELAY = 800;
 
     public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves) {
         this.currentPlayer = currentPlayer;
@@ -91,7 +94,8 @@ public class Game {
         int iter = 1;
         while (!this.roundFinished()) {
 
-            System.out.print("\033[H\033[2J");            System.out.println(this.currentBoard);
+            System.out.print("\033[H\033[2J");
+            System.out.println(this.currentBoard);
             System.out.println(currentBoard.getCurrentBase());
 
             if (!waves.isEmpty()) {
@@ -106,7 +110,7 @@ public class Game {
                         List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
                         zoneTower.attack(mobsInRange);
                     }
-                    
+
                     currentBoard.removeDeadMobs();
                 }
             }
@@ -152,6 +156,34 @@ public class Game {
             System.out.println(this.currentBoard);
         } while (answer);
 
+    }
+
+    /* On est dans Round */
+    public Timer MakeRound(int nbMobLevel0, int nbMobLevel1, int nbMobLevel2) {
+        Timer Round = new Timer(MOB_SPAWNING_DELAY, new ActionListener() {
+            Triplet wave = new Triplet(nbMobLevel0, nbMobLevel1, nbMobLevel2);
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (wave.isNull()) {
+                    ((Timer) e.getSource()).setRepeats(false);
+                }
+                if (wave.getX() > 0) {
+                    Game.this.currentBoard.addMob(new Mob(0));
+                    wave.decrement(0);
+                } else {
+                    if (wave.getY() > 0) {
+                        Game.this.currentBoard.addMob(new Mob(1));
+                        wave.decrement(1);
+
+                    } else {
+                        Game.this.currentBoard.addMob(new Mob(2));
+                        wave.decrement(2);
+                    }
+                }
+            }
+        });
+        return Round;
     }
 
 }

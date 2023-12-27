@@ -7,13 +7,13 @@ public class Mob {
 
 
     private static final int INITIAL_HP = 1;
-    private static final int INITIAL_SPEED = 1;
+    private static final double INITIAL_SPEED = 1.0;
     private static final int INITIAL_DAMAGE = 1;
     public static final int MAX_LEVEL = 2;
 
     private int level;
     private int hp; // Nombre d'HP d'un mob
-    private int speed; // Vitesse du mob
+    private double speed; // Vitesse du mob
     private Coordinates position; // Cordonnées de la position du mob
     private int damage;
     private Direction direction;
@@ -22,7 +22,7 @@ public class Mob {
     /* Constructeur */
     public Mob(int level) {
         this.hp = INITIAL_HP + level;
-        this.speed = INITIAL_SPEED + level;
+        this.speed = INITIAL_SPEED + level*0.5;
         this.damage = INITIAL_DAMAGE + level;
         this.level = level;
     }
@@ -32,7 +32,7 @@ public class Mob {
         return hp;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 

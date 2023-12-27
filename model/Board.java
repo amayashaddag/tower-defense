@@ -3,8 +3,12 @@ package model;
 import tools.*;
 
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Random;
+
+import javax.swing.Timer;
 
 public class Board {
     private Cell[][] grid;
@@ -20,7 +24,7 @@ public class Board {
 
     private Random random;
 
-    private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.05;
+    private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.1;
     public static final double SPEED_EQUATION_FACTOR = 0.7E-9;
 
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
@@ -116,6 +120,9 @@ public class Board {
         this.currentMobs.add(mob);
         initMobPosition(mob);
         return true;
+    }
+    public int getCurrentMobsNumber() {
+        return this.currentMobs.size();
     }
 
     private void initMobPosition(Mob m) {
@@ -227,7 +234,7 @@ public class Board {
                 for (int i = 0; i < m.getSpeed(); i++) {
                     moveOneCell(m);
                 }
-                
+
                 if (m.getPosition().greaterOrEquals(baseCoordinates)) {
                     m.attackBase(currentBase);
                 }
@@ -249,10 +256,11 @@ public class Board {
                 Direction direction = nextCell.getDirectionFrom(currentCell);
 
                 if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)
-                && !nextCell.equals(m.getLastVisitedCell())) {
+                        && !nextCell.equals(m.getLastVisitedCell())) {
                     m.setDirection(direction);
                 }
-                Coordinates nextPos = m.getPosition().plus(Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR));
+                Coordinates nextPos = m.getPosition().plus(
+                        Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR));
                 if (!nextPos.round().equals(currentCell)) {
                     m.setLastVisitedCell(currentCell);
                 }
@@ -266,7 +274,6 @@ public class Board {
 
         eliminateMobs();
     }
-    
 
     public static Board boardExample() {
         return new Board(new Cell[][] {

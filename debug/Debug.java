@@ -1,9 +1,12 @@
 package debug;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import control.GameControl;
 import model.*;
@@ -35,17 +38,12 @@ public class Debug {
     public static void graphicalVersion() {
         Board b = Board.boardExample();
         Player p = new Player("Amayas");
-        Mob m0 = new Mob(0);
-        Mob m1 = new Mob(1);
-        Mob m2 = new Mob(2);
-        b.addMob(m0);
-        b.addMob(m1);
-        b.addMob(m2);
 
         Game game = new Game(p, b, null);
-
         GameView view = new GameView(game);
         GameControl gameControl = new GameControl(game, view);
+        Timer Round = game.MakeRound(7,7,5);
+        Round.start();
 
         SwingUtilities.invokeLater(() -> {
             view.setVisible(true);
