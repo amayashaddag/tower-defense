@@ -7,25 +7,20 @@ import java.util.TimerTask;
 import tools.Coordinates;
 
 public class Poison extends Item implements ZoneDamage {
-    private int damage;
 
-    public static int CURRENT_LEVEL = 0;
-    private static int POISON_DURATION;
+    private static int CURRENT_LEVEL = 0;
+    private static int POISON_DURATION = 5;
+    private static int DAMAGE = 1;
 
-    private final int RANGE = 3;;
+    private final int RANGE = 3;
 
-    private final static int DAMAGE_UPGRADE_VALUE = 2;
-
-    public Poison(int dureeDeVie, int level, Coordinates position) {
+    public Poison(Coordinates position) {
         super(position);
-        this.damage = 10 + CURRENT_LEVEL * 2; // Pour le niveau 0 on met 10 de dégâts puis on rajoute 2 points de dégâts
-        // pour chaque level
     }
 
-    @Override
-    public void upgrade() {
-        super.upgrade();
-        this.damage += DAMAGE_UPGRADE_VALUE;
+    public static void upgrade() {
+        DAMAGE++;
+        POISON_DURATION ++;
     }
 
     @Override
@@ -35,7 +30,7 @@ public class Poison extends Item implements ZoneDamage {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    mob.beingAttacked(damage);
+                    mob.beingAttacked(DAMAGE);
                 }
             }, 
             POISON_DURATION);
@@ -44,6 +39,10 @@ public class Poison extends Item implements ZoneDamage {
 
     public int getRange() {
         return RANGE;
+    }
+
+    public static int getLevel() {
+        return CURRENT_LEVEL;
     }
 
 }

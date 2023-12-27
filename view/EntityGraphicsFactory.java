@@ -107,14 +107,14 @@ public class EntityGraphicsFactory {
             url += TOWER_FRAMES_REPOSITORY;
             switch (slotIndex) {
                 case model.Slot.SIMPLE_TOWER_INDEX : 
-                    if (SimpleTower.getCurrentLevel() == 0) url += SIMPLE_TOWER;
+                    if (SimpleTower.getLevel() == 0) url += SIMPLE_TOWER;
                     else url += UPGRADED_SIMPLE_TOWER;
                     break;
                 case model.Slot.BOMB_TOWER_INDEX : 
                     if (!isUnlocked) {
                         url += LOCKED_BOMB_TOWER;
                     } else {
-                        if (SimpleTower.getCurrentLevel() == 0) url += BOMB_TOWER;
+                        if (SimpleTower.getLevel() == 0) url += BOMB_TOWER;
                         else url += UPGRADED_BOMB_TOWER;
                     }
                     break;
