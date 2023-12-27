@@ -3,22 +3,25 @@ package model;
 import tools.Coordinates;
 
 public class Trap extends Item implements SingleTargetDamage {
-    private int damage;
 
-    private final static int DAMAGE_UPGRADE_VALUE = 5;
+    private static int DAMAGE = 3;
+    private static int CURRENT_LEVEL;
 
-    public Trap(int level, Coordinates position) {
+    public Trap(Coordinates position) {
         super(position);
     }
 
-    @Override
-    public void upgrade() {
-        super.upgrade();
-        this.damage += DAMAGE_UPGRADE_VALUE;
+    public static void upgrade() {
+        DAMAGE++;
+        CURRENT_LEVEL++;
+    }
+
+    public static int getLevel() {
+        return CURRENT_LEVEL;
     }
 
     @Override
     public void attack(Mob mob) {
-        mob.beingAttacked(this.damage);
+        mob.beingAttacked(DAMAGE);
     }
 }

@@ -8,7 +8,7 @@ public class Hole extends Item implements SingleTargetDamage {
     
     private Coordinates teleportationPoint;
 
-    public Hole(Coordinates position, Coordinates teleportationPoint, int level) {
+    public Hole(Coordinates position, Coordinates teleportationPoint) {
         super(position);
         this.teleportationPoint = teleportationPoint;
     }
@@ -18,10 +18,5 @@ public class Hole extends Item implements SingleTargetDamage {
         if (mob != null && teleportationPoint != null) {
             mob.setPosition(teleportationPoint);
         }
-    }
-
-    @Override
-    public void upgrade() {
-        
     }
 }

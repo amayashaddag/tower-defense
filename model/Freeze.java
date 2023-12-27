@@ -6,13 +6,10 @@ import java.util.TimerTask;
 import tools.Coordinates;
 
 public class Freeze extends Item implements SingleTargetDamage {
-    private static final int FREEZE_DURATION = 5;
-    private static final int DURATION_UPGRADE_VALUE = 1;
-
-    private int freezeDuration = FREEZE_DURATION;
+    private static int FREEZE_DURATION = 5;
     public static int CURRENT_LEVEL = 0;
 
-    public Freeze(int level, Coordinates position) {
+    public Freeze(Coordinates position) {
         super(position);
     }
 
@@ -27,13 +24,12 @@ public class Freeze extends Item implements SingleTargetDamage {
                 public void run() {
                     mob.setSpeed(currentMobSpeed);
                 }
-            }, freezeDuration);
+            }, FREEZE_DURATION);
         }
     }
 
-    @Override
-    public void upgrade() {
-        super.upgrade();
-        freezeDuration += DURATION_UPGRADE_VALUE;
+    public static void upgrade() {
+        FREEZE_DURATION++;
+        CURRENT_LEVEL++;
     }
 }

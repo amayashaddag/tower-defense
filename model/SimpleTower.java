@@ -12,14 +12,14 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
 
 
     public SimpleTower(Coordinates position) {
-        super(position, RANGE, RATE_OF_FIRE, CURRENT_LEVEL);
+        super(position);
     }
 
     public SimpleTower() {
-        super(null, RANGE, RATE_OF_FIRE, CURRENT_LEVEL);
+        super(null);
     }
 
-    public void upgrade() {
+    public static void upgrade() {
         DAMAGE++;
         CURRENT_LEVEL++;
     }
@@ -35,7 +35,17 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
         return "SimpleTower (2 damage points)";
     }
 
-    public static int getCurrentLevel() {
+    @Override
+    public int getRateOfFire() {
+        return RATE_OF_FIRE;
+    }
+
+    @Override
+    public int getRange() {
+        return RANGE;
+    }
+
+    public static int getLevel() {
         return CURRENT_LEVEL;
     }
 }
