@@ -15,6 +15,9 @@ public class Base {
     public void decrementHp(int decrement) {
         this.hp -= decrement;
     }
+    public boolean baseLost(){
+        return hp<=0;
+    }
 
     @Override
     public String toString() {

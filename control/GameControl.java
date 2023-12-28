@@ -3,7 +3,6 @@ package control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
 import javax.swing.Timer;
 
 import model.*;
@@ -35,6 +34,20 @@ public class GameControl {
                     long deltaT = currentTime - lastTime;
                     lastTime = currentTime;
                     update(deltaT);
+                    System.out.println(gameModel.getIndexCurrentWave());
+                    if (gameModel.gameFinished()) {
+                        System.out.println("Game finished ! ");
+                        stopTimer();
+                        //FIXME : méthode pas "gentille" pour fermer la fenêtre
+                        System.exit(0);
+                    } else {
+                        if (gameModel.roundFinished()) {
+                            gameModel.nextRound();
+                            if (gameModel.getIndexCurrentWave() < gameModel.nbRounds()) {
+                                gameModel.startCurrentRound();
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -43,28 +56,29 @@ public class GameControl {
     public void update(long deltaT) {
         gameModel.getCurrentBoard().updateMobsPosition(deltaT);
         gameView.getMapView().repaint();
+
     }
 
-    public void updateTowers(){
+    public void updateTowers() {
         Board currentBoard = gameModel.getCurrentBoard();
-          for (Tower t :  currentBoard.getCurrentTowers() ) {
-                Mob mob = currentBoard.getMobTargetInRange(t.getPosition(), t.getRange());
-                if (mob != null) {
-                    if (t instanceof SingleTargetDamage) {
-                        SingleTargetDamage targetTower = (SingleTargetDamage) t;
-                        targetTower.attack(mob);
-                    } else if (t instanceof ZoneDamage) {
-                        ZoneDamage zoneTower = (ZoneDamage) t;
-                        List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
-                        zoneTower.attack(mobsInRange);
-                    }
-                    
-                    currentBoard.removeDeadMobs();
+        for (Tower t : currentBoard.getCurrentTowers()) {
+            Mob mob = currentBoard.getMobTargetInRange(t.getPosition(), t.getRange());
+            if (mob != null) {
+                if (t instanceof SingleTargetDamage) {
+                    SingleTargetDamage targetTower = (SingleTargetDamage) t;
+                    targetTower.attack(mob);
+                } else if (t instanceof ZoneDamage) {
+                    ZoneDamage zoneTower = (ZoneDamage) t;
+                    List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
+                    zoneTower.attack(mobsInRange);
                 }
+                currentBoard.removeDeadMobs();
             }
+        }
     }
 
     public void startGame() {
+        this.gameModel.startCurrentRound();
         this.gameTimer.start();
     }
 

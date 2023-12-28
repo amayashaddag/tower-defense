@@ -365,7 +365,7 @@ public class Board {
                         new Cell(true, false),
                         new Cell(true, true)
                 }
-        }, new Coordinates(6, 10), new Coordinates(0, 0), new Base(50));
+        }, new Coordinates(6, 10), new Coordinates(0, 0), new Base(10));
     }
 
     @Override

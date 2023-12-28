@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,8 +14,8 @@ public class Game {
 
     private Player currentPlayer;
     private Board currentBoard;
-    private boolean gameFinished;
     private Scanner scanner;
+    private int indexCurrentWave;
     private List<Triplet> waves;
     private Random random;
     private final static int MOB_SPAWNING_DELAY = 800;
@@ -22,10 +23,13 @@ public class Game {
     public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves) {
         this.currentPlayer = currentPlayer;
         this.currentBoard = currentBoard;
-        this.gameFinished = false;
         this.scanner = new Scanner(System.in);
         this.random = new Random();
         this.waves = waves;
+        this.indexCurrentWave=0;
+    }
+    public int getIndexCurrentWave() {
+        return indexCurrentWave;
     }
 
     public Player getCurrentPlayer() {
@@ -35,11 +39,15 @@ public class Game {
     public Board getCurrentBoard() {
         return this.currentBoard;
     }
-
-    public boolean gameFinished() {
-        return this.gameFinished;
+    public int nbRounds(){
+        return waves.size();
     }
-
+    public void nextRound(){
+        indexCurrentWave++;
+    }
+    public  boolean gameFinished(){
+        return indexCurrentWave >= nbRounds() || roundLost();
+    }
     // FIXME : Fix reading coordinates while having a more than 2 integer in y
     // coordinates
 
@@ -80,7 +88,7 @@ public class Game {
         }
     }
 
-    public boolean roundFinished() {
+    public boolean roundFinishedText() {
         return currentBoard.getCurrentBase().getHp() <= 0
                 || (waves.isEmpty() && currentBoard.getCurrentMobs().isEmpty());
     }
@@ -92,7 +100,7 @@ public class Game {
 
         initRound();
         int iter = 1;
-        while (!this.roundFinished()) {
+        while (!this.roundFinishedText()) {
 
             System.out.print("\033[H\033[2J");
             System.out.println(this.currentBoard);
@@ -160,32 +168,69 @@ public class Game {
 
     }
 
-    /* On est dans Round */
-    public Timer MakeRound(int nbMobLevel0, int nbMobLevel1, int nbMobLevel2) {
-        Timer Round = new Timer(MOB_SPAWNING_DELAY, new ActionListener() {
-            Triplet wave = new Triplet(nbMobLevel0, nbMobLevel1, nbMobLevel2);
+    void genereteMobLevel(int x, Triplet wave) {
+        Game.this.currentBoard.addMob(new Mob(x));
+        wave.decrement(x);
 
+    }
+
+    void generateMobsInOrder(Triplet wave) {
+        if (wave.getX() > 0) {
+            genereteMobLevel(0, wave);
+
+        } else {
+            if (wave.getY() > 0) {
+                genereteMobLevel(1, wave);
+
+            } else {
+                if (wave.getZ() > 0) {
+                    genereteMobLevel(2, wave);
+
+                }
+            }
+        }
+    }
+    public Triplet getCurrentWave(){
+        return this.waves.get(indexCurrentWave);
+    }
+    public boolean roundLost(){
+        return this.currentBoard.getCurrentBase().baseLost();
+    }
+    public boolean roundWon(){
+        return getCurrentWave().isNull() && currentBoard.getCurrentMobs().isEmpty();
+    }
+    public boolean roundFinished(){
+        return roundLost() || roundWon();
+    }
+    /* On est dans Round */
+    public void startRound(int index) {
+        Triplet wave = this.waves.get(index);
+        Timer Round = new Timer(MOB_SPAWNING_DELAY, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (wave.isNull()) {
                     ((Timer) e.getSource()).setRepeats(false);
-                }
-                if (wave.getX() > 0) {
-                    Game.this.currentBoard.addMob(new Mob(0));
-                    wave.decrement(0);
-                } else {
-                    if (wave.getY() > 0) {
-                        Game.this.currentBoard.addMob(new Mob(1));
-                        wave.decrement(1);
 
-                    } else {
-                        Game.this.currentBoard.addMob(new Mob(2));
-                        wave.decrement(2);
-                    }
+                } else {
+                    generateMobsInOrder(wave);
                 }
             }
         });
-        return Round;
+        Round.start();
     }
+    public void startCurrentRound(){
+        startRound(indexCurrentWave);
+    }
+    
+
+    public static List<Triplet> easyMode() {
+        List<Triplet> Rounds = new ArrayList<>();
+        Rounds.addFirst(new Triplet(10, 0, 0));
+        Rounds.add(new Triplet(10, 2, 0));
+        Rounds.add(new Triplet(10, 5, 0));
+        return Rounds;
+    }
+    
+
 
 }

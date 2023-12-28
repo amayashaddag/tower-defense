@@ -26,9 +26,8 @@ public class Debug {
         Triplet tr = new Triplet(2, 2, 1);
         List<Triplet> waves = new LinkedList<>();
         waves.add(tr);
-
+        waves.add(new Triplet(0, 0, 4));
         Game game = new Game(p, b, waves);
-
         game.startRound();
     }
 
@@ -36,12 +35,9 @@ public class Debug {
         Board b = Board.boardExample();
         Player p = new Player("Amayas");
 
-        Game game = new Game(p, b, null);
+        Game game = new Game(p, b,Game.easyMode());
         GameView view = new GameView(game);
         GameControl gameControl = new GameControl(game, view);
-        Timer Round = game.MakeRound(7,7,5);
-        Round.start();
-
         SwingUtilities.invokeLater(() -> {
             view.setVisible(true);
             gameControl.startGame();
