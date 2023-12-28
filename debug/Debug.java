@@ -1,7 +1,5 @@
 package debug;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,8 +8,7 @@ import javax.swing.Timer;
 
 import control.GameControl;
 import model.*;
-import tools.Coordinates;
-import tools.Triplet;
+import tools.*;
 import view.*;
 
 // Ceci est un fichier de test"

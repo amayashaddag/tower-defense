@@ -53,4 +53,8 @@ public class SelectionFrame {
     public void removeTower() {
         this.isTower = null;
     }
+
+    public void removeItem() {
+        this.isItem = null;
+    }
 }

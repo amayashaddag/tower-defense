@@ -16,6 +16,7 @@ public class CursorControl {
     private GameView gameView;
     private Game gameModel;
     private GameCursor gameCursor;
+
     private final static int TIMER_SCALE = 500;
 
     private class GameCursor implements MouseInputListener {
@@ -88,7 +89,9 @@ public class CursorControl {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;
                     List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
                     zoneDamage.attack(mobsInRange);
+                    gameView.animateExpoison(mapCoordinates, containedItem);
                 }
+                gameView.getSelectionFrame().removeItem();
             }
             gameView.repaint();
         }

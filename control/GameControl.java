@@ -70,5 +70,8 @@ public class GameControl {
         this.gameTimer.stop();
     }
 
+    public CursorControl getCursorControl() {
+        return cursorControl;
+    }
 
 }

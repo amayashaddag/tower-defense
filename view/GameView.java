@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +31,8 @@ public class GameView extends JFrame {
     private static final int BULLET_IMAGE_WIDTH = 96, BULLET_IMAGE_HEIGHT = 96;
     private static final int MOB_ANIMATION_DELAY = 50;
     private static final double BULLET_SPEED_FACTOR = 0.5;
+    private static final int EXPLOISON_FRAME_WIDTH = 96, EXPLOISON_FRAME_HEIGHT = 96;
+    private final static int EXPLOISON_DELAY = 100;
 
     private class MapView extends JPanel {
 
@@ -101,6 +103,7 @@ public class GameView extends JFrame {
         private List<MobDisplay> mobDisplays;
         private List<TowerDisplay> towerDisplays;
         private List<Bullet> bullets;
+        private List<Exploison> exploisons;
 
         public MapView() {
             super();
@@ -108,6 +111,7 @@ public class GameView extends JFrame {
             this.mobDisplays = new LinkedList<>();
             this.towerDisplays = new LinkedList<>();
             this.bullets = new LinkedList<>();
+            this.exploisons = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
         }
 
@@ -208,6 +212,18 @@ public class GameView extends JFrame {
             }
         }
 
+        public void updateExploisons(Graphics g) {
+            for (Exploison e : exploisons) {
+                g.drawImage(e.getFrame(),
+                        (int) (e.getPosition().getY() * IMAGE_WIDTH)
+                                + (IMAGE_WIDTH - EXPLOISON_FRAME_WIDTH) / 2,
+                        (int) (e.getPosition().getX() * IMAGE_HEIGHT)
+                                + (IMAGE_HEIGHT - EXPLOISON_FRAME_HEIGHT) / 2,
+                        EXPLOISON_FRAME_WIDTH,
+                        EXPLOISON_FRAME_HEIGHT, this);
+            }
+        }
+
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -231,6 +247,7 @@ public class GameView extends JFrame {
             this.updateMobsPosition(g);
             this.updateTowersPosition(g);
             this.updateBulletsPosition(g);
+            this.updateExploisons(g);
         }
     }
 
@@ -284,8 +301,7 @@ public class GameView extends JFrame {
                     }
                 });
             }
-            this.setLayout(new GridLayout(InterfaceGraphicsFactory.INVENTORY_LINES,
-                    InterfaceGraphicsFactory.INVENTORY_COLUMNS));
+            this.setLayout(new FlowLayout());
             this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH,
                     InterfaceGraphicsFactory.INVENTORY_LINES * INVENTORY_FRAME_HEIGHT);
             for (int i = 0; i < itemsInventory.length; i++) {
@@ -361,6 +377,26 @@ public class GameView extends JFrame {
             }
         });
         bulletTimer.start();
+    }
+
+    public void animateExpoison(Coordinates coordinates, Item item) {
+        Exploison exploison;
+        if (item instanceof Bomb) exploison = Exploison.bombExploison(coordinates);
+        else if (item instanceof Freeze) exploison = Exploison.freezeExploison(coordinates);
+        else exploison = Exploison.poisonExploison(coordinates);
+        mapView.exploisons.add(exploison);
+        Timer timer = new Timer(EXPLOISON_DELAY, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if (!exploison.hastNextFrame()) {
+                    mapView.exploisons.remove(exploison);
+                    ((Timer) arg0.getSource()).setRepeats(false);
+                    return;
+                }
+                exploison.setNextFrame();
+            }
+        });
+        timer.start();
     }
 
     public JPanel getMapView() {
