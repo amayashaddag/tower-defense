@@ -104,9 +104,11 @@ public class Game {
             for (Tower t : currentBoard.getCurrentTowers()) {
                 Mob mob = currentBoard.getMobTargetInRange(t.getPosition(), t.getRange());
                 if (mob != null && (iter % (t.getRateOfFire()) == 0)) {
-                    if (t instanceof SingleTargetDamage targetTower) {
+                    if (t instanceof SingleTargetDamage) {
+                        SingleTargetDamage targetTower = (SingleTargetDamage) t;
                         targetTower.attack(mob);
-                    } else if (t instanceof ZoneDamage zoneTower) {
+                    } else if (t instanceof ZoneDamage) {
+                        ZoneDamage zoneTower = (ZoneDamage) t;
                         List<Mob> mobsInRange = currentBoard.getMobsInRange(mob.getPosition(), t.getRange());
                         zoneTower.attack(mobsInRange);
                     }

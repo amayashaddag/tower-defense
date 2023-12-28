@@ -39,11 +39,13 @@ public class CursorControl {
                                                 containtedTower.getRange());
                                         if (mob != null) {
 
-                                            if (containtedTower instanceof SingleTargetDamage targetTower) {
+                                            if (containtedTower instanceof SingleTargetDamage) {
+                                                SingleTargetDamage targetTower = (SingleTargetDamage) containtedTower;
                                                 gameView.animateBullet(containtedTower.getPosition(),
                                                         mob.getPosition());
                                                 targetTower.attack(mob);
-                                            } else if (containtedTower instanceof ZoneDamage zoneTower) {
+                                            } else if (containtedTower instanceof ZoneDamage) {
+                                                ZoneDamage zoneTower = (ZoneDamage) containtedTower;
                                                 List<Mob> mobsInRange = board.getMobsInRange(mob.getPosition(),
                                                         containtedTower.getRange());
                                                 zoneTower.attack(mobsInRange);
