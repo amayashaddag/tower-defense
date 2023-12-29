@@ -70,12 +70,14 @@ public class CursorControl {
 
                 if (containedItem instanceof Trap) {
                     Trap trap = (Trap) containedItem;
+                    trap.setPosition(mapCoordinates);
                     attackTimer = new Timer(GameControl.PERIOD, new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (trap.isDead()) {
                                 ((Timer) e.getSource()).setRepeats(false);
                                 board.removeItem(trap);
+                                gameView.removeTrap(trap);
                                 return;
                             }
                             Mob mob = board.getMob(mapCoordinates);
@@ -86,6 +88,7 @@ public class CursorControl {
                     });
                     trap.setTimer(attackTimer);
                     board.addItem(trap);
+                    gameView.addTrap(trap);
                     trap.startAttack();
                 } else {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;

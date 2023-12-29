@@ -2,11 +2,9 @@ package debug;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
-import control.GameControl;
+import control.*;
 import model.*;
 import tools.*;
 import view.*;
@@ -32,10 +30,9 @@ public class Debug {
     }
 
     public static void graphicalVersion() {
-        Board b = Board.boardExample();
         Player p = new Player("Amayas");
+        Game game = Game.getMediumModeGame(p);
 
-        Game game = new Game(p, b,Game.easyMode());
         GameView view = new GameView(game);
         GameControl gameControl = new GameControl(game, view);
         SwingUtilities.invokeLater(() -> {

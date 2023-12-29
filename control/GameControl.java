@@ -34,7 +34,6 @@ public class GameControl {
                     long deltaT = currentTime - lastTime;
                     lastTime = currentTime;
                     update(deltaT);
-                    System.out.println(gameModel.getIndexCurrentWave());
                     if (gameModel.gameFinished()) {
                         System.out.println("Game finished ! ");
                         stopTimer();

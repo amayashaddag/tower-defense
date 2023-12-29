@@ -22,86 +22,27 @@ import tools.IntCoordinates;
 
 public class GameView extends JFrame {
 
-    public static final int IMAGE_WIDTH = 96, IMAGE_HEIGHT = 96;
+    private static final int UNIT_WIDTH = 96, UNIT_HEIGHT = 96;
+
+    public static final int IMAGE_WIDTH = UNIT_WIDTH, IMAGE_HEIGHT = UNIT_HEIGHT;
     private static final String WINDOW_TITLE = "Tower Defense Game - Le titre est à changer";
     private static final boolean RESIZABILITY = false;
-    private static final int INVENTORY_FRAME_HEIGHT = 96, INVENTORY_FRAME_WIDTH = 96;
-    private static final int MOB_IMAGE_HEIGHT = 64, MOB_IMAGE_WIDTH = 64;
-    private static final int TOWER_IMAGE_WIDTH = 96, TOWER_IMAGE_HEIGHT = 96;
-    private static final int BULLET_IMAGE_WIDTH = 96, BULLET_IMAGE_HEIGHT = 96;
-    private static final int MOB_ANIMATION_DELAY = 50;
+    private static final int INVENTORY_FRAME_HEIGHT = UNIT_HEIGHT, INVENTORY_FRAME_WIDTH = UNIT_WIDTH;
+    private static final int MOB_IMAGE_HEIGHT = UNIT_HEIGHT * 2 / 3, MOB_IMAGE_WIDTH = UNIT_WIDTH * 2 / 3;
+    private static final int INVENTORY_SLOT_HEIGHT = UNIT_HEIGHT * 3 / 4, INVENTORY_SLOT_WIDTH = UNIT_WIDTH * 3 / 4;
+    private static final int TOWER_IMAGE_WIDTH = UNIT_WIDTH, TOWER_IMAGE_HEIGHT = UNIT_HEIGHT;
+    private static final int BULLET_IMAGE_WIDTH = UNIT_WIDTH, BULLET_IMAGE_HEIGHT = UNIT_HEIGHT;
     private static final double BULLET_SPEED_FACTOR = 0.5;
-    private static final int EXPLOISON_FRAME_WIDTH = 96, EXPLOISON_FRAME_HEIGHT = 96;
+    private static final int EXPLOISON_FRAME_WIDTH = UNIT_WIDTH, EXPLOISON_FRAME_HEIGHT = UNIT_HEIGHT;
+    private static final int TRAP_WIDTH = UNIT_WIDTH * 2 / 3, TRAP_HEIGHT = UNIT_HEIGHT * 2 / 3;
     private final static int EXPLOISON_DELAY = 100;
 
     private class MapView extends JPanel {
 
-        private class MobDisplay {
-            private Image[] northFrames;
-            private Image[] southFrames;
-            private Image[] eastFrames;
-            private Image[] westFrames;
-
-            private Image currentFrame;
-            private int frameIndex = 0;
-            private Timer animationTimer;
-
-            private Mob mob;
-
-            public MobDisplay(Mob mob) {
-                this.mob = mob;
-                this.northFrames = EntityGraphicsFactory.loadNorthFrames(mob);
-                this.westFrames = EntityGraphicsFactory.loadWestFrames(mob);
-                this.southFrames = EntityGraphicsFactory.loadSouthFrames(mob);
-                this.eastFrames = EntityGraphicsFactory.loadEastFrames(mob);
-                this.animationTimer = new Timer(MOB_ANIMATION_DELAY, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Image[] currentFrames;
-                        switch (mob.getDirection()) {
-                            case EAST:
-                                currentFrames = eastFrames;
-                                break;
-                            case NORTH:
-                                currentFrames = northFrames;
-                                break;
-                            case SOUTH:
-                                currentFrames = southFrames;
-                                break;
-                            default:
-                                currentFrames = westFrames;
-                                break;
-                        }
-                        currentFrame = currentFrames[frameIndex];
-                        frameIndex++;
-                        frameIndex %= EntityGraphicsFactory.NB_OF_FRAMES;
-                    }
-                });
-            }
-
-            public void startMobAnimation() {
-                this.animationTimer.start();
-            }
-
-            public void stopMobAnimation() {
-                this.animationTimer.stop();
-            }
-        }
-
-        private class TowerDisplay {
-            private Image towerFrame;
-            private Tower tower;
-
-            public TowerDisplay(Tower t) {
-                this.tower = t;
-                String index = t instanceof SimpleTower ? Slot.SIMPLE_TOWER_INDEX : Slot.BOMB_TOWER_INDEX;
-                this.towerFrame = EntityGraphicsFactory.loadSlot(index, true);
-            }
-        }
-
         private Image[][] map;
         private List<MobDisplay> mobDisplays;
         private List<TowerDisplay> towerDisplays;
+        private List<TrapDisplay> traps;
         private List<Bullet> bullets;
         private List<Exploison> exploisons;
 
@@ -112,6 +53,7 @@ public class GameView extends JFrame {
             this.towerDisplays = new LinkedList<>();
             this.bullets = new LinkedList<>();
             this.exploisons = new LinkedList<>();
+            this.traps = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
         }
 
@@ -138,7 +80,7 @@ public class GameView extends JFrame {
             List<MobDisplay> mobsToEliminate = new LinkedList<>();
 
             for (MobDisplay mobDisplay : mobDisplays) {
-                if (!currentBoard.getCurrentMobs().contains(mobDisplay.mob)) {
+                if (!currentBoard.getCurrentMobs().contains(mobDisplay.getMob())) {
                     mobsToEliminate.add(mobDisplay);
                     mobDisplay.stopMobAnimation();
                 }
@@ -160,7 +102,7 @@ public class GameView extends JFrame {
 
         private boolean mobDisplayExists(Mob mob) {
             for (MobDisplay mobDisplay : this.mobDisplays) {
-                if (mobDisplay.mob == mob) {
+                if (mobDisplay.getMob() == mob) {
                     return true;
                 }
             }
@@ -169,19 +111,32 @@ public class GameView extends JFrame {
 
         private boolean towerDisplayExists(Tower t) {
             for (TowerDisplay towerDisplay : towerDisplays) {
-                if (towerDisplay.tower == t) {
+                if (towerDisplay.getTower() == t) {
                     return true;
                 }
             }
             return false;
         }
 
+        public void addTrap(Trap t) {
+            TrapDisplay trapDisplay = new TrapDisplay(t);
+            this.traps.add(trapDisplay);
+        }
+
+        public void removeTrap(Trap t) {
+            for (TrapDisplay trapDisplay : traps) {
+                if (trapDisplay.getTrap().equals(t)) {
+                    traps.remove(trapDisplay);
+                }
+            }
+        }
+
         public void updateMobsPosition(Graphics g) {
 
             for (MobDisplay mobDisplay : this.mobDisplays) {
-                g.drawImage(mobDisplay.currentFrame,
-                        (int) (mobDisplay.mob.getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
-                        (int) (mobDisplay.mob.getPosition().getX() * IMAGE_HEIGHT)
+                g.drawImage(mobDisplay.getCurrentFrame(),
+                        (int) (mobDisplay.getMob().getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
+                        (int) (mobDisplay.getMob().getPosition().getX() * IMAGE_HEIGHT)
                                 + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
                         MOB_IMAGE_WIDTH,
                         MOB_IMAGE_HEIGHT, this);
@@ -190,10 +145,10 @@ public class GameView extends JFrame {
 
         public void updateTowersPosition(Graphics g) {
             for (TowerDisplay towerDisplay : towerDisplays) {
-                g.drawImage(towerDisplay.towerFrame,
-                        (int) (towerDisplay.tower.getPosition().getY() * IMAGE_WIDTH)
+                g.drawImage(towerDisplay.getTowerFrame(),
+                        (int) (towerDisplay.getTower().getPosition().getY() * IMAGE_WIDTH)
                                 + (IMAGE_WIDTH - TOWER_IMAGE_WIDTH) / 2,
-                        (int) (towerDisplay.tower.getPosition().getX() * IMAGE_HEIGHT)
+                        (int) (towerDisplay.getTower().getPosition().getX() * IMAGE_HEIGHT)
                                 + (IMAGE_HEIGHT - TOWER_IMAGE_HEIGHT) / 2,
                         TOWER_IMAGE_WIDTH,
                         TOWER_IMAGE_HEIGHT, this);
@@ -224,6 +179,18 @@ public class GameView extends JFrame {
             }
         }
 
+        public void updateTraps(Graphics g) {
+            for (TrapDisplay trapDisplay : traps) {
+                g.drawImage(trapDisplay.getFrame(),
+                        (int) (trapDisplay.getTrap().getPosition().getY() * IMAGE_WIDTH)
+                                + (IMAGE_WIDTH - TRAP_WIDTH) / 2,
+                        (int) (trapDisplay.getTrap().getPosition().getX() * IMAGE_HEIGHT)
+                                + (IMAGE_HEIGHT - TRAP_HEIGHT) / 2,
+                        TRAP_WIDTH,
+                        TRAP_HEIGHT, this);
+            }
+        }
+
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -248,6 +215,7 @@ public class GameView extends JFrame {
             this.updateTowersPosition(g);
             this.updateBulletsPosition(g);
             this.updateExploisons(g);
+            this.updateTraps(g);
         }
     }
 
@@ -257,7 +225,7 @@ public class GameView extends JFrame {
             private Slot slot;
 
             public InventorySlot(Slot slot) {
-                this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked());
+                this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked()).getScaledInstance(INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT, Image.SCALE_SMOOTH);
                 this.slot = slot;
                 this.setPreferredSize(new Dimension(INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT));
                 this.setContentAreaFilled(false);
@@ -302,8 +270,7 @@ public class GameView extends JFrame {
                 });
             }
             this.setLayout(new FlowLayout());
-            this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH,
-                    InterfaceGraphicsFactory.INVENTORY_LINES * INVENTORY_FRAME_HEIGHT);
+            this.setSize(InterfaceGraphicsFactory.INVENTORY_COLUMNS * INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT);
             for (int i = 0; i < itemsInventory.length; i++) {
                 this.add(itemsInventory[i]);
             }
@@ -352,7 +319,7 @@ public class GameView extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle(WINDOW_TITLE);
         this.setResizable(RESIZABILITY);
-        this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight() + 37);
+        this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight());
 
         this.add(this.mapView);
         this.add(this.inventoryView, BorderLayout.SOUTH);
@@ -381,9 +348,12 @@ public class GameView extends JFrame {
 
     public void animateExpoison(Coordinates coordinates, Item item) {
         Exploison exploison;
-        if (item instanceof Bomb) exploison = Exploison.bombExploison(coordinates);
-        else if (item instanceof Freeze) exploison = Exploison.freezeExploison(coordinates);
-        else exploison = Exploison.poisonExploison(coordinates);
+        if (item instanceof Bomb)
+            exploison = Exploison.bombExploison(coordinates);
+        else if (item instanceof Freeze)
+            exploison = Exploison.freezeExploison(coordinates);
+        else
+            exploison = Exploison.poisonExploison(coordinates);
         mapView.exploisons.add(exploison);
         Timer timer = new Timer(EXPLOISON_DELAY, new ActionListener() {
             @Override
@@ -433,5 +403,13 @@ public class GameView extends JFrame {
 
     public boolean inItemsInventory(IntCoordinates position) {
         return position.getY() / GameView.IMAGE_HEIGHT - (this.getMapView().getHeight() / GameView.IMAGE_HEIGHT) == 1;
+    }
+
+    public void addTrap(Trap t) {
+        mapView.addTrap(t);
+    }
+
+    public void removeTrap(Trap t) {
+        mapView.removeTrap(t);
     }
 }

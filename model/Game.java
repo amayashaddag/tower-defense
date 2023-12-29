@@ -18,7 +18,7 @@ public class Game {
     private int indexCurrentWave;
     private List<Triplet> waves;
     private Random random;
-    private final static int MOB_SPAWNING_DELAY = 800;
+    private final static int MOB_SPAWNING_DELAY = 1000;
 
     public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves) {
         this.currentPlayer = currentPlayer;
@@ -223,14 +223,38 @@ public class Game {
     }
     
 
-    public static List<Triplet> easyMode() {
-        List<Triplet> Rounds = new ArrayList<>();
-        Rounds.addFirst(new Triplet(10, 0, 0));
-        Rounds.add(new Triplet(10, 2, 0));
-        Rounds.add(new Triplet(10, 5, 0));
-        return Rounds;
+    private static List<Triplet> easyModeRound() {
+        List<Triplet> rounds = new ArrayList<>();
+        rounds.add(new Triplet(10, 0, 0));
+        rounds.add(new Triplet(10, 2, 0));
+        rounds.add(new Triplet(10, 5, 0));
+        return rounds;
     }
-    
 
+    private static List<Triplet> mediumModeRound() {
+        List<Triplet> rounds = new ArrayList<>();
+        rounds.add(new Triplet(10, 0, 0));
+        rounds.add(new Triplet(10, 2, 5));
+        rounds.add(new Triplet(5, 5, 10));
+        rounds.add(new Triplet(5, 7, 10));
+        rounds.add(new Triplet(2, 5, 10));
+        return rounds;
+    }
+
+    //FIXME : Set different maps for differents modes : easy, medium, hard ...
+    
+    public static Game getEasyModeGame(Player player) {
+        Board easyModeBoard = Board.boardExample();
+        List<Triplet> easyModeRound = easyModeRound();
+        Game easyModeGame = new Game(player, easyModeBoard, easyModeRound);
+        return easyModeGame;
+    }
+
+    public static Game getMediumModeGame(Player player) {
+        Board mediumModeBoard = Board.boardExample();
+        List<Triplet> mediumModeRound = mediumModeRound();
+        Game mediumModeGame = new Game(player, mediumModeBoard, mediumModeRound);
+        return mediumModeGame;
+    }
 
 }

@@ -13,7 +13,7 @@ public class EntityGraphicsFactory {
     private final static String KNIGHT_FRAMES_REPOSITORY = "knight-frames/";
     private final static String TOWER_FRAMES_REPOSITORY = "tower-frames/";
     private final static String EXPLOISON_FRAMES_REPOSITORY = "exploison-frames/";
-    private final static String ITEM_FRAMES_REPOSITORY = "?";
+    private final static String ITEM_FRAMES_REPOSITORY = "item-frames/";
 
     private final static String SIMPLE_TOWER = "projectile-tower.png";
     private final static String UPGRADED_SIMPLE_TOWER = "advanced-projectile-tower.png";
@@ -22,6 +22,15 @@ public class EntityGraphicsFactory {
     private final static String UPGRADED_BOMB_TOWER = "advanced-bomb-tower.png";
     private final static String LOCKED_BOMB_TOWER = "bomb-tower-locked.png";
     private final static String BULLET = "bullet.png";
+
+    private final static String BOMB = "bomb.png";
+    private final static String BOMB_LOCKED = "bomb-locked.png";
+    private final static String TRAP = "trap.png";
+    private final static String TRAP_LOCKED = "trap-locked.png";
+    private final static String FREEZE = "freeze.png";
+    private final static String FREEZE_LOCKED = "freeze-locked.png";
+    private final static String POISON = "poison.png";
+    private final static String POISON_LOCKED = "poison-locked.png";
 
     public final static int NB_OF_FRAMES = 9;
     private final static int EXPLOISON_FRAMES = 5;
@@ -127,8 +136,24 @@ public class EntityGraphicsFactory {
                 default:
                     break;
             }
-        } else
+        } else {
             url += ITEM_FRAMES_REPOSITORY;
+            switch (slotIndex) {
+                case Slot.BOMB_INDEX : 
+                    url += isUnlocked ? BOMB : BOMB_LOCKED;
+                    break;
+                case Slot.FREEZE_INDEX : 
+                    url += isUnlocked ? FREEZE : FREEZE_LOCKED;
+                    break;
+                case Slot.POISON_INDEX :
+                    url += isUnlocked ? POISON : POISON_LOCKED;
+                    break;
+                case Slot.TRAP_INDEX : 
+                    url += isUnlocked ? TRAP : TRAP_LOCKED;
+                    break;
+                default : break;
+            }
+        } 
         Image slot = new ImageIcon(url).getImage();
         return slot;
     }
@@ -148,6 +173,12 @@ public class EntityGraphicsFactory {
 
     public static Image[] loadFreezeExploisonFrames() {
         return loadExploisonFrames("freeze");
+    }
+
+    public static Image loadTrap() {
+        String url = ENTITIES_RESOURCES_REPOSITORY + ITEM_FRAMES_REPOSITORY + "trap.png";
+        Image image = new ImageIcon(url).getImage();
+        return image;
     }
 
     public static Image[] loadExploisonFrames(String type) {
