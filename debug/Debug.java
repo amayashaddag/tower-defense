@@ -6,13 +6,14 @@ import javax.swing.SwingUtilities;
 
 import control.*;
 import model.*;
+import shopview.ShopView;
 import tools.*;
 import view.*;
 
 // Ceci est un fichier de test"
 public class Debug {
     public static void main(String[] args) {
-        graphicalVersion();
+        test();
     }
 
     public static void consoleVersion() {
@@ -40,5 +41,13 @@ public class Debug {
             gameControl.startGame();
         });
 
+    }
+
+    public static void test() {
+        Player player = new Player("Amayas");
+        ShopView view = new ShopView(player);
+        SwingUtilities.invokeLater(() -> {
+            view.setVisible(true);
+        });
     }
 }

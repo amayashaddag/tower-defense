@@ -63,4 +63,29 @@ public class Player {
         }
         return i;
     }
+
+    public boolean isUnlocked(String index) {
+        if (index.length() > 1) {
+            return towerIsUnlocked(index);
+        }
+        return itemIsUnlocked(index);
+    }
+
+    private boolean towerIsUnlocked(String index) {
+        for (Slot tower : towersInventory) {
+            if (tower.getIndex().equals(index)) {
+                return tower.isUnlocked();
+            }
+        }
+        return false;
+    }
+
+    private boolean itemIsUnlocked(String index) {
+        for (Slot item : itemsInventory) {
+            if (item.getIndex().equals(index)) {
+                return item.isUnlocked();
+            }
+        }
+        return false;
+    }
 }
