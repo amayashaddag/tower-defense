@@ -56,7 +56,6 @@ public class CursorControl {
                                             gameModel.getCreditsFromMobs();
                                             board.removeDeadMobs();
 
-
                                         }
                                     };
                                 });
@@ -75,7 +74,9 @@ public class CursorControl {
 
                 if (containedItem instanceof Trap) {
                     Trap trap = (Trap) containedItem;
-                    trap.setPosition(mapCoordinates);
+                    if (gameModel.playerHasEnoughCreditFor(trap.getCost())) {
+                        trap.setPosition(mapCoordinates);
+                        gameModel.getCurrentPlayer().lostCredit(trap.getCost());
                     attackTimer = new Timer(GameControl.PERIOD, new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -95,11 +96,15 @@ public class CursorControl {
                     board.addItem(trap);
                     gameView.addTrap(trap);
                     trap.startAttack();
+                }
                 } else {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;
+                    if (gameModel.playerHasEnoughCreditFor(zoneDamage.getCost())){
+                    gameModel.getCurrentPlayer().lostCredit(zoneDamage.getCost());
                     List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
                     zoneDamage.attack(mobsInRange);
                     gameView.animateExpoison(mapCoordinates, containedItem);
+                    }
                 }
                 gameView.getSelectionFrame().removeItem();
             }

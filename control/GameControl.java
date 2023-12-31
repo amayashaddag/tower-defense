@@ -56,7 +56,6 @@ public class GameControl {
         gameModel.getCurrentBoard().updateMobsPosition(deltaT);
         gameView.getMapView().repaint();
         System.out.println(gameModel.getCurrentPlayer().getCredit());
-
     }
 
     public void updateTowers() {
