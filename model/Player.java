@@ -8,7 +8,7 @@ public class Player {
     public final static int TOWERS_INVENTORY_SIZE = 2;
     public final static int ITEMS_INVENTORY_SIZE = 4;
     private int credit;
-    public static final int INITIAL_CREDIT = 1000;
+    public static final int INITIAL_CREDIT = 10;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
             new Slot(Slot.SIMPLE_TOWER_INDEX, true, true),

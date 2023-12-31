@@ -3,6 +3,8 @@ package control;
 import javax.swing.Timer;
 import javax.swing.event.MouseInputListener;
 
+import assets.InterfaceMessages;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -34,6 +36,8 @@ public class CursorControl {
                         if (gameModel.playerHasEnoughCreditFor(containtedTower.getCost())) {
                             containtedTower.setPosition(new Coordinates(mapCoordinates.getX(), mapCoordinates.getY()));
                             gameModel.getCurrentPlayer().lostCredit(containtedTower.getCost());
+                        } else {
+                            gameView.displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
                         }
                         attackTimer = new Timer(containtedTower.getRateOfFire() * TIMER_SCALE,
                                 new ActionListener() {
@@ -96,6 +100,8 @@ public class CursorControl {
                         board.addItem(trap);
                         gameView.addTrap(trap);
                         trap.startAttack();
+                    } else {
+                        gameView.displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
                     }
                 } else {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;
@@ -104,6 +110,8 @@ public class CursorControl {
                         List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
                         zoneDamage.attack(mobsInRange);
                         gameView.animateExpoison(mapCoordinates, containedItem);
+                    } else {
+                        gameView.displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
                     }
                 }
                 gameView.getSelectionFrame().removeItem();

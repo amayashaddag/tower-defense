@@ -1,10 +1,12 @@
 package view;
 
 import java.util.List;
+import java.util.TimerTask;
 import java.util.LinkedList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -16,6 +18,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import assets.Colors;
+import assets.Fonts;
+import assets.InterfaceMessages;
 import model.*;
 import tools.*;
 
@@ -35,6 +40,8 @@ public class GameView extends JFrame {
     private static final int EXPLOISON_FRAME_WIDTH = UNIT_WIDTH, EXPLOISON_FRAME_HEIGHT = UNIT_HEIGHT;
     private static final int TRAP_WIDTH = UNIT_WIDTH * 2 / 3, TRAP_HEIGHT = UNIT_HEIGHT * 2 / 3;
     private final static int EXPLOISON_DELAY = 100;
+    private static final int FONT_SIZE = 24;
+    private static final int DISPLAY_MESSAGE_DURATION = 3000;
 
     private class MapView extends JPanel {
 
@@ -44,6 +51,7 @@ public class GameView extends JFrame {
         private List<TrapDisplay> traps;
         private List<Bullet> bullets;
         private List<Exploison> exploisons;
+        private String interfaceMessage;
 
         public MapView() {
             super();
@@ -210,12 +218,25 @@ public class GameView extends JFrame {
 
             this.updateMobDisplaysList();
             this.updateTowerDisplays();
-            
+
             this.updateMobsPosition(g);
             this.updateTowersPosition(g);
             this.updateBulletsPosition(g);
             this.updateExploisons(g);
             this.updateTraps(g);
+
+            try {
+                g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
+            } catch (Exception e) {
+                //FIXME HANDLE ERROR MESSAGES IN DIALOG BOX
+                e.printStackTrace();
+            }
+            if (interfaceMessage == null) return;
+            FontMetrics fontMetrics = g.getFontMetrics();
+            int x = (getWidth() - fontMetrics.stringWidth(interfaceMessage)) / 2;
+            int y = fontMetrics.getHeight() + fontMetrics.getAscent();
+            g.setColor(Colors.INTERFACE_MESSAGE_COLOR);
+            g.drawString(this.interfaceMessage, x, y);
         }
     }
 
@@ -244,8 +265,7 @@ public class GameView extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (!towerSlot.slot.isUnlocked()) {
-                            // FIXME IMPLEMENTER MESSAGE ERREUR
-                            // Afficher un message d'erreur ... etc
+                            displayMessage(InterfaceMessages.TOWER_NOT_UNLOCKED);
                             return;
                         }
                         Tower t = towerSlot.slot.getTower();
@@ -260,8 +280,7 @@ public class GameView extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (!itemSlot.slot.isUnlocked()) {
-                            // FIXME IMPLEMENTER MESSAGE ERREUR
-                            // Afficher un message d'erreur ... etc
+                            displayMessage(InterfaceMessages.ITEM_NOT_UNLOCKED);
                             return;
                         }
                         Item i = itemSlot.slot.getItem();
@@ -395,5 +414,16 @@ public class GameView extends JFrame {
 
     public void removeTrap(Trap t) {
         mapView.removeTrap(t);
+    }
+
+    public void displayMessage(String message) {
+        this.mapView.interfaceMessage = message;
+        java.util.Timer displayDuration = new java.util.Timer();
+        displayDuration.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mapView.interfaceMessage = null;
+            }
+        }, DISPLAY_MESSAGE_DURATION);
     }
 }
