@@ -8,6 +8,7 @@ public class Player {
     public final static int TOWERS_INVENTORY_SIZE = 2;
     public final static int ITEMS_INVENTORY_SIZE = 4;
     private int credit;
+    public static final int INITIAL_CREDIT = 100;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
             new Slot(Slot.SIMPLE_TOWER_INDEX, true, true, this),
@@ -25,6 +26,7 @@ public class Player {
         this.pseudo = pseudo;
         this.towersInventory = DEFAULT_TOWERS_INVENTORY;
         this.itemsInventory = DEFAULT_ITEMS_INVENTORY;
+        this.credit = INITIAL_CREDIT;
     }
 
     public String getPseudo() {
@@ -101,5 +103,8 @@ public class Player {
 
     public void lostCredit(int lostAmmount) {
         this.credit -= lostAmmount;
+    }
+    public boolean hasEnoughCredit(int price){
+        return credit>=price;
     }
 }

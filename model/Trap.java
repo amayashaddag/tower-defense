@@ -11,7 +11,7 @@ public class Trap extends Item implements SingleTargetDamage {
     private final static int MAX_ATTACKS = 10;
     private int attacks = 0;
     private Timer attackTimer;
-    private static int cost = 100;
+    private static int cost = 10;
     private static final int MAX_LEVEL=3;
 
     public Trap(Coordinates position) {

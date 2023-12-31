@@ -12,7 +12,7 @@ public class Poison extends Item implements ZoneDamage {
     private static int POISON_DURATION = 3;
     private static int DAMAGE = 1;
     private final int RANGE = 3;
-    private static int cost = 100;
+    private static int cost = 10;
     private static final int MAX_LEVEL = 3;
 
     public Poison(Coordinates position) {

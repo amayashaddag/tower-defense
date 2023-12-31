@@ -31,7 +31,10 @@ public class CursorControl {
                 Tower containtedTower = gameView.getSelectionFrame().getTower();
                 if (containtedTower != null) {
                     if (!board.getCell(mapCoordinates).isPath()) {
-                        containtedTower.setPosition(new Coordinates(mapCoordinates.getX(), mapCoordinates.getY()));
+                        if (gameModel.playerHasEnoughCreditFor(containtedTower.getCost())) {
+                            containtedTower.setPosition(new Coordinates(mapCoordinates.getX(), mapCoordinates.getY()));
+                            gameModel.getCurrentPlayer().lostCredit(containtedTower.getCost());
+                        }
                         attackTimer = new Timer(containtedTower.getRateOfFire() * TIMER_SCALE,
                                 new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
@@ -50,8 +53,10 @@ public class CursorControl {
                                                         containtedTower.getRange());
                                                 zoneTower.attack(mobsInRange);
                                             }
-
+                                            gameModel.getCreditsFromMobs();
                                             board.removeDeadMobs();
+
+
                                         }
                                     };
                                 });

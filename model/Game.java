@@ -26,8 +26,9 @@ public class Game {
         this.scanner = new Scanner(System.in);
         this.random = new Random();
         this.waves = waves;
-        this.indexCurrentWave=0;
+        this.indexCurrentWave = 0;
     }
+
     public int getIndexCurrentWave() {
         return indexCurrentWave;
     }
@@ -39,15 +40,23 @@ public class Game {
     public Board getCurrentBoard() {
         return this.currentBoard;
     }
-    public int nbRounds(){
+
+    public int nbRounds() {
         return waves.size();
     }
-    public void nextRound(){
+
+    public void nextRound() {
         indexCurrentWave++;
     }
-    public  boolean gameFinished(){
+
+    public boolean gameFinished() {
         return indexCurrentWave >= nbRounds() || roundLost();
     }
+
+    public boolean playerHasEnoughCreditFor(int price) {
+        return currentPlayer.hasEnoughCredit(price);
+    }
+
     // FIXME : Fix reading coordinates while having a more than 2 integer in y
     // coordinates
 
@@ -85,6 +94,13 @@ public class Game {
         t.setPosition(c);
         if (!this.currentBoard.addTower(t)) {
             System.out.println("Error! Tower can't be added to board.");
+        }
+    }
+
+    public void getCreditsFromMobs() {
+        for (Mob mob : currentBoard.mobsToEliminate()) {
+            System.out.println("cc");
+            currentPlayer.wonCredit(mob.getLevel()+1);
         }
     }
 
@@ -190,18 +206,23 @@ public class Game {
             }
         }
     }
-    public Triplet getCurrentWave(){
+
+    public Triplet getCurrentWave() {
         return this.waves.get(indexCurrentWave);
     }
-    public boolean roundLost(){
+
+    public boolean roundLost() {
         return this.currentBoard.getCurrentBase().baseLost();
     }
-    public boolean roundWon(){
+
+    public boolean roundWon() {
         return getCurrentWave().isNull() && currentBoard.getCurrentMobs().isEmpty();
     }
-    public boolean roundFinished(){
+
+    public boolean roundFinished() {
         return roundLost() || roundWon();
     }
+
     /* On est dans Round */
     public void startRound(int index) {
         Triplet wave = this.waves.get(index);
@@ -218,10 +239,10 @@ public class Game {
         });
         Round.start();
     }
-    public void startCurrentRound(){
+
+    public void startCurrentRound() {
         startRound(indexCurrentWave);
     }
-    
 
     private static List<Triplet> easyModeRound() {
         List<Triplet> rounds = new ArrayList<>();
@@ -241,8 +262,8 @@ public class Game {
         return rounds;
     }
 
-    //FIXME : Set different maps for differents modes : easy, medium, hard ...
-    
+    // FIXME : Set different maps for differents modes : easy, medium, hard ...
+
     public static Game getEasyModeGame(Player player) {
         Board easyModeBoard = Board.boardExample();
         List<Triplet> easyModeRound = easyModeRound();

@@ -10,7 +10,7 @@ public class BombTower extends Tower implements ZoneDamage {
     private static final int RATE_OF_FIRE = 5;
     private static int DAMAGE = 3;
     private static final int MAX_LEVEL = 3;
-    private static int cost = 100;
+    private static int cost = 10;
 
     public BombTower(Coordinates position) {
         super(position);

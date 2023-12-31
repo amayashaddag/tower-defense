@@ -95,15 +95,18 @@ public class Board {
         }
         return null;
     }
-
-    public void removeDeadMobs() {
+    public List<Mob> mobsToEliminate(){
         List<Mob> mobsToEliminate = new LinkedList<>();
         for (Mob m : currentMobs) {
             if (m.isDead()) {
                 mobsToEliminate.add(m);
+
             }
         }
-
+        return mobsToEliminate;
+    }
+    public void removeDeadMobs() {
+        List<Mob> mobsToEliminate = mobsToEliminate();
         for (Mob m : mobsToEliminate) {
             currentMobs.remove(m);
         }

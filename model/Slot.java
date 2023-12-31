@@ -1,7 +1,7 @@
 package model;
 
 public class Slot {
-    private Player playerReference;
+    private Player currentPlayer;
     public static final String SIMPLE_TOWER_INDEX = "ST";
     public static final String BOMB_TOWER_INDEX = "BT";
 
@@ -14,11 +14,11 @@ public class Slot {
     private boolean isUnlocked;
     private boolean isUpgradable;
 
-    public Slot(String index, boolean isUnlocked, boolean isUpgradable, Player playerReference) {
+    public Slot(String index, boolean isUnlocked, boolean isUpgradable, Player currentPlayer) {
         this.index = index;
         this.isUnlocked = isUnlocked;
         this.isUpgradable = isUpgradable;
-        this.playerReference = playerReference;
+        this.currentPlayer = currentPlayer;
     }
 
     public String getIndex() {
@@ -30,8 +30,8 @@ public class Slot {
     }
 
     public void unlock() {
-        if (playerReference.getCredit() >= getCost()) {
-            playerReference.lostCredit(getCost());
+        if (currentPlayer.getCredit() >= getCost()) {
+            currentPlayer.lostCredit(getCost());
             this.isUnlocked = true;
         }
     }
@@ -41,15 +41,15 @@ public class Slot {
     }
 
     public void upgrade() {
-        if (playerReference.getCredit() >= getCost()) {
+        if (currentPlayer.getCredit() >= getCost()) {
             getArme().upgrade();
-            playerReference.lostCredit(getCost());
+            currentPlayer.lostCredit(getCost());
             this.isUpgradable = getArme().upgradable();
         }
     }
 
-    public Player getPlayerReference() {
-        return playerReference;
+    public Player getcurrentPlayer() {
+        return currentPlayer;
     }
 
     public Arme getArme() {

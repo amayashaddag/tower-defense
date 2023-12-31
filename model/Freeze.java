@@ -10,7 +10,7 @@ public class Freeze extends Item implements ZoneDamage {
     private static int FREEZE_DURATION = 5;
     private static int CURRENT_LEVEL = 0;
     private static int RANGE = 1;
-    private static int cost = 100;
+    private static int cost = 10;
     private static final int MAX_LEVEL = 3;
 
     public Freeze(Coordinates position) {
@@ -50,6 +50,7 @@ public class Freeze extends Item implements ZoneDamage {
     public int getLevel() {
         return CURRENT_LEVEL;
     }
+
     @Override
     public int getCost() {
         return cost;

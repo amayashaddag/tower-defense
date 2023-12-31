@@ -8,7 +8,7 @@ public class Bomb extends Item implements ZoneDamage {
     private static int DAMAGE = 1;
     private static final int RANGE = 1;
     public static int CURRENT_LEVEL = 0;
-    private static int COST = 100;
+    private static int COST = 10;
     private static int MAX_LEVEL=3;
 
 

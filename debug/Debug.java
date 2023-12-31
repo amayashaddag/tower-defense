@@ -13,7 +13,7 @@ import view.*;
 // Ceci est un fichier de test"
 public class Debug {
     public static void main(String[] args) {
-        test();
+        graphicalVersion();
     }
 
     public static void consoleVersion() {
