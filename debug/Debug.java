@@ -6,14 +6,14 @@ import javax.swing.SwingUtilities;
 
 import control.*;
 import model.*;
-import shopview.ShopView;
+import shop.*;
 import tools.*;
 import view.*;
 
 // Ceci est un fichier de test"
 public class Debug {
     public static void main(String[] args) {
-        graphicalVersion();
+        test();
     }
 
     public static void consoleVersion() {

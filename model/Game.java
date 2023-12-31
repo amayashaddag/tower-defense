@@ -99,7 +99,7 @@ public class Game {
 
     public void getCreditsFromMobs() {
         for (Mob mob : currentBoard.mobsToEliminate()) {
-            currentPlayer.wonCredit(mob.getLevel()+1);
+            currentPlayer.wonCredit((mob.getLevel() + 1) * 2);
         }
     }
 

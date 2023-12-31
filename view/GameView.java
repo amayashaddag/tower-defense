@@ -17,8 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.*;
-import tools.Coordinates;
-import tools.IntCoordinates;
+import tools.*;
 
 public class GameView extends JFrame {
 
@@ -211,6 +210,7 @@ public class GameView extends JFrame {
 
             this.updateMobDisplaysList();
             this.updateTowerDisplays();
+            
             this.updateMobsPosition(g);
             this.updateTowersPosition(g);
             this.updateBulletsPosition(g);
@@ -387,22 +387,6 @@ public class GameView extends JFrame {
 
     public SelectionFrame getSelectionFrame() {
         return this.selectionFrame;
-    }
-
-    public boolean inInvetory(IntCoordinates position) {
-        return inTowersInventory(position) || inItemsInventory(position);
-    }
-
-    public boolean inMap(IntCoordinates position) {
-        return !inInvetory(position);
-    }
-
-    public boolean inTowersInventory(IntCoordinates position) {
-        return position.getY() / GameView.IMAGE_HEIGHT - (this.getMapView().getHeight() / GameView.IMAGE_HEIGHT) == 0;
-    }
-
-    public boolean inItemsInventory(IntCoordinates position) {
-        return position.getY() / GameView.IMAGE_HEIGHT - (this.getMapView().getHeight() / GameView.IMAGE_HEIGHT) == 1;
     }
 
     public void addTrap(Trap t) {

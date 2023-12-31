@@ -2,7 +2,7 @@ package model;
 
 import tools.Coordinates;
 
-public abstract class Item extends Arme {
+public abstract class Item implements Weapon {
     private Coordinates position;
 
     public Item(Coordinates position) {

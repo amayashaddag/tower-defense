@@ -1,7 +1,6 @@
 package model;
 
 public class Slot {
-    private Player currentPlayer;
     public static final String SIMPLE_TOWER_INDEX = "ST";
     public static final String BOMB_TOWER_INDEX = "BT";
 
@@ -14,11 +13,10 @@ public class Slot {
     private boolean isUnlocked;
     private boolean isUpgradable;
 
-    public Slot(String index, boolean isUnlocked, boolean isUpgradable, Player currentPlayer) {
+    public Slot(String index, boolean isUnlocked, boolean isUpgradable) {
         this.index = index;
         this.isUnlocked = isUnlocked;
         this.isUpgradable = isUpgradable;
-        this.currentPlayer = currentPlayer;
     }
 
     public String getIndex() {
@@ -30,10 +28,7 @@ public class Slot {
     }
 
     public void unlock() {
-        if (currentPlayer.getCredit() >= getCost()) {
-            currentPlayer.lostCredit(getCost());
-            this.isUnlocked = true;
-        }
+        this.isUnlocked = true;
     }
 
     public boolean isUpgradable() {
@@ -41,18 +36,11 @@ public class Slot {
     }
 
     public void upgrade() {
-        if (currentPlayer.getCredit() >= getCost()) {
-            getArme().upgrade();
-            currentPlayer.lostCredit(getCost());
-            this.isUpgradable = getArme().upgradable();
-        }
+        getWeapon().upgrade();
+        this.isUpgradable = getWeapon().upgradable();
     }
 
-    public Player getcurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public Arme getArme() {
+    public Weapon getWeapon() {
         switch (index) {
             case SIMPLE_TOWER_INDEX:
                 return new SimpleTower();
@@ -94,6 +82,6 @@ public class Slot {
     }
 
     public int getCost() {
-        return getArme().getCost();
+        return getWeapon().getCost();
     }
 }

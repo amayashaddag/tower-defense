@@ -11,8 +11,11 @@ public class Trap extends Item implements SingleTargetDamage {
     private final static int MAX_ATTACKS = 10;
     private int attacks = 0;
     private Timer attackTimer;
-    private static int cost = 10;
-    private static final int MAX_LEVEL=3;
+    private static final int COST = 10;
+    private static final int MAX_LEVEL = 2;
+
+    private static final int UNLOCKING_COST = 100;
+    private static final int UPGRADING_COST = 100;
 
     public Trap(Coordinates position) {
         super(position);
@@ -48,12 +51,24 @@ public class Trap extends Item implements SingleTargetDamage {
     public void startAttack() {
         this.attackTimer.start();
     }
+
     @Override
     public int getCost() {
-        return cost;
+        return COST;
     }
+
     @Override
     public boolean upgradable() {
         return CURRENT_LEVEL < MAX_LEVEL;
+    }
+
+    @Override
+    public int getUnlockingCost() {
+        return UNLOCKING_COST;
+    }
+
+    @Override
+    public int getUpgradingCost() {
+        return UPGRADING_COST;
     }
 }

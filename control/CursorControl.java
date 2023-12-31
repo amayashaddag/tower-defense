@@ -77,33 +77,33 @@ public class CursorControl {
                     if (gameModel.playerHasEnoughCreditFor(trap.getCost())) {
                         trap.setPosition(mapCoordinates);
                         gameModel.getCurrentPlayer().lostCredit(trap.getCost());
-                    attackTimer = new Timer(GameControl.PERIOD, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (trap.isDead()) {
-                                ((Timer) e.getSource()).setRepeats(false);
-                                board.removeItem(trap);
-                                gameView.removeTrap(trap);
-                                return;
+                        attackTimer = new Timer(GameControl.PERIOD, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                if (trap.isDead()) {
+                                    ((Timer) e.getSource()).setRepeats(false);
+                                    board.removeItem(trap);
+                                    gameView.removeTrap(trap);
+                                    return;
+                                }
+                                Mob mob = board.getMob(mapCoordinates);
+                                if (mob == null)
+                                    return;
+                                trap.attack(mob);
                             }
-                            Mob mob = board.getMob(mapCoordinates);
-                            if (mob == null)
-                                return;
-                            trap.attack(mob);
-                        }
-                    });
-                    trap.setTimer(attackTimer);
-                    board.addItem(trap);
-                    gameView.addTrap(trap);
-                    trap.startAttack();
-                }
+                        });
+                        trap.setTimer(attackTimer);
+                        board.addItem(trap);
+                        gameView.addTrap(trap);
+                        trap.startAttack();
+                    }
                 } else {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;
-                    if (gameModel.playerHasEnoughCreditFor(zoneDamage.getCost())){
-                    gameModel.getCurrentPlayer().lostCredit(zoneDamage.getCost());
-                    List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
-                    zoneDamage.attack(mobsInRange);
-                    gameView.animateExpoison(mapCoordinates, containedItem);
+                    if (gameModel.playerHasEnoughCreditFor(zoneDamage.getCost())) {
+                        gameModel.getCurrentPlayer().lostCredit(zoneDamage.getCost());
+                        List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
+                        zoneDamage.attack(mobsInRange);
+                        gameView.animateExpoison(mapCoordinates, containedItem);
                     }
                 }
                 gameView.getSelectionFrame().removeItem();

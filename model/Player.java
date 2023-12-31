@@ -8,18 +8,18 @@ public class Player {
     public final static int TOWERS_INVENTORY_SIZE = 2;
     public final static int ITEMS_INVENTORY_SIZE = 4;
     private int credit;
-    public static final int INITIAL_CREDIT = 100;
+    public static final int INITIAL_CREDIT = 1000;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
-            new Slot(Slot.SIMPLE_TOWER_INDEX, true, true, this),
-            new Slot(Slot.BOMB_TOWER_INDEX, false, true, this)
+            new Slot(Slot.SIMPLE_TOWER_INDEX, true, true),
+            new Slot(Slot.BOMB_TOWER_INDEX, false, true)
     };
 
     private final Slot[] DEFAULT_ITEMS_INVENTORY = {
-            new Slot(Slot.BOMB_INDEX, true, true, this),
-            new Slot(Slot.FREEZE_INDEX, true, true, this),
-            new Slot(Slot.TRAP_INDEX, true, true, this),
-            new Slot(Slot.POISON_INDEX, true, true, this)
+            new Slot(Slot.BOMB_INDEX, true, true),
+            new Slot(Slot.FREEZE_INDEX, false, true),
+            new Slot(Slot.TRAP_INDEX, false, true),
+            new Slot(Slot.POISON_INDEX, false, true)
     };
 
     public Player(String pseudo) {
@@ -75,6 +75,13 @@ public class Player {
         return itemIsUnlocked(index);
     }
 
+    public boolean isUpgradable(String index) {
+        if (index.length() > 1) {
+            return towerIsUpgradable(index);
+        }
+        return itemIsUpgradable(index);
+    }
+
     private boolean towerIsUnlocked(String index) {
         for (Slot tower : towersInventory) {
             if (tower.getIndex().equals(index)) {
@@ -93,6 +100,24 @@ public class Player {
         return false;
     }
 
+    private boolean towerIsUpgradable(String index) {
+        for (Slot tower : towersInventory) {
+            if (tower.getIndex().equals(index)) {
+                return tower.isUpgradable();
+            }
+        }
+        return false;
+    }
+
+    private boolean itemIsUpgradable(String index) {
+        for (Slot item : itemsInventory) {
+            if (item.getIndex().equals(index)) {
+                return item.isUpgradable();
+            }
+        }
+        return false;
+    }
+
     public int getCredit() {
         return this.credit;
     }
@@ -104,7 +129,8 @@ public class Player {
     public void lostCredit(int lostAmmount) {
         this.credit -= lostAmmount;
     }
-    public boolean hasEnoughCredit(int price){
-        return credit>=price;
+
+    public boolean hasEnoughCredit(int price) {
+        return credit >= price;
     }
 }
