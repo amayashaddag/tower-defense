@@ -2,7 +2,7 @@ package model;
 
 import tools.Coordinates;
 
-public abstract class Item {
+public abstract class Item extends Arme {
     private Coordinates position;
 
     public Item(Coordinates position) {
@@ -17,4 +17,9 @@ public abstract class Item {
         this.position = position;
     }
 
+    abstract public void upgrade();
+
+    abstract public boolean upgradable();
+
+    abstract public int getCost();
 }

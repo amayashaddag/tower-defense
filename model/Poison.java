@@ -11,8 +11,9 @@ public class Poison extends Item implements ZoneDamage {
     private static int CURRENT_LEVEL = 0;
     private static int POISON_DURATION = 3;
     private static int DAMAGE = 1;
-
     private final int RANGE = 3;
+    private static int cost = 100;
+    private static final int MAX_LEVEL = 3;
 
     public Poison(Coordinates position) {
         super(position);
@@ -21,10 +22,10 @@ public class Poison extends Item implements ZoneDamage {
     public Poison() {
         super(null);
     }
- 
-    public static void upgrade() {
+
+    public void upgrade() {
         DAMAGE++;
-        POISON_DURATION ++;
+        POISON_DURATION++;
     }
 
     @Override
@@ -36,8 +37,8 @@ public class Poison extends Item implements ZoneDamage {
                 public void run() {
                     mob.beingAttacked(DAMAGE);
                 }
-            }, 
-            POISON_DURATION * 1000);
+            },
+                    POISON_DURATION * 1000);
         }
     }
 
@@ -47,6 +48,15 @@ public class Poison extends Item implements ZoneDamage {
 
     public static int getLevel() {
         return CURRENT_LEVEL;
+    }
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public boolean upgradable() {
+        return CURRENT_LEVEL < MAX_LEVEL;
     }
 
 }

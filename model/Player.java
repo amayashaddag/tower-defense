@@ -5,20 +5,20 @@ public class Player {
     private String pseudo;
     private Slot[] towersInventory;
     private Slot[] itemsInventory;
+    public final static int TOWERS_INVENTORY_SIZE = 2;
+    public final static int ITEMS_INVENTORY_SIZE = 4;
+    private int credit;
 
-    public static int TOWERS_INVENTORY_SIZE = 2;
-    public static int ITEMS_INVENTORY_SIZE = 4;
-
-    private static final Slot[] DEFAULT_TOWERS_INVENTORY = {
-        new Slot(Slot.SIMPLE_TOWER_INDEX, true),
-        new Slot(Slot.BOMB_TOWER_INDEX, false)
+    private final Slot[] DEFAULT_TOWERS_INVENTORY = {
+            new Slot(Slot.SIMPLE_TOWER_INDEX, true, true, this),
+            new Slot(Slot.BOMB_TOWER_INDEX, false, true, this)
     };
 
-    private static final Slot[] DEFAULT_ITEMS_INVENTORY = {
-        new Slot(Slot.BOMB_INDEX, true),
-        new Slot(Slot.FREEZE_INDEX, true),
-        new Slot(Slot.TRAP_INDEX, true),
-        new Slot(Slot.POISON_INDEX, true),
+    private final Slot[] DEFAULT_ITEMS_INVENTORY = {
+            new Slot(Slot.BOMB_INDEX, true, true, this),
+            new Slot(Slot.FREEZE_INDEX, true, true, this),
+            new Slot(Slot.TRAP_INDEX, true, true, this),
+            new Slot(Slot.POISON_INDEX, true, true, this)
     };
 
     public Player(String pseudo) {
@@ -43,10 +43,11 @@ public class Player {
         Tower t;
         String towerIndex = towersInventory[index].getIndex();
         switch (towerIndex) {
-            case Slot.SIMPLE_TOWER_INDEX : 
+            case Slot.SIMPLE_TOWER_INDEX:
                 t = new SimpleTower();
                 break;
-            default : return null;
+            default:
+                return null;
         }
         return t;
 
@@ -56,10 +57,11 @@ public class Player {
         Item i;
         String itemIndex = itemsInventory[index].getIndex();
         switch (itemIndex) {
-            case Slot.BOMB_INDEX : 
+            case Slot.BOMB_INDEX:
                 i = new Bomb();
                 break;
-            default : return null;
+            default:
+                return null;
         }
         return i;
     }
@@ -87,5 +89,17 @@ public class Player {
             }
         }
         return false;
+    }
+
+    public int getCredit() {
+        return this.credit;
+    }
+
+    public void wonCredit(int wonAmmount) {
+        this.credit += wonAmmount;
+    }
+
+    public void lostCredit(int lostAmmount) {
+        this.credit -= lostAmmount;
     }
 }

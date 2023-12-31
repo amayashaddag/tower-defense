@@ -4,7 +4,7 @@ import javax.swing.Timer;
 
 import tools.*;
 
-public abstract class Tower {
+public abstract class Tower extends Arme{
     private Coordinates position;
     private Timer attackFrequencyTimer;
 
@@ -34,4 +34,7 @@ public abstract class Tower {
     public void stopAttack() {
         this.attackFrequencyTimer.stop();
     }
+    public abstract void upgrade();
+    public abstract boolean upgradable();
+    public abstract int getCost();
 }
