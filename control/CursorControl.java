@@ -105,8 +105,8 @@ public class CursorControl {
                     }
                 } else {
                     ZoneDamage zoneDamage = (ZoneDamage) containedItem;
-                    if (gameModel.playerHasEnoughCreditFor(zoneDamage.getCost())) {
-                        gameModel.getCurrentPlayer().lostCredit(zoneDamage.getCost());
+                    if (gameModel.playerHasEnoughCreditFor(containedItem.getCost())) {
+                        gameModel.getCurrentPlayer().lostCredit(containedItem.getCost());
                         List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
                         zoneDamage.attack(mobsInRange);
                         gameView.animateExpoison(mapCoordinates, containedItem);
