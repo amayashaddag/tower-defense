@@ -27,4 +27,14 @@ public class InterfaceGraphicsFactory {
         Image selectionFrame = new ImageIcon(url).getImage();
         return selectionFrame;
     }
+
+    public static Image loadHealthIcon() {
+        //TODO : A implémenter
+        return null;
+    }
+
+    public static Image loadCoinIcon() {
+        //TODO : A implémenter
+        return null;
+    }
 }

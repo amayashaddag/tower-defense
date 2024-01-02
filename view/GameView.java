@@ -198,6 +198,14 @@ public class GameView extends JFrame {
             }
         }
 
+        public void displayGameInformation(Graphics g) {
+            //TODO A implémenter
+            Image healtIcon = InterfaceGraphicsFactory.loadHealthIcon();
+            Image coinIcon = InterfaceGraphicsFactory.loadCoinIcon();
+            String healthPoints = String.valueOf(currentBoard.getCurrentBase().getHp());
+            String credit = String.valueOf(currentPlayer.getCredit());
+        }
+
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
