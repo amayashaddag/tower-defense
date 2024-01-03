@@ -3,9 +3,14 @@ package control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import menu.MenuView;
 import model.*;
+import tools.Triplet;
 import view.*;
 
 public class GameControl {
@@ -20,11 +25,17 @@ public class GameControl {
     private Timer gameTimer;
     private long lastTime;
 
+    private int roundNumber = 0;
+
     public GameControl(Game gameModel, GameView gameView) {
         this.gameModel = gameModel;
         this.gameView = gameView;
         this.cursorControl = new CursorControl(gameModel, gameView);
-        this.gameTimer = new Timer(PERIOD, new ActionListener() {
+        this.gameTimer = gameModel.isMarathonMode() ? marathonModeTimer() : normalModeTimer();
+    }
+
+    public Timer normalModeTimer() {
+        return new Timer(PERIOD, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 long currentTime = System.nanoTime();
@@ -37,14 +48,45 @@ public class GameControl {
                     if (gameModel.gameFinished()) {
                         System.out.println("Game finished ! ");
                         stopTimer();
-                        //FIXME : méthode pas "gentille" pour fermer la fenêtre
-                        System.exit(0);
+                        returnToMenu();
                     } else {
                         if (gameModel.roundFinished()) {
+                            System.out.println("Le round il est fini");
                             gameModel.nextRound();
-                            if (gameModel.getIndexCurrentWave() < gameModel.nbRounds()) {
+                            if (!gameModel.getWaves().isEmpty()) {
                                 gameModel.startCurrentRound();
+                                System.out.println("Go");
                             }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public Timer marathonModeTimer() {
+        return new Timer(PERIOD, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                long currentTime = System.nanoTime();
+                if (lastTime == 0) {
+                    lastTime = currentTime;
+                } else {
+                    long deltaT = currentTime - lastTime;
+                    lastTime = currentTime;
+                    update(deltaT);
+                    if (gameModel.gameFinished()) {
+                        System.out.println("Game finished ! ");
+                        stopTimer();
+                        returnToMenu();
+                    } else {
+                        if (gameModel.roundFinished()) {
+                            Triplet nextWave = gameModel.nextWave(Game.MARATHON_SEED, roundNumber);
+                            System.out.println(nextWave);
+                            roundNumber++;
+                            gameModel.nextRound();
+                            gameModel.addWave(nextWave);
+                            gameModel.startCurrentRound();
                         }
                     }
                 }
@@ -55,6 +97,12 @@ public class GameControl {
     public void update(long deltaT) {
         gameModel.getCurrentBoard().updateMobsPosition(deltaT);
         gameView.repaint();
+    }
+
+    private void returnToMenu() {
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(gameView);
+        parentFrame.setContentPane(new MenuView(gameModel.getCurrentPlayer()));
+        parentFrame.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
     }
 
     public void updateTowers() {

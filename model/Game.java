@@ -2,6 +2,7 @@ package model;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -15,22 +16,25 @@ public class Game {
     private Player currentPlayer;
     private Board currentBoard;
     private Scanner scanner;
-    private int indexCurrentWave;
+
     private List<Triplet> waves;
     private Random random;
-    private final static int MOB_SPAWNING_DELAY = 1000;
+    private boolean marathonMode;
 
-    public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves) {
+    private final static int MOB_SPAWNING_DELAY = 1000;
+    public final static Triplet MARATHON_SEED = new Triplet(3, 2, 1);
+
+    public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves, boolean marathonMode) {
         this.currentPlayer = currentPlayer;
         this.currentBoard = currentBoard;
         this.scanner = new Scanner(System.in);
         this.random = new Random();
         this.waves = waves;
-        this.indexCurrentWave = 0;
+        this.marathonMode = marathonMode;
     }
 
-    public int getIndexCurrentWave() {
-        return indexCurrentWave;
+    public boolean isMarathonMode() {
+        return marathonMode;
     }
 
     public Player getCurrentPlayer() {
@@ -41,20 +45,24 @@ public class Game {
         return this.currentBoard;
     }
 
-    public int nbRounds() {
-        return waves.size();
+    public void nextRound() {
+        this.waves.remove(0);
     }
 
-    public void nextRound() {
-        indexCurrentWave++;
+    public List<Triplet> getWaves() {
+        return waves;
     }
 
     public boolean gameFinished() {
-        return indexCurrentWave >= nbRounds() || roundLost();
+        return this.waves.isEmpty() || roundLost();
     }
 
     public boolean playerHasEnoughCreditFor(int price) {
         return currentPlayer.hasEnoughCredit(price);
+    }
+
+    public void addWave(Triplet wave) {
+        this.waves.add(this.waves.size(), new Triplet(wave.getX(), wave.getY(), wave.getZ()));
     }
 
     // FIXME : Fix reading coordinates while having a more than 2 integer in y
@@ -207,7 +215,7 @@ public class Game {
     }
 
     public Triplet getCurrentWave() {
-        return this.waves.get(indexCurrentWave);
+        return this.waves.get(0);
     }
 
     public boolean roundLost() {
@@ -215,7 +223,7 @@ public class Game {
     }
 
     public boolean roundWon() {
-        return getCurrentWave().isNull() && currentBoard.getCurrentMobs().isEmpty();
+        return (getCurrentWave().isNull()) && currentBoard.getCurrentMobs().isEmpty();
     }
 
     public boolean roundFinished() {
@@ -223,8 +231,7 @@ public class Game {
     }
 
     /* On est dans Round */
-    public void startRound(int index) {
-        Triplet wave = this.waves.get(index);
+    public void startRound(Triplet wave) {
         Timer Round = new Timer(MOB_SPAWNING_DELAY, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -240,12 +247,11 @@ public class Game {
     }
 
     public void startCurrentRound() {
-        startRound(indexCurrentWave);
+        startRound(getCurrentWave());
     }
 
     private static List<Triplet> easyModeRound() {
         List<Triplet> rounds = new ArrayList<>();
-        rounds.add(new Triplet(10, 0, 0));
         rounds.add(new Triplet(10, 2, 0));
         rounds.add(new Triplet(10, 5, 0));
         return rounds;
@@ -261,20 +267,50 @@ public class Game {
         return rounds;
     }
 
+    private static List<Triplet> hardModeRound() {
+        List<Triplet> rounds = new ArrayList<>();
+        rounds.add(new Triplet(10, 0, 0));
+        rounds.add(new Triplet(10, 2, 5));
+        rounds.add(new Triplet(5, 5, 10));
+        rounds.add(new Triplet(5, 7, 10));
+        rounds.add(new Triplet(2, 5, 10));
+        return rounds;
+    }
+
+    public Triplet nextWave(Triplet initialWave, int n) {
+        int x0 = initialWave.getX(), y0 = initialWave.getY(), z0 = initialWave.getZ();
+        int x = (int) (x0 / (n + 1)), y = y0, z = (int) (z0 * (n + 1));
+        return new Triplet(x, y, z);
+    }
+
     // FIXME : Set different maps for differents modes : easy, medium, hard ...
 
     public static Game getEasyModeGame(Player player) {
         Board easyModeBoard = Board.boardExample();
         List<Triplet> easyModeRound = easyModeRound();
-        Game easyModeGame = new Game(player, easyModeBoard, easyModeRound);
+        Game easyModeGame = new Game(player, easyModeBoard, easyModeRound, false);
         return easyModeGame;
     }
 
     public static Game getMediumModeGame(Player player) {
         Board mediumModeBoard = Board.boardExample();
         List<Triplet> mediumModeRound = mediumModeRound();
-        Game mediumModeGame = new Game(player, mediumModeBoard, mediumModeRound);
+        Game mediumModeGame = new Game(player, mediumModeBoard, mediumModeRound, false);
         return mediumModeGame;
     }
 
+    public static Game getHardModeGame(Player player) {
+        Board hardModeBoard = Board.boardExample();
+        List<Triplet> hardModeRound = hardModeRound();
+        Game hardModeGame = new Game(player, hardModeBoard, hardModeRound, false);
+        return hardModeGame;
+    }
+
+    public static Game getMarathonMode(Player player) {
+        Board easyModeBoard = Board.boardExample();
+        List<Triplet> marathonMode = new LinkedList<>();
+        marathonMode.add(new Triplet(MARATHON_SEED.getX(), MARATHON_SEED.getY(), MARATHON_SEED.getZ()));
+        Game marathonModeGame = new Game(player, easyModeBoard, marathonMode, true);
+        return marathonModeGame;
+    }
 }

@@ -14,7 +14,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -24,13 +23,11 @@ import assets.InterfaceMessages;
 import model.*;
 import tools.*;
 
-public class GameView extends JFrame {
+public class GameView extends JPanel {
 
     private static final int UNIT_WIDTH = 96, UNIT_HEIGHT = 96;
 
     public static final int IMAGE_WIDTH = UNIT_WIDTH, IMAGE_HEIGHT = UNIT_HEIGHT;
-    private static final String WINDOW_TITLE = "Tower Defense Game - Le titre est à changer";
-    private static final boolean RESIZABILITY = false;
     private static final int INVENTORY_FRAME_HEIGHT = UNIT_HEIGHT, INVENTORY_FRAME_WIDTH = UNIT_WIDTH;
     private static final int MOB_IMAGE_HEIGHT = UNIT_HEIGHT * 2 / 3, MOB_IMAGE_WIDTH = UNIT_WIDTH * 2 / 3;
     private static final int INVENTORY_SLOT_HEIGHT = UNIT_HEIGHT * 3 / 4, INVENTORY_SLOT_WIDTH = UNIT_WIDTH * 3 / 4;
@@ -42,6 +39,7 @@ public class GameView extends JFrame {
     private final static int EXPLOISON_DELAY = 100;
     private static final int FONT_SIZE = 24;
     private static final int DISPLAY_MESSAGE_DURATION = 3000;
+    public static int WINDOW_HEIGHT, WINDOW_WIDTH;
 
     private class MapView extends JPanel {
 
@@ -142,7 +140,8 @@ public class GameView extends JFrame {
 
             for (MobDisplay mobDisplay : this.mobDisplays) {
                 g.drawImage(mobDisplay.getCurrentFrame(),
-                        (int) (mobDisplay.getMob().getPosition().getY() * IMAGE_WIDTH) + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
+                        (int) (mobDisplay.getMob().getPosition().getY() * IMAGE_WIDTH)
+                                + (IMAGE_WIDTH - MOB_IMAGE_WIDTH) / 2,
                         (int) (mobDisplay.getMob().getPosition().getX() * IMAGE_HEIGHT)
                                 + (IMAGE_HEIGHT - MOB_IMAGE_HEIGHT) / 2,
                         MOB_IMAGE_WIDTH,
@@ -199,11 +198,15 @@ public class GameView extends JFrame {
         }
 
         public void displayGameInformation(Graphics g) {
-            //TODO A implémenter
+            // TODO A implémenter
             Image healtIcon = InterfaceGraphicsFactory.loadHealthIcon();
             Image coinIcon = InterfaceGraphicsFactory.loadCoinIcon();
             String healthPoints = String.valueOf(currentBoard.getCurrentBase().getHp());
             String credit = String.valueOf(currentPlayer.getCredit());
+
+            //FIXME NE PAS LAISSER LES VALEURS
+            g.drawString(healthPoints, 16, 16);
+            g.drawString(credit, 16, 32);
         }
 
         @Override
@@ -232,14 +235,11 @@ public class GameView extends JFrame {
             this.updateBulletsPosition(g);
             this.updateExploisons(g);
             this.updateTraps(g);
+            this.displayGameInformation(g);
 
-            try {
-                g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
-            } catch (Exception e) {
-                //FIXME HANDLE ERROR MESSAGES IN DIALOG BOX
-                e.printStackTrace();
-            }
-            if (interfaceMessage == null) return;
+            g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
+            if (interfaceMessage == null)
+                return;
             FontMetrics fontMetrics = g.getFontMetrics();
             int x = (getWidth() - fontMetrics.stringWidth(interfaceMessage)) / 2;
             int y = fontMetrics.getHeight() + fontMetrics.getAscent();
@@ -254,7 +254,8 @@ public class GameView extends JFrame {
             private Slot slot;
 
             public InventorySlot(Slot slot) {
-                this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked()).getScaledInstance(INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT, Image.SCALE_SMOOTH);
+                this.image = EntityGraphicsFactory.loadSlot(slot.getIndex(), slot.isUnlocked())
+                        .getScaledInstance(INVENTORY_SLOT_WIDTH, INVENTORY_SLOT_HEIGHT, Image.SCALE_SMOOTH);
                 this.slot = slot;
                 this.setPreferredSize(new Dimension(INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT));
                 this.setContentAreaFilled(false);
@@ -342,16 +343,14 @@ public class GameView extends JFrame {
 
         this.mapView = new MapView();
         this.inventoryView = new InventoryView();
-
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle(WINDOW_TITLE);
-        this.setResizable(RESIZABILITY);
         this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight());
 
         this.add(this.mapView);
         this.add(this.inventoryView, BorderLayout.SOUTH);
 
         this.selectionFrame = new SelectionFrame();
+        WINDOW_WIDTH = mapView.getWidth();
+        WINDOW_HEIGHT = mapView.getHeight() + inventoryView.getHeight();
     }
 
     public void animateBullet(Coordinates startingPosition, Coordinates landingPosition) {
@@ -373,14 +372,42 @@ public class GameView extends JFrame {
         bulletTimer.start();
     }
 
-    public void animateExpoison(Coordinates coordinates, Item item) {
-        Exploison exploison;
-        if (item instanceof Bomb)
-            exploison = Exploison.bombExploison(coordinates);
-        else if (item instanceof Freeze)
-            exploison = Exploison.freezeExploison(coordinates);
-        else
-            exploison = Exploison.poisonExploison(coordinates);
+    public void animateBombExploison(Coordinates coordinates) {
+        Exploison exploison = Exploison.bombExploison(coordinates);
+        mapView.exploisons.add(exploison);
+        Timer timer = new Timer(EXPLOISON_DELAY, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if (!exploison.hastNextFrame()) {
+                    mapView.exploisons.remove(exploison);
+                    ((Timer) arg0.getSource()).setRepeats(false);
+                    return;
+                }
+                exploison.setNextFrame();
+            }
+        });
+        timer.start();
+    }
+
+    public void animateFreezeExploison(Coordinates coordinates) {
+        Exploison exploison = Exploison.freezeExploison(coordinates);
+        mapView.exploisons.add(exploison);
+        Timer timer = new Timer(EXPLOISON_DELAY, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if (!exploison.hastNextFrame()) {
+                    mapView.exploisons.remove(exploison);
+                    ((Timer) arg0.getSource()).setRepeats(false);
+                    return;
+                }
+                exploison.setNextFrame();
+            }
+        });
+        timer.start();
+    }
+
+    public void animatePoisonExploison(Coordinates coordinates) {
+        Exploison exploison = Exploison.poisonExploison(coordinates);
         mapView.exploisons.add(exploison);
         Timer timer = new Timer(EXPLOISON_DELAY, new ActionListener() {
             @Override

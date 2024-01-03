@@ -4,6 +4,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -12,10 +13,11 @@ import java.util.List;
 import java.util.LinkedList;
 
 import assets.*;
+import menu.MenuView;
 import model.*;
 import view.*;
 
-public class ShopView extends JFrame {
+public class ShopView extends JPanel {
 
     private final static int PADDING = 16;
 
@@ -25,7 +27,7 @@ public class ShopView extends JFrame {
         private Button upgradeButton;
         private Button unlockButton;
 
-        private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 2;
+        private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 3;
 
         public ShopSlot(Slot slot) {
             this.weaponDisplay = new WeaponDisplay(slot.getIndex());
@@ -34,7 +36,7 @@ public class ShopView extends JFrame {
             boolean isUnlocked = player.isUnlocked(slot.getIndex());
             boolean isUpgradable = player.isUpgradable(slot.getIndex());
 
-            this.upgradeButton = new Button("UPGRADE");
+            this.upgradeButton = Button.shopButton(Button.UPGRADE_BUTTON_LABEL);
             this.upgradeButton.setEnabled(isUpgradable && isUnlocked);
             this.upgradeButton.addActionListener(new ActionListener() {
                 @Override
@@ -55,7 +57,7 @@ public class ShopView extends JFrame {
                 }
             });
 
-            this.unlockButton = new Button("UNLOCK");
+            this.unlockButton = Button.shopButton(Button.UNLOCK_BUTTON_LABEL);
             this.unlockButton.setEnabled(!isUnlocked);
             this.unlockButton.addActionListener(new ActionListener() {
                 @Override
@@ -111,9 +113,20 @@ public class ShopView extends JFrame {
             slots.add(shopSlot);
             this.add(shopSlot);
         }
+        Button goToMenuButton = Button.largeMenuButton(Button.GO_TO_MENU_BUTTON_LABEL);
+        this.add(goToMenuButton);
+        goToMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                MenuView menuView = new MenuView(player);
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(ShopView.this);
+                parentFrame.setContentPane(menuView);
+                parentFrame.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
+                parentFrame.repaint();
+            }
+        });
         this.setLayout(new FlowLayout());
-        //FIXME : Enlever les valeurs numériques ici
-        this.setSize(800, 600);
+        this.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
     }
 
     public List<ShopSlot> getSlots() {

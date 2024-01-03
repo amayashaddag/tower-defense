@@ -56,6 +56,7 @@ public class CursorControl {
                                                 List<Mob> mobsInRange = board.getMobsInRange(mob.getPosition(),
                                                         containtedTower.getRange());
                                                 zoneTower.attack(mobsInRange);
+                                                gameView.animateBombExploison(mob.getPosition());
                                             }
                                             gameModel.getCreditsFromMobs();
                                             board.removeDeadMobs();
@@ -109,7 +110,13 @@ public class CursorControl {
                         gameModel.getCurrentPlayer().lostCredit(containedItem.getCost());
                         List<Mob> mobsInRange = board.getMobsInRange(mapCoordinates, zoneDamage.getRange());
                         zoneDamage.attack(mobsInRange);
-                        gameView.animateExpoison(mapCoordinates, containedItem);
+                        if (containedItem instanceof Bomb) {
+                            gameView.animateBombExploison(mapCoordinates);
+                        } else if (containedItem instanceof Freeze) {
+                            gameView.animateFreezeExploison(mapCoordinates);
+                        } else {
+                            gameView.animatePoisonExploison(mapCoordinates);
+                        }
                     } else {
                         gameView.displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
                     }
