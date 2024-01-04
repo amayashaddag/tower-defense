@@ -12,10 +12,12 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import assets.Colors;
 import assets.Fonts;
@@ -41,7 +43,9 @@ public class GameView extends JPanel {
     private static final int SCORE_FONT_SIZE = 32;
     private static final int DISPLAY_MESSAGE_DURATION = 3000;
     private static final int PADDING = 48;
+    private static final int INVENTORY_SLOT_BORDER = 3;
     public static int WINDOW_HEIGHT, WINDOW_WIDTH;
+
 
     private class MapView extends JPanel {
 
@@ -276,6 +280,8 @@ public class GameView extends JPanel {
                 this.setPreferredSize(new Dimension(INVENTORY_FRAME_WIDTH, INVENTORY_FRAME_HEIGHT));
                 this.setContentAreaFilled(false);
                 this.setIcon(new ImageIcon(image));
+                Border buttonBorder = BorderFactory.createLineBorder(Colors.INVENTORY_SLOT_BORDER_COLOR, INVENTORY_SLOT_BORDER);
+                this.setBorder(buttonBorder);
             }
         }
 
