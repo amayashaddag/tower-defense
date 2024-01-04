@@ -38,7 +38,9 @@ public class GameView extends JPanel {
     private static final int TRAP_WIDTH = UNIT_WIDTH * 2 / 3, TRAP_HEIGHT = UNIT_HEIGHT * 2 / 3;
     private final static int EXPLOISON_DELAY = 100;
     private static final int FONT_SIZE = 24;
+    private static final int SCORE_FONT_SIZE = 32;
     private static final int DISPLAY_MESSAGE_DURATION = 3000;
+    private static final int PADDING = 48;
     public static int WINDOW_HEIGHT, WINDOW_WIDTH;
 
     private class MapView extends JPanel {
@@ -198,15 +200,29 @@ public class GameView extends JPanel {
         }
 
         public void displayGameInformation(Graphics g) {
-            // TODO A implémenter
-            Image healtIcon = InterfaceGraphicsFactory.loadHealthIcon();
-            Image coinIcon = InterfaceGraphicsFactory.loadCoinIcon();
+            Image heartIcon = IconsGraphicsFactory.loadHeartIcon().getImage();
+            Image coinIcon = IconsGraphicsFactory.loadCoinIcon().getImage();
             String healthPoints = String.valueOf(currentBoard.getCurrentBase().getHp());
             String credit = String.valueOf(currentPlayer.getCredit());
 
-            //FIXME NE PAS LAISSER LES VALEURS
-            g.drawString(healthPoints, 16, 16);
-            g.drawString(credit, 16, 32);
+            // FIXME Trouver une formule logique pour centrer les icones
+
+            g.setFont(Fonts.sansSerifBoldItalicFont(SCORE_FONT_SIZE));
+            g.setColor(Colors.INTERFACE_MESSAGE_COLOR);
+
+            FontMetrics fontMetrics = g.getFontMetrics();
+            int x = SCORE_FONT_SIZE;
+            int fontHeight = fontMetrics.getHeight();
+            int y = fontHeight + fontMetrics.getAscent();
+
+            g.drawImage(heartIcon, x,
+                    y + fontHeight / 6 - IconsGraphicsFactory.HEART_ICON_HEIGHT, IconsGraphicsFactory.HEART_ICON_WIDTH,
+                    IconsGraphicsFactory.HEART_ICON_HEIGHT, this);
+            g.drawString(healthPoints, x + PADDING, y);
+            g.drawImage(coinIcon, x,
+                    y + fontHeight / 6  + SCORE_FONT_SIZE - IconsGraphicsFactory.COIN_ICON_HEIGHT, IconsGraphicsFactory.COIN_ICON_WIDTH,
+                    IconsGraphicsFactory.COIN_ICON_HEIGHT, this);
+            g.drawString(credit, x + PADDING, y + SCORE_FONT_SIZE);
         }
 
         @Override

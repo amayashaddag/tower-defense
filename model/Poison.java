@@ -29,6 +29,7 @@ public class Poison extends Item implements ZoneDamage {
     public void upgrade() {
         DAMAGE++;
         POISON_DURATION++;
+        CURRENT_LEVEL++;
     }
 
     @Override
@@ -52,6 +53,7 @@ public class Poison extends Item implements ZoneDamage {
     public static int getLevel() {
         return CURRENT_LEVEL;
     }
+
     @Override
     public int getCost() {
         return COST;

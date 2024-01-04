@@ -14,20 +14,6 @@ public class Debug {
         test();
     }
 
-    // public static void consoleVersion() {
-    //     Board b = Board.boardExample();
-    //     b.addMob(new Mob(0));
-
-    //     Player p = new Player("Amayas");
-
-    //     Triplet tr = new Triplet(2, 2, 1);
-    //     List<Triplet> waves = new LinkedList<>();
-    //     waves.add(tr);
-    //     waves.add(new Triplet(0, 0, 4));
-    //     Game game = new Game(p, b, waves);
-    //     game.startRound();
-    // }
-
     public static void graphicalVersion() {
         Player p = new Player("Amayas");
         Game game = Game.getMarathonMode(p);

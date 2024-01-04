@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -27,14 +26,19 @@ public class ShopView extends JPanel {
         private Button upgradeButton;
         private Button unlockButton;
 
-        private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 3;
+        private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 7 / 2;
 
         public ShopSlot(Slot slot) {
+
             this.weaponDisplay = new WeaponDisplay(slot.getIndex());
             this.slot = slot;
 
             boolean isUnlocked = player.isUnlocked(slot.getIndex());
             boolean isUpgradable = player.isUpgradable(slot.getIndex());
+
+            int uprgadingCost = slot.getWeapon().getUpgradingCost();
+            String upgradingCostText = String.valueOf(uprgadingCost);
+            LabeledIcon upgradingCostLabel = new LabeledIcon(upgradingCostText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
 
             this.upgradeButton = Button.shopButton(Button.UPGRADE_BUTTON_LABEL);
             this.upgradeButton.setEnabled(isUpgradable && isUnlocked);
@@ -45,17 +49,20 @@ public class ShopView extends JPanel {
                     int upgradingCost = weapon.getUpgradingCost();
                     if (!player.hasEnoughCredit(upgradingCost)) {
                         //FIXME : Show not enough credit message
-                        System.out.println("Not enough credit");
                         return;
                     }
                     weapon.upgrade();
+                    updatePlayerCredit();
                     player.lostCredit(upgradingCost);
                     if (!weapon.upgradable()) {
                         upgradeButton.setEnabled(false);
                     }
-                    System.out.println("Upgraded !");
                 }
             });
+            int unlockingCost = slot.getWeapon().getUnlockingCost();
+            String unlockingCostText = String.valueOf(unlockingCost);
+            LabeledIcon unlockingCostLabel = new LabeledIcon(unlockingCostText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
+            
 
             this.unlockButton = Button.shopButton(Button.UNLOCK_BUTTON_LABEL);
             this.unlockButton.setEnabled(!isUnlocked);
@@ -66,24 +73,27 @@ public class ShopView extends JPanel {
                     int unlockingCost = weapon.getUnlockingCost();
                     if (!player.hasEnoughCredit(unlockingCost)) {
                         // FIXME : Show not enough credit message
-                        System.out.println("Not enough credit");
                         return;
                     }
                     player.lostCredit(unlockingCost);
                     slot.unlock();
+                    updatePlayerCredit();
                     unlockButton.setEnabled(false);
                     upgradeButton.setEnabled(true);
-                    System.out.println("Unlocked !");
                 }
             });
+
+
 
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             this.setAlignmentX(CENTER_ALIGNMENT);
             this.add(weaponDisplay);
             this.add(Box.createRigidArea(new Dimension(0, PADDING)));
             this.add(upgradeButton);
+            this.add(upgradingCostLabel);
             this.add(Box.createRigidArea(new Dimension(0, PADDING)));
             this.add(unlockButton);
+            this.add(unlockingCostLabel);
             this.setPreferredSize(new Dimension(SLOT_WIDTH, SLOT_HEIGHT));
         }
 
@@ -97,22 +107,34 @@ public class ShopView extends JPanel {
     }
 
     private Player player;
+    private LabeledIcon playerCreditLabel;
     private List<ShopSlot> slots;
 
     public ShopView(Player player) {
         super();
         this.player = player;
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.slots = new LinkedList<>();
+
+        JPanel slotsPanel = new JPanel();
+
+        int playerCredit = player.getCredit();
+        String playerCreditText = String.valueOf(playerCredit);
+        this.playerCreditLabel = new LabeledIcon(playerCreditText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
+        this.add(playerCreditLabel);
+
         for (Slot s : player.getItemsInventory()) {
             ShopSlot shopSlot = new ShopSlot(s);
             slots.add(shopSlot);
-            this.add(shopSlot);
+            slotsPanel.add(shopSlot);
         }
         for (Slot s : player.getTowersInventory()) {
             ShopSlot shopSlot = new ShopSlot(s);
             slots.add(shopSlot);
-            this.add(shopSlot);
+            slotsPanel.add(shopSlot);
         }
+        slotsPanel.setSize(MenuView.WINDOW_WIDTH, ShopSlot.SLOT_HEIGHT);;
+        this.add(slotsPanel);
         Button goToMenuButton = Button.largeMenuButton(Button.GO_TO_MENU_BUTTON_LABEL);
         this.add(goToMenuButton);
         goToMenuButton.addActionListener(new ActionListener() {
@@ -125,11 +147,16 @@ public class ShopView extends JPanel {
                 parentFrame.repaint();
             }
         });
-        this.setLayout(new FlowLayout());
         this.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
     }
 
     public List<ShopSlot> getSlots() {
         return slots;
+    }
+
+    private void updatePlayerCredit() {
+        int playerCredit = player.getCredit();
+        String playerCreditText = String.valueOf(playerCredit);
+        this.playerCreditLabel.setText(playerCreditText);
     }
 }
