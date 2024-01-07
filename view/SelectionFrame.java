@@ -2,9 +2,9 @@ package view;
 
 import java.awt.Image;
 
-import model.Item;
-import model.Tower;
+import items.Item;
 import tools.*;
+import towers.Tower;
 
 public class SelectionFrame {
     private Image image;

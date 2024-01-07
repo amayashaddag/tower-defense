@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
-import model.*;
+import mobs.Mob;
 
 public class MobDisplay {
     private Image[] northFrames;

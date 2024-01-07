@@ -1,5 +1,7 @@
-package model;
+package towers;
 
+import mobs.Mob;
+import model.SingleTargetDamage;
 import tools.*;
 
 public class SimpleTower extends Tower implements SingleTargetDamage {

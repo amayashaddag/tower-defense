@@ -1,7 +1,8 @@
-package model;
+package towers;
 
 import javax.swing.Timer;
 
+import model.Weapon;
 import tools.*;
 
 public abstract class Tower implements Weapon {

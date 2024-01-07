@@ -9,8 +9,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import menu.MenuView;
+import mobs.Mob;
 import model.*;
 import tools.Triplet;
+import towers.Tower;
 import view.*;
 
 public class GameControl {

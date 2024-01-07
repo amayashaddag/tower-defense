@@ -1,5 +1,13 @@
 package model;
 
+import items.Bomb;
+import items.Freeze;
+import items.Item;
+import items.Trap;
+import towers.BombTower;
+import towers.SimpleTower;
+import towers.Tower;
+
 public class Slot {
     public static final String SIMPLE_TOWER_INDEX = "ST";
     public static final String BOMB_TOWER_INDEX = "BT";

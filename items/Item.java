@@ -1,5 +1,6 @@
-package model;
+package items;
 
+import model.Weapon;
 import tools.Coordinates;
 
 public abstract class Item implements Weapon {

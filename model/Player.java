@@ -1,6 +1,12 @@
 package model;
 
 import java.util.List;
+
+import items.Bomb;
+import items.Item;
+import towers.SimpleTower;
+import towers.Tower;
+
 import java.io.Serializable;
 
 public class Player implements Serializable {

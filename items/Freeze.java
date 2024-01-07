@@ -1,9 +1,11 @@
-package model;
+package items;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import mobs.Mob;
+import model.ZoneDamage;
 import tools.Coordinates;
 
 public class Freeze extends Item implements ZoneDamage {

@@ -2,7 +2,7 @@ package view;
 
 import java.awt.Image;
 
-import model.*;
+import items.Trap;
 
 public class TrapDisplay {
     private Image frame;

@@ -3,6 +3,8 @@ package view;
 import java.awt.Image;
 
 import model.*;
+import towers.SimpleTower;
+import towers.Tower;
 
 public class TowerDisplay {
     private Image towerFrame;

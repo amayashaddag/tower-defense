@@ -3,7 +3,9 @@ package view;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
+import mobs.Mob;
 import model.*;
+import towers.SimpleTower;
 
 public class EntityGraphicsFactory {
 

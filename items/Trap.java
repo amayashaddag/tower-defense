@@ -1,7 +1,9 @@
-package model;
+package items;
 
 import javax.swing.Timer;
 
+import mobs.Mob;
+import model.SingleTargetDamage;
 import tools.Coordinates;
 
 public class Trap extends Item implements SingleTargetDamage {

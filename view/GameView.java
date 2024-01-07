@@ -22,8 +22,12 @@ import javax.swing.border.Border;
 import assets.Colors;
 import assets.Fonts;
 import assets.InterfaceMessages;
+import items.Item;
+import items.Trap;
+import mobs.Mob;
 import model.*;
 import tools.*;
+import towers.Tower;
 
 public class GameView extends JPanel {
 

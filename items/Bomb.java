@@ -1,7 +1,9 @@
-package model;
+package items;
 
 import java.util.List;
 
+import mobs.Mob;
+import model.ZoneDamage;
 import tools.Coordinates;
 
 public class Bomb extends Item implements ZoneDamage {

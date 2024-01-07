@@ -1,5 +1,7 @@
-package model;
+package mobs;
 
+import model.Base;
+import model.Direction;
 import tools.Coordinates;
 import tools.IntCoordinates;
 

@@ -3,8 +3,8 @@ package debug;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import app.*;
 import control.*;
-import menu.MenuView;
 import model.*;
 import view.*;
 
@@ -31,13 +31,7 @@ public class Debug {
 
     public static void test() {
         Player player = new Player("Lamine");
-        MenuView menu = new MenuView(player);
-        SwingUtilities.invokeLater(() -> {
-            JFrame window = new JFrame();
-            window.setContentPane(menu);
-            window.setSize(1280, 720);
-            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            window.setVisible(true);
-        });
+        Application app = new Application();
+        app.run(player);
     }
 }

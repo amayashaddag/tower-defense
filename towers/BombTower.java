@@ -1,7 +1,9 @@
-package model;
+package towers;
 
 import java.util.List;
 
+import mobs.Mob;
+import model.ZoneDamage;
 import tools.*;
 
 public class BombTower extends Tower implements ZoneDamage {
