@@ -26,4 +26,8 @@ public class WeaponDisplay extends JPanel {
     public Image getImage() {
         return image;
     }
+
+    public void reloadImage(String index) {
+        this.image = EntityGraphicsFactory.loadSlot(index, true);
+    }
 }

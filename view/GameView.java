@@ -111,10 +111,6 @@ public class GameView extends JPanel {
             addMissingMobs();
         }
 
-        public void updateTowerDisplays() {
-            addMissingTowers();
-        }
-
         private boolean mobDisplayExists(Mob mob) {
             for (MobDisplay mobDisplay : this.mobDisplays) {
                 if (mobDisplay.getMob() == mob) {
@@ -139,10 +135,14 @@ public class GameView extends JPanel {
         }
 
         public void removeTrap(Trap t) {
+            List<TrapDisplay> trapsToRemove = new LinkedList<>();
             for (TrapDisplay trapDisplay : traps) {
                 if (trapDisplay.getTrap().equals(t)) {
-                    traps.remove(trapDisplay);
+                    trapsToRemove.add(trapDisplay);
                 }
+            }
+            for (TrapDisplay trap : trapsToRemove) {
+                traps.remove(trap);
             }
         }
 
@@ -233,42 +233,49 @@ public class GameView extends JPanel {
             g.drawString(credit, x + PADDING, y + SCORE_FONT_SIZE);
         }
 
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-
-            // Drawing map content
-
+        public void drawMap(Graphics g) {
             for (int i = 0; i < currentBoard.getHeight(); i++) {
                 for (int j = 0; j < currentBoard.getWidth(); j++) {
                     Image cellTexture = this.map[i][j];
                     g.drawImage(cellTexture, j * IMAGE_WIDTH, i * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
                 }
             }
+        }
 
+        private void drawSelectionFrame(Graphics g) {
             if (selectionFrame.getPosition() != null) {
                 g.drawImage(selectionFrame.getImage(), selectionFrame.getPosition().getX() * IMAGE_WIDTH,
                         selectionFrame.getPosition().getY() * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT, this);
             }
+        }
 
-            this.updateMobDisplaysList();
-            this.updateTowerDisplays();
-
-            this.updateMobsPosition(g);
-            this.updateTowersPosition(g);
-            this.updateBulletsPosition(g);
-            this.updateExploisons(g);
-            this.updateTraps(g);
-            this.displayGameInformation(g);
-
+        private void displayInterfaceMessage(Graphics g) {
             g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
-            if (interfaceMessage == null)
+            if (interfaceMessage == null) {
                 return;
+            }
             FontMetrics fontMetrics = g.getFontMetrics();
             int x = (getWidth() - fontMetrics.stringWidth(interfaceMessage)) / 2;
             int y = fontMetrics.getHeight() + fontMetrics.getAscent();
             g.setColor(Colors.INTERFACE_MESSAGE_COLOR);
             g.drawString(this.interfaceMessage, x, y);
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            this.updateMobDisplaysList();
+
+            this.drawMap(g);
+            this.updateMobsPosition(g);
+            this.updateTowersPosition(g);
+            this.updateBulletsPosition(g);
+            this.updateExploisons(g);
+            this.updateTraps(g);
+            this.drawSelectionFrame(g);
+            this.displayGameInformation(g);
+            this.displayInterfaceMessage(g);
         }
     }
 
@@ -486,5 +493,9 @@ public class GameView extends JPanel {
                 mapView.interfaceMessage = null;
             }
         }, DISPLAY_MESSAGE_DURATION);
+    }
+
+    public void updateTowerDisplays() {
+        mapView.addMissingTowers();
     }
 }

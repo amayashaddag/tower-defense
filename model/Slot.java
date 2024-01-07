@@ -19,12 +19,10 @@ public class Slot {
 
     private final String index;
     private boolean isUnlocked;
-    private boolean isUpgradable;
 
-    public Slot(String index, boolean isUnlocked, boolean isUpgradable) {
+    public Slot(String index, boolean isUnlocked) {
         this.index = index;
         this.isUnlocked = isUnlocked;
-        this.isUpgradable = isUpgradable;
     }
 
     public String getIndex() {
@@ -40,12 +38,13 @@ public class Slot {
     }
 
     public boolean isUpgradable() {
-        return isUpgradable;
+        Weapon weapon = getWeapon();
+        return weapon.upgradable();
     }
 
     public void upgrade() {
-        getWeapon().upgrade();
-        this.isUpgradable = getWeapon().upgradable();
+        Weapon weapon = getWeapon();
+        weapon.upgrade();
     }
 
     public Weapon getWeapon() {

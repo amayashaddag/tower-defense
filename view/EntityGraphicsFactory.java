@@ -5,6 +5,7 @@ import javax.swing.ImageIcon;
 
 import mobs.Mob;
 import model.*;
+import towers.BombTower;
 import towers.SimpleTower;
 
 public class EntityGraphicsFactory {
@@ -129,7 +130,7 @@ public class EntityGraphicsFactory {
                     if (!isUnlocked) {
                         url += LOCKED_BOMB_TOWER;
                     } else {
-                        if (SimpleTower.getLevel() == 0)
+                        if (BombTower.getLevel() == 0)
                             url += BOMB_TOWER;
                         else
                             url += UPGRADED_BOMB_TOWER;

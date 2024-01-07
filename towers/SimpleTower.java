@@ -12,7 +12,7 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
     private static final int RANGE = 2;
     private static final int RATE_OF_FIRE = 2;
     private static final int COST = 50;
-    private static final int MAX_LEVEL = 2;
+    private static final int MAX_LEVEL = 1;
 
     private static final int UNLOCKING_COST = 0;
     private static final int UPGRADING_COST = 100;
@@ -38,7 +38,7 @@ public class SimpleTower extends Tower implements SingleTargetDamage {
 
     @Override
     public String toString() {
-        return "SimpleTower (2 damage points)";
+        return "SimpleTower";
     }
 
     @Override

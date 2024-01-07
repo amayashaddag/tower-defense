@@ -8,12 +8,12 @@ import tools.*;
 
 public class BombTower extends Tower implements ZoneDamage {
     private static int CURRENT_LEVEL = 0;
+    private static int DAMAGE = 3;
+
     private static final int RANGE = 3;
     private static final int RATE_OF_FIRE = 5;
-    private static int DAMAGE = 3;
-    private static final int MAX_LEVEL = 2;
+    private static final int MAX_LEVEL = 1;
     private static final int COST = 10;
-
     private static final int UNLOCKING_COST = 200;
     private static final int UPGRADING_COST = 100;
 

@@ -33,11 +33,8 @@ public class GameControl {
         this.gameModel = gameModel;
         this.gameView = gameView;
         this.cursorControl = new CursorControl(gameModel, gameView);
-        this.gameTimer = gameModel.isMarathonMode() ? marathonModeTimer() : normalModeTimer();
-    }
-
-    public Timer normalModeTimer() {
-        return new Timer(PERIOD, new ActionListener() {
+        boolean isMarathonMode = gameModel.isMarathonMode();
+        this.gameTimer = new Timer(PERIOD, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 long currentTime = System.nanoTime();
@@ -48,52 +45,38 @@ public class GameControl {
                     lastTime = currentTime;
                     update(deltaT);
                     if (gameModel.gameFinished()) {
-                        System.out.println("Game finished ! ");
+                        //FIXME Handle end-game message
                         stopTimer();
                         returnToMenu();
                     } else {
-                        if (gameModel.roundFinished()) {
-                            System.out.println("Le round il est fini");
-                            gameModel.nextRound();
-                            if (!gameModel.getWaves().isEmpty()) {
-                                gameModel.startCurrentRound();
-                                System.out.println("Go");
-                            }
+                        if (isMarathonMode) {
+                            marathonModeNextRound();
+                            return;
                         }
+                        normalModeNextRound();
                     }
                 }
             }
-        });
+        });;
     }
 
-    public Timer marathonModeTimer() {
-        return new Timer(PERIOD, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                long currentTime = System.nanoTime();
-                if (lastTime == 0) {
-                    lastTime = currentTime;
-                } else {
-                    long deltaT = currentTime - lastTime;
-                    lastTime = currentTime;
-                    update(deltaT);
-                    if (gameModel.gameFinished()) {
-                        System.out.println("Game finished ! ");
-                        stopTimer();
-                        returnToMenu();
-                    } else {
-                        if (gameModel.roundFinished()) {
-                            Triplet nextWave = gameModel.nextWave(Game.MARATHON_SEED, roundNumber);
-                            System.out.println(nextWave);
-                            roundNumber++;
-                            gameModel.nextRound();
-                            gameModel.addWave(nextWave);
-                            gameModel.startCurrentRound();
-                        }
-                    }
-                }
+    private void normalModeNextRound() {
+        if (gameModel.roundFinished()) {
+            gameModel.nextRound();
+            if (!gameModel.getWaves().isEmpty()) {
+                gameModel.startCurrentRound();
             }
-        });
+        }
+    }
+
+    private void marathonModeNextRound() {
+        if (gameModel.roundFinished()) {
+            Triplet nextWave = gameModel.nextWave(Game.MARATHON_SEED, roundNumber);
+            roundNumber++;
+            gameModel.nextRound();
+            gameModel.addWave(nextWave);
+            gameModel.startCurrentRound();
+        }
     }
 
     public void update(long deltaT) {

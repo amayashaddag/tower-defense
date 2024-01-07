@@ -38,7 +38,8 @@ public class ShopView extends JPanel {
 
             int uprgadingCost = slot.getWeapon().getUpgradingCost();
             String upgradingCostText = String.valueOf(uprgadingCost);
-            LabeledIcon upgradingCostLabel = new LabeledIcon(upgradingCostText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
+            LabeledIcon upgradingCostLabel = new LabeledIcon(upgradingCostText, IconsGraphicsFactory.loadCoinIcon(),
+                    Colors.SHOP_LABEL_COLOR);
 
             this.upgradeButton = Button.shopButton(Button.UPGRADE_BUTTON_LABEL);
             this.upgradeButton.setEnabled(isUpgradable && isUnlocked);
@@ -48,21 +49,23 @@ public class ShopView extends JPanel {
                     Weapon weapon = slot.getWeapon();
                     int upgradingCost = weapon.getUpgradingCost();
                     if (!player.hasEnoughCredit(upgradingCost)) {
-                        //FIXME : Show not enough credit message
+                        // FIXME : Show not enough credit message
                         return;
                     }
                     weapon.upgrade();
-                    updatePlayerCredit();
                     player.lostCredit(upgradingCost);
+                    updatePlayerCredit();
                     if (!weapon.upgradable()) {
                         upgradeButton.setEnabled(false);
                     }
+                    weaponDisplay.reloadImage(slot.getIndex());
+                    repaint();
                 }
             });
             int unlockingCost = slot.getWeapon().getUnlockingCost();
             String unlockingCostText = String.valueOf(unlockingCost);
-            LabeledIcon unlockingCostLabel = new LabeledIcon(unlockingCostText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
-            
+            LabeledIcon unlockingCostLabel = new LabeledIcon(unlockingCostText, IconsGraphicsFactory.loadCoinIcon(),
+                    Colors.SHOP_LABEL_COLOR);
 
             this.unlockButton = Button.shopButton(Button.UNLOCK_BUTTON_LABEL);
             this.unlockButton.setEnabled(!isUnlocked);
@@ -82,8 +85,6 @@ public class ShopView extends JPanel {
                     upgradeButton.setEnabled(true);
                 }
             });
-
-
 
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             this.setAlignmentX(CENTER_ALIGNMENT);
@@ -120,7 +121,8 @@ public class ShopView extends JPanel {
 
         int playerCredit = player.getCredit();
         String playerCreditText = String.valueOf(playerCredit);
-        this.playerCreditLabel = new LabeledIcon(playerCreditText, IconsGraphicsFactory.loadCoinIcon(), Colors.SHOP_LABEL_COLOR);
+        this.playerCreditLabel = new LabeledIcon(playerCreditText, IconsGraphicsFactory.loadCoinIcon(),
+                Colors.SHOP_LABEL_COLOR);
         this.add(playerCreditLabel);
 
         for (Slot s : player.getItemsInventory()) {
@@ -133,7 +135,8 @@ public class ShopView extends JPanel {
             slots.add(shopSlot);
             slotsPanel.add(shopSlot);
         }
-        slotsPanel.setSize(MenuView.WINDOW_WIDTH, ShopSlot.SLOT_HEIGHT);;
+        slotsPanel.setSize(MenuView.WINDOW_WIDTH, ShopSlot.SLOT_HEIGHT);
+        ;
         this.add(slotsPanel);
         Button goToMenuButton = Button.largeMenuButton(Button.GO_TO_MENU_BUTTON_LABEL);
         this.add(goToMenuButton);

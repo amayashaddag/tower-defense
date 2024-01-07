@@ -31,15 +31,15 @@ public class Player implements Serializable {
     private static List<Player> PLAYERS_LIST;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
-            new Slot(Slot.SIMPLE_TOWER_INDEX, true, true),
-            new Slot(Slot.BOMB_TOWER_INDEX, false, true)
+            new Slot(Slot.SIMPLE_TOWER_INDEX, true),
+            new Slot(Slot.BOMB_TOWER_INDEX, false)
     };
 
     private final Slot[] DEFAULT_ITEMS_INVENTORY = {
-            new Slot(Slot.BOMB_INDEX, true, true),
-            new Slot(Slot.FREEZE_INDEX, false, true),
-            new Slot(Slot.TRAP_INDEX, false, true),
-            new Slot(Slot.POISON_INDEX, false, true)
+            new Slot(Slot.BOMB_INDEX, true),
+            new Slot(Slot.FREEZE_INDEX, false),
+            new Slot(Slot.TRAP_INDEX, false),
+            new Slot(Slot.POISON_INDEX, false)
     };
 
     public Player(String pseudo) {
