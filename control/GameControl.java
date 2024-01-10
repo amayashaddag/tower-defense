@@ -44,9 +44,18 @@ public class GameControl {
                     long deltaT = currentTime - lastTime;
                     lastTime = currentTime;
                     update(deltaT);
+
+                    Player currentPlayer = gameModel.getCurrentPlayer();
+
                     if (gameModel.gameFinished()) {
                         stopTimer();
                         returnToMenu();
+
+                        try {
+                            currentPlayer.savePlayerData();
+                        } catch (Exception e) {
+                            // FIXME Show error message in GUI
+                        }
                     } else {
                         if (isMarathonMode) {
                             marathonModeNextRound();
@@ -56,7 +65,8 @@ public class GameControl {
                     }
                 }
             }
-        });;
+        });
+        ;
     }
 
     private void normalModeNextRound() {

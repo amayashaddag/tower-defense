@@ -131,8 +131,6 @@ public class CursorControl {
                             gameView.animateBombExploison(mob.getPosition());
                         }
                         gameModel.getCreditsFromMobs();
-                        board.removeDeadMobs();
-
                     };
                 });
         containedTower.setTimer(attackTimer);
@@ -162,6 +160,7 @@ public class CursorControl {
                 if (mob == null)
                     return;
                 trap.attack(mob);
+                gameModel.getCreditsFromMobs();
             }
         });
         trap.setTimer(attackTimer);

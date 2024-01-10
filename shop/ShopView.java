@@ -54,6 +54,12 @@ public class ShopView extends JPanel {
                     }
                     weapon.upgrade();
                     player.lostCredit(upgradingCost);
+                    try {
+                        player.savePlayerData();
+                    } catch (Exception e) {
+                        // FIXME Show error message in GUI
+                    }
+
                     updatePlayerCredit();
                     if (!weapon.upgradable()) {
                         upgradeButton.setEnabled(false);
@@ -79,6 +85,12 @@ public class ShopView extends JPanel {
                         return;
                     }
                     player.lostCredit(unlockingCost);
+                    try {
+                        player.savePlayerData();
+                    } catch (Exception e) {
+                        // FIXME Show error message in GUI
+                    }
+
                     slot.unlock();
                     updatePlayerCredit();
                     unlockButton.setEnabled(false);
@@ -143,6 +155,11 @@ public class ShopView extends JPanel {
         goToMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                try {
+                    player.savePlayerData();
+                } catch (Exception e) {
+                    // FIXME Show error message in GUI
+                }
                 MenuView menuView = new MenuView(player);
                 JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(ShopView.this);
                 parentFrame.setContentPane(menuView);

@@ -120,7 +120,6 @@ public class Board {
         for (Mob m : currentMobs) {
             if (m.isDead()) {
                 mobsToEliminate.add(m);
-
             }
         }
         return mobsToEliminate;
@@ -274,7 +273,6 @@ public class Board {
                 IntCoordinates currentCell = m.getPosition().round();
 
                 IntCoordinates nextCell = adjacentCells.get(this.random.nextInt(adjacentCells.size()));
-                System.out.println(nextCell);
                 Direction direction = nextCell.getDirectionFrom(currentCell);
 
                 if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)

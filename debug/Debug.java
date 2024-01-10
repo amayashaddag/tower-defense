@@ -15,7 +15,7 @@ public class Debug {
     }
 
     public static void graphicalVersion() {
-        Player p = new Player("Amayas");
+        Player p = new Player();
         Game game = Game.getMarathonMode(p);
         GameView view = new GameView(game);
         GameControl gameControl = new GameControl(game, view);
@@ -30,7 +30,7 @@ public class Debug {
     }
 
     public static void test() {
-        Player player = new Player("Lamine");
+        Player player = new Player();
         Application app = new Application();
         app.run(player);
     }

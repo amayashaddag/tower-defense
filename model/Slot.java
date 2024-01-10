@@ -1,5 +1,7 @@
 package model;
 
+import java.io.Serializable;
+
 import items.Bomb;
 import items.Freeze;
 import items.Item;
@@ -9,7 +11,7 @@ import towers.BombTower;
 import towers.SimpleTower;
 import towers.Tower;
 
-public class Slot {
+public class Slot implements Serializable {
     public static final String SIMPLE_TOWER_INDEX = "ST";
     public static final String BOMB_TOWER_INDEX = "BT";
 
@@ -91,5 +93,10 @@ public class Slot {
 
     public int getCost() {
         return getWeapon().getCost();
+    }
+
+    @Override
+    public String toString() {
+        return index + " " + isUnlocked;
     }
 }
