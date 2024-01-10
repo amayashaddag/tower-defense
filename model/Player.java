@@ -28,7 +28,7 @@ public class Player implements Serializable {
 
     public final static int TOWERS_INVENTORY_SIZE = 2;
     public final static int ITEMS_INVENTORY_SIZE = 4;
-    public static final int INITIAL_CREDIT = 40;
+    public static final int INITIAL_CREDIT = 200;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
             new Slot(Slot.SIMPLE_TOWER_INDEX, true),
