@@ -1,11 +1,11 @@
-package model;
+package items;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import items.Item;
 import mobs.Mob;
+import model.ZoneDamage;
 import tools.Coordinates;
 
 public class Poison extends Item implements ZoneDamage {

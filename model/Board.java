@@ -27,6 +27,21 @@ public class Board {
     private static final double MAX_TOLERATED_DISTANCE_FROM_CENTER = 0.1;
     public static final double SPEED_EQUATION_FACTOR = 0.7E-9;
 
+    public static final int  EASY_MODE_BASE_HP = 25;
+    public static final int MEDIUM_MODE_BASE_HP = 10;
+    public static final int  HARD_MODE_BASE_HP = 5;
+    
+    public static final Coordinates EASY_MODE_BASE_COORDINATES = new Coordinates(6, 10);
+    public static final Coordinates MEDIUM_MODE_BASE_COORDINATES = new Coordinates(6,10);
+    public static final Coordinates HARD_MODE_BASE_COORDINATES = new Coordinates(3,5);
+    
+    public static final Coordinates EASY_MODE_STARTING_COORDINATES = new Coordinates(0,0);
+    public static final Coordinates MEDIUM_MODE_STARTING_COORDINATES = new Coordinates(0,0);
+    public static final Coordinates HARD_MODE_STARTING_COORDINATES = new Coordinates(3,0);
+
+
+
+
     public Board(Cell[][] grid, Coordinates baseCoordinates, Coordinates startingCoordinates, Base base) {
         this.grid = grid;
         this.height = grid.length;
@@ -99,7 +114,8 @@ public class Board {
         }
         return null;
     }
-    public List<Mob> mobsToEliminate(){
+
+    public List<Mob> mobsToEliminate() {
         List<Mob> mobsToEliminate = new LinkedList<>();
         for (Mob m : currentMobs) {
             if (m.isDead()) {
@@ -109,6 +125,7 @@ public class Board {
         }
         return mobsToEliminate;
     }
+
     public void removeDeadMobs() {
         List<Mob> mobsToEliminate = mobsToEliminate();
         for (Mob m : mobsToEliminate) {
@@ -124,6 +141,7 @@ public class Board {
         initMobPosition(mob);
         return true;
     }
+
     public int getCurrentMobsNumber() {
         return this.currentMobs.size();
     }
@@ -165,7 +183,7 @@ public class Board {
     }
 
     public void removeItem(Item i) {
-        
+
     }
 
     /* Returns the list of mobs that are in range from a specific center */
@@ -251,22 +269,24 @@ public class Board {
 
     public void updateMobsPosition(long deltaT) {
         for (Mob m : this.currentMobs) {
-
             List<IntCoordinates> adjacentCells = this.adjacentCellsToReach(m.getPosition().round(), m.getDirection());
             if (!adjacentCells.isEmpty()) {
                 IntCoordinates currentCell = m.getPosition().round();
 
                 IntCoordinates nextCell = adjacentCells.get(this.random.nextInt(adjacentCells.size()));
+                System.out.println(nextCell);
                 Direction direction = nextCell.getDirectionFrom(currentCell);
 
                 if (m.getPosition().distanceFromCenterIsInRange(MAX_TOLERATED_DISTANCE_FROM_CENTER)
-                        && !nextCell.equals(m.getLastVisitedCell())) {
+                        && !m.isInLastVisitedCells(nextCell)) {
                     m.setDirection(direction);
+                    m.addToLastVisitedCells(nextCell);
+                    m.addToLastVisitedCells(currentCell);
                 }
                 Coordinates nextPos = m.getPosition().plus(
                         Coordinates.getUnit(m.getDirection()).times(deltaT * m.getSpeed() * SPEED_EQUATION_FACTOR));
                 if (!nextPos.round().equals(currentCell)) {
-                    m.setLastVisitedCell(currentCell);
+                    m.addToLastVisitedCells(currentCell);
                 }
                 m.setPosition(nextPos);
 
@@ -279,7 +299,7 @@ public class Board {
         eliminateMobs();
     }
 
-    public static Board boardExample() {
+    public static Board boardEasyMode() {
         return new Board(new Cell[][] {
                 {
                         new Cell(true, false),
@@ -372,8 +392,201 @@ public class Board {
                         new Cell(true, false),
                         new Cell(true, true)
                 }
-        }, new Coordinates(6, 10), new Coordinates(0, 0), new Base(10));
+            
+        }, EASY_MODE_BASE_COORDINATES, EASY_MODE_STARTING_COORDINATES, new Base(EASY_MODE_BASE_HP));
     }
+
+    public static Board boardMediumMode() {
+        return new Board(new Cell[][] {
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true,false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, true)
+                }
+        }, MEDIUM_MODE_BASE_COORDINATES, MEDIUM_MODE_STARTING_COORDINATES, new Base(MEDIUM_MODE_BASE_HP));
+    }
+     public static Board boardHardMode() {
+        return new Board(new Cell[][] {
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, true)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(false, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false),
+                        new Cell(true, false)
+                },
+                {
+                        new Cell(false,false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false),
+                        new Cell(false, false)
+                }
+        }, HARD_MODE_BASE_COORDINATES, HARD_MODE_STARTING_COORDINATES , new Base(HARD_MODE_BASE_HP));
+    }
+
 
     @Override
     public String toString() {

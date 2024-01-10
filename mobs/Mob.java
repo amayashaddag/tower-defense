@@ -1,5 +1,8 @@
 package mobs;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import model.Base;
 import model.Direction;
 import tools.Coordinates;
@@ -19,7 +22,7 @@ public class Mob {
     private Coordinates position; // Cordonnées de la position du mob
     private int damage;
     private Direction direction;
-    private IntCoordinates lastVisitedCell;
+    private List<IntCoordinates> lastVisitedCells;
 
     /* Constructeur */
     public Mob(int level) {
@@ -27,6 +30,7 @@ public class Mob {
         this.speed = INITIAL_SPEED + level*0.5;
         this.damage = INITIAL_DAMAGE + level;
         this.level = level;
+        this.lastVisitedCells = new LinkedList<>();
     }
 
     /* Getters */
@@ -86,16 +90,20 @@ public class Mob {
         return this.level;
     }
 
-    public void setLastVisitedCell(IntCoordinates lastVisitedCell) {
-        this.lastVisitedCell = lastVisitedCell;
+    public void addToLastVisitedCells(IntCoordinates lastVisitedCell) {
+        this.lastVisitedCells.add(lastVisitedCell);
     }
 
-    public IntCoordinates getLastVisitedCell() {
-        return lastVisitedCell;
+    public List<IntCoordinates> getLastVisitedCells() {
+        return lastVisitedCells;
     }
 
     public boolean isToEliminate(Coordinates baseCoordinates) {
         return isDead() || this.position.round().equals(baseCoordinates.round());
+    }
+
+    public boolean isInLastVisitedCells(IntCoordinates coordinates) {
+        return lastVisitedCells.contains(coordinates);
     }
 
     @Override

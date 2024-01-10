@@ -3,6 +3,7 @@ package model;
 import items.Bomb;
 import items.Freeze;
 import items.Item;
+import items.Poison;
 import items.Trap;
 import towers.BombTower;
 import towers.SimpleTower;

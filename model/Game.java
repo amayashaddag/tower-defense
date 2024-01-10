@@ -24,19 +24,26 @@ public class Game {
     private List<Triplet> waves;
     private Random random;
     private boolean marathonMode;
+    private Difficulty roundDifficulty;
 
     private final static int MOB_SPAWNING_DELAY = 1000;
     public final static Triplet MARATHON_SEED = new Triplet(3, 2, 1);
 
-    public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves, boolean marathonMode) {
+    public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves,Difficulty roundDifficulty) {
         this.currentPlayer = currentPlayer;
         this.currentBoard = currentBoard;
         this.scanner = new Scanner(System.in);
         this.random = new Random();
         this.waves = waves;
-        this.marathonMode = marathonMode;
+        this.marathonMode = false;
+        this.roundDifficulty = roundDifficulty;
     }
-
+    public Game(Player currentPlayer,Board currentBoard,List<Triplet> waves){
+        this.currentPlayer=currentPlayer;
+        this.currentBoard=currentBoard;
+        this.waves=waves;
+        this.marathonMode=true;
+    }
     public boolean isMarathonMode() {
         return marathonMode;
     }
@@ -56,6 +63,9 @@ public class Game {
     public List<Triplet> getWaves() {
         return waves;
     }
+    public Difficulty getRoundDifficulty() {
+        return roundDifficulty;
+    }
 
     public boolean gameFinished() {
         return this.waves.isEmpty() || roundLost();
@@ -68,6 +78,7 @@ public class Game {
     public void addWave(Triplet wave) {
         this.waves.add(this.waves.size(), new Triplet(wave.getX(), wave.getY(), wave.getZ()));
     }
+
 
     // FIXME : Fix reading coordinates while having a more than 2 integer in y
     // coordinates
@@ -287,34 +298,32 @@ public class Game {
         return new Triplet(x, y, z);
     }
 
-    // FIXME : Set different maps for differents modes : easy, medium, hard ...
-
     public static Game getEasyModeGame(Player player) {
-        Board easyModeBoard = Board.boardExample();
+        Board easyModeBoard = Board.boardEasyMode();
         List<Triplet> easyModeRound = easyModeRound();
-        Game easyModeGame = new Game(player, easyModeBoard, easyModeRound, false);
+        Game easyModeGame = new Game(player, easyModeBoard, easyModeRound,Difficulty.EASY);
         return easyModeGame;
     }
 
     public static Game getMediumModeGame(Player player) {
-        Board mediumModeBoard = Board.boardExample();
+        Board mediumModeBoard = Board.boardMediumMode();
         List<Triplet> mediumModeRound = mediumModeRound();
-        Game mediumModeGame = new Game(player, mediumModeBoard, mediumModeRound, false);
+        Game mediumModeGame = new Game(player, mediumModeBoard, mediumModeRound,Difficulty.MEDIUM);
         return mediumModeGame;
     }
 
     public static Game getHardModeGame(Player player) {
-        Board hardModeBoard = Board.boardExample();
+        Board hardModeBoard = Board.boardHardMode();
         List<Triplet> hardModeRound = hardModeRound();
-        Game hardModeGame = new Game(player, hardModeBoard, hardModeRound, false);
+        Game hardModeGame = new Game(player, hardModeBoard, hardModeRound,Difficulty.HARD);
         return hardModeGame;
     }
 
     public static Game getMarathonMode(Player player) {
-        Board easyModeBoard = Board.boardExample();
+        Board easyModeBoard = Board.boardEasyMode();
         List<Triplet> marathonMode = new LinkedList<>();
         marathonMode.add(new Triplet(MARATHON_SEED.getX(), MARATHON_SEED.getY(), MARATHON_SEED.getZ()));
-        Game marathonModeGame = new Game(player, easyModeBoard, marathonMode, true);
+        Game marathonModeGame = new Game(player, easyModeBoard, marathonMode);
         return marathonModeGame;
     }
 }

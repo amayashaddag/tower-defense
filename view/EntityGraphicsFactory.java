@@ -38,9 +38,8 @@ public class EntityGraphicsFactory {
     public final static int NB_OF_FRAMES = 9;
     private final static int EXPLOISON_FRAMES = 5;
 
-    // FIXME : Factoriser le code des 4 fonctions des frames
-    public static Image[] loadNorthFrames(Mob mob) {
-        String url = ENTITIES_RESOURCES_REPOSITORY;
+    public static Image[] loadFrames(Mob mob,String direction){
+          String url = ENTITIES_RESOURCES_REPOSITORY;
         Image[] frames = new Image[NB_OF_FRAMES];
 
         if (mob.getLevel() == 0) {
@@ -52,68 +51,23 @@ public class EntityGraphicsFactory {
 
         }
         for (int i = 0; i < NB_OF_FRAMES; i++) {
-            Image image = new ImageIcon(url + "north-" + (i + 1) + ".png").getImage();
+            Image image = new ImageIcon(url + direction+"-" + (i + 1) + ".png").getImage();
             frames[i] = image;
         }
         return frames;
+
+    }
+    public static Image[] loadEastFrames(Mob mob){
+        return loadFrames(mob,"east");
+    }
+     public static Image[] loadWestFrames(Mob mob){
+        return loadFrames(mob,"west");
+    } public static Image[] loadNorthFrames(Mob mob){
+        return loadFrames(mob,"north");
+    } public static Image[] loadSouthFrames(Mob mob){
+        return loadFrames(mob,"south");
     }
 
-    public static Image[] loadEastFrames(Mob mob) {
-        String url = ENTITIES_RESOURCES_REPOSITORY;
-        Image[] frames = new Image[NB_OF_FRAMES];
-
-        if (mob.getLevel() == 0) {
-            url += SKELTON_FRAMES_REPOSITORY;
-        } else if (mob.getLevel() == 1) {
-            url += SOLDIER_FRAMES_REPOSITORY;
-        } else {
-            url += KNIGHT_FRAMES_REPOSITORY;
-
-        }
-        for (int i = 0; i < NB_OF_FRAMES; i++) {
-            Image image = new ImageIcon(url + "east-" + (i + 1) + ".png").getImage();
-            frames[i] = image;
-        }
-        return frames;
-    }
-
-    public static Image[] loadWestFrames(Mob mob) {
-        String url = ENTITIES_RESOURCES_REPOSITORY;
-        Image[] frames = new Image[NB_OF_FRAMES];
-
-        if (mob.getLevel() == 0) {
-            url += SKELTON_FRAMES_REPOSITORY;
-        } else if (mob.getLevel() == 1) {
-            url += SOLDIER_FRAMES_REPOSITORY;
-        } else {
-            url += KNIGHT_FRAMES_REPOSITORY;
-
-        }
-        for (int i = 0; i < NB_OF_FRAMES; i++) {
-            Image image = new ImageIcon(url + "west-" + (i + 1) + ".png").getImage();
-            frames[i] = image;
-        }
-        return frames;
-    }
-
-    public static Image[] loadSouthFrames(Mob mob) {
-        String url = ENTITIES_RESOURCES_REPOSITORY;
-        Image[] frames = new Image[NB_OF_FRAMES];
-
-        if (mob.getLevel() == 0) {
-            url += SKELTON_FRAMES_REPOSITORY;
-        } else if (mob.getLevel() == 1) {
-            url += SOLDIER_FRAMES_REPOSITORY;
-        } else {
-            url += KNIGHT_FRAMES_REPOSITORY;
-
-        }
-        for (int i = 0; i < NB_OF_FRAMES; i++) {
-            Image image = new ImageIcon(url + "south-" + (i + 1) + ".png").getImage();
-            frames[i] = image;
-        }
-        return frames;
-    }
 
     public static Image loadSlot(String slotIndex, boolean isUnlocked) {
         String url = ENTITIES_RESOURCES_REPOSITORY;

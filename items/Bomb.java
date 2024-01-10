@@ -14,7 +14,7 @@ public class Bomb extends Item implements ZoneDamage {
     private static final int COST = 10;
     private static final int RANGE = 1;
     private static final int UNLOCKING_COST = 0;
-    private static final int UPGRADING_COST = 100;
+    private static final int UPGRADING_COST = 50;
 
     public Bomb() {
         super(null);

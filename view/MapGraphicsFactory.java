@@ -6,12 +6,44 @@ import javax.swing.ImageIcon;
 import model.*;
 
 public class MapGraphicsFactory {
-    public static Image[][] loadMap(Board currentBoard) {
+
+    public static final String LAND_REPOSITORY = "resources/land/";
+    public static final String LAND_EASY_MAP_REPOSITORY_ = LAND_REPOSITORY + "easy-mode-land/";
+    public static final String LAND_MEDIUM_MAP_REPOSITORY_ = LAND_REPOSITORY + "medium-mode-land/";
+    public static final String LAND_HARD_MAP_REPOSITORY_ = LAND_REPOSITORY + "hard-mode-land/";
+
+    
+
+    public static Image[][] loadEasyMap(Board currentBoard) {
         Image[][] map = new Image[currentBoard.getHeight()][currentBoard.getWidth()];
         for (int i = 0; i < currentBoard.getHeight(); i++) {
             for (int j = 0; j < currentBoard.getWidth(); j++) {
                 ImageIcon image;
-                String url = "resources/land/" + urlToFrame(i, j, currentBoard);
+                String url = LAND_EASY_MAP_REPOSITORY_ + urlToFrame(i, j, currentBoard);
+                image = new ImageIcon(url);
+                map[i][j] = image.getImage();
+            }
+        }
+        return map;
+    }
+    public static Image[][] loadMediumMap(Board currentBoard) {
+        Image[][] map = new Image[currentBoard.getHeight()][currentBoard.getWidth()];
+        for (int i = 0; i < currentBoard.getHeight(); i++) {
+            for (int j = 0; j < currentBoard.getWidth(); j++) {
+                ImageIcon image;
+                String url = LAND_MEDIUM_MAP_REPOSITORY_ + urlToFrame(i, j, currentBoard);
+                image = new ImageIcon(url);
+                map[i][j] = image.getImage();
+            }
+        }
+        return map;
+    }
+    public static Image[][] loadHardMap(Board currentBoard) {
+        Image[][] map = new Image[currentBoard.getHeight()][currentBoard.getWidth()];
+        for (int i = 0; i < currentBoard.getHeight(); i++) {
+            for (int j = 0; j < currentBoard.getWidth(); j++) {
+                ImageIcon image;
+                String url = LAND_HARD_MAP_REPOSITORY_ + urlToFrame(i, j, currentBoard);
                 image = new ImageIcon(url);
                 map[i][j] = image.getImage();
             }

@@ -63,13 +63,28 @@ public class GameView extends JPanel {
 
         public MapView() {
             super();
-            this.map = MapGraphicsFactory.loadMap(currentBoard);
+            this.map = loadMap();
             this.mobDisplays = new LinkedList<>();
             this.towerDisplays = new LinkedList<>();
             this.bullets = new LinkedList<>();
             this.exploisons = new LinkedList<>();
             this.traps = new LinkedList<>();
             this.setSize(IMAGE_WIDTH * currentBoard.getWidth(), IMAGE_HEIGHT * currentBoard.getHeight());
+        }
+        public Image[][] loadMap(){
+            if (game.isMarathonMode()){
+                return MapGraphicsFactory.loadEasyMap(currentBoard);
+            }
+            switch (game.getRoundDifficulty()){
+                case EASY : 
+                    return MapGraphicsFactory.loadEasyMap(currentBoard);
+                case MEDIUM : 
+                    return MapGraphicsFactory.loadMediumMap(currentBoard);
+
+                default :
+                    return MapGraphicsFactory.loadHardMap(currentBoard);
+
+            }
         }
 
         public void addMissingMobs() {
@@ -212,8 +227,6 @@ public class GameView extends JPanel {
             Image coinIcon = IconsGraphicsFactory.loadCoinIcon().getImage();
             String healthPoints = String.valueOf(currentBoard.getCurrentBase().getHp());
             String credit = String.valueOf(currentPlayer.getCredit());
-
-            // FIXME Trouver une formule logique pour centrer les icones
 
             g.setFont(Fonts.sansSerifBoldItalicFont(SCORE_FONT_SIZE));
             g.setColor(Colors.INTERFACE_MESSAGE_COLOR);

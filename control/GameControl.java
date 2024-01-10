@@ -45,7 +45,6 @@ public class GameControl {
                     lastTime = currentTime;
                     update(deltaT);
                     if (gameModel.gameFinished()) {
-                        //FIXME Handle end-game message
                         stopTimer();
                         returnToMenu();
                     } else {
