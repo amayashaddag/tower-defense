@@ -6,4 +6,6 @@ public interface Weapon {
     public int getCost();
     public int getUnlockingCost();
     public int getUpgradingCost();
+    public int getCurrentLevel();
+    public void setCurrentLevel(int currentLevel);
 }

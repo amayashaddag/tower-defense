@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import assets.InterfaceMessages;
 import menu.MenuView;
 import mobs.Mob;
 import model.*;
@@ -54,7 +55,9 @@ public class GameControl {
                         try {
                             currentPlayer.savePlayerData();
                         } catch (Exception e) {
-                            // FIXME Show error message in GUI
+                            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(gameView);
+                            MenuView menuView = (MenuView) parentFrame.getContentPane();
+                            menuView.displayMessage(InterfaceMessages.SAVING_DATA_ERROR);
                         }
                     } else {
                         if (isMarathonMode) {

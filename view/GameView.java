@@ -48,6 +48,7 @@ public class GameView extends JPanel {
     private static final int DISPLAY_MESSAGE_DURATION = 3000;
     private static final int PADDING = 48;
     private static final int INVENTORY_SLOT_BORDER = 3;
+    private static final int WINDOW_BAR_SIZE = 38;
     public static int WINDOW_HEIGHT, WINDOW_WIDTH;
 
 
@@ -229,7 +230,7 @@ public class GameView extends JPanel {
             String credit = String.valueOf(currentPlayer.getCredit());
 
             g.setFont(Fonts.sansSerifBoldItalicFont(SCORE_FONT_SIZE));
-            g.setColor(Colors.INTERFACE_MESSAGE_COLOR);
+            g.setColor(Colors.GAME_INTERFACE_MESSAGE_COLOR);
 
             FontMetrics fontMetrics = g.getFontMetrics();
             int x = SCORE_FONT_SIZE;
@@ -270,7 +271,7 @@ public class GameView extends JPanel {
             FontMetrics fontMetrics = g.getFontMetrics();
             int x = (getWidth() - fontMetrics.stringWidth(interfaceMessage)) / 2;
             int y = fontMetrics.getHeight() + fontMetrics.getAscent();
-            g.setColor(Colors.INTERFACE_MESSAGE_COLOR);
+            g.setColor(Colors.GAME_INTERFACE_MESSAGE_COLOR);
             g.drawString(this.interfaceMessage, x, y);
         }
 
@@ -378,8 +379,6 @@ public class GameView extends JPanel {
     private InventoryView inventoryView;
     private SelectionFrame selectionFrame;
 
-    // FIXME : find a solution for window size not including the toolbar height to
-    // its getHeight()
     public GameView(Game game) {
         this.game = game;
         this.currentBoard = game.getCurrentBoard();
@@ -389,14 +388,14 @@ public class GameView extends JPanel {
 
         this.mapView = new MapView();
         this.inventoryView = new InventoryView();
-        this.setSize(mapView.getWidth(), mapView.getHeight() + inventoryView.getHeight());
+        WINDOW_WIDTH = mapView.getWidth();
+        WINDOW_HEIGHT = mapView.getHeight() + inventoryView.getHeight() + WINDOW_BAR_SIZE;
+        this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         this.add(this.mapView);
         this.add(this.inventoryView, BorderLayout.SOUTH);
 
         this.selectionFrame = new SelectionFrame();
-        WINDOW_WIDTH = mapView.getWidth();
-        WINDOW_HEIGHT = mapView.getHeight() + inventoryView.getHeight();
     }
 
     public void animateBullet(Coordinates startingPosition, Coordinates landingPosition) {

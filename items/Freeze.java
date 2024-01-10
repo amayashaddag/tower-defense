@@ -75,4 +75,14 @@ public class Freeze extends Item implements ZoneDamage {
     public int getUpgradingCost() {
         return UPGRADING_COST;
     }
+
+    @Override
+    public int getCurrentLevel() {
+        return CURRENT_LEVEL;
+    }
+
+    @Override
+    public void setCurrentLevel(int currentLevel) {
+        CURRENT_LEVEL = currentLevel;
+    }
 }

@@ -27,7 +27,7 @@ public class Game {
     private Difficulty roundDifficulty;
 
     private final static int MOB_SPAWNING_DELAY = 1000;
-    public final static Triplet MARATHON_SEED = new Triplet(3, 2, 1);
+    public final static Triplet MARATHON_SEED = new Triplet(20, 10, 5);
 
     public Game(Player currentPlayer, Board currentBoard, List<Triplet> waves,Difficulty roundDifficulty) {
         this.currentPlayer = currentPlayer;
@@ -79,19 +79,14 @@ public class Game {
         this.waves.add(this.waves.size(), new Triplet(wave.getX(), wave.getY(), wave.getZ()));
     }
 
-
-    // FIXME : Fix reading coordinates while having a more than 2 integer in y
-    // coordinates
-
     public Coordinates readCoordinates() {
-        System.out.print("Enter coordinates : ");
-        String input = this.scanner.next();
-        if (input.length() < 2) {
-            System.out.println("Error! Wrong format.");
-            return this.readCoordinates();
-        }
-        int x = input.charAt(0) - 65, y = input.charAt(1) - 49;
+        System.out.print("Enter row : ");
+        char row = this.scanner.next().charAt(0);
+        System.out.print("Enter column : ");
+        int column = this.scanner.nextInt();
+        int x = row - 65, y = column - 1;
         Coordinates c = new Coordinates(x, y);
+        System.out.println(c);
         if (!c.isInBounds(currentBoard.getHeight(), currentBoard.getWidth())) {
             System.out.println(c);
             System.out.println("Error! Wrong format.");
@@ -165,8 +160,8 @@ public class Game {
             iter++;
             currentBoard.updateMobsPosition();
             scanner.nextLine();
-
         }
+        System.out.println("Game finished.");
     }
 
     private int chooseMobLevel() {
@@ -193,7 +188,7 @@ public class Game {
         boolean answer = false;
         do {
             System.out.println("Do you want to place a tower? (y | n).");
-            String playerAction = this.scanner.nextLine();
+            String playerAction = this.scanner.next();
             if (playerAction.equals("y")) {
                 this.addTower();
                 answer = true;
@@ -269,6 +264,8 @@ public class Game {
         List<Triplet> rounds = new ArrayList<>();
         rounds.add(new Triplet(10, 2, 0));
         rounds.add(new Triplet(10, 5, 0));
+        rounds.add(new Triplet(10, 10, 2));
+        rounds.add(new Triplet(5, 10, 10));
         return rounds;
     }
 
@@ -279,6 +276,8 @@ public class Game {
         rounds.add(new Triplet(5, 5, 10));
         rounds.add(new Triplet(5, 7, 10));
         rounds.add(new Triplet(2, 5, 10));
+        rounds.add(new Triplet(5, 10, 10));
+        rounds.add(new Triplet(2, 10, 15));
         return rounds;
     }
 
@@ -289,6 +288,9 @@ public class Game {
         rounds.add(new Triplet(5, 5, 10));
         rounds.add(new Triplet(5, 7, 10));
         rounds.add(new Triplet(2, 5, 10));
+        rounds.add(new Triplet(2, 5, 15));
+        rounds.add(new Triplet(2, 10, 20));
+        rounds.add(new Triplet(5, 10, 20));
         return rounds;
     }
 

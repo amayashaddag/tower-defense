@@ -11,7 +11,7 @@ public class BombTower extends Tower implements ZoneDamage {
     private static int DAMAGE = 3;
 
     private static final int RANGE = 2;
-    private static final int RATE_OF_FIRE = 5;
+    private static final int RATE_OF_FIRE = 10;
     private static final int MAX_LEVEL = 1;
     private static final int COST = 10;
     private static final int UNLOCKING_COST = 200;
@@ -67,5 +67,15 @@ public class BombTower extends Tower implements ZoneDamage {
     @Override
     public int getUpgradingCost() {
         return UPGRADING_COST;
+    }
+
+    @Override
+    public int getCurrentLevel() {
+        return CURRENT_LEVEL;
+    }
+
+    @Override
+    public void setCurrentLevel(int currentLevel) {
+        CURRENT_LEVEL = currentLevel;
     }
 }

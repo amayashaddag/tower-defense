@@ -76,4 +76,14 @@ public class Poison extends Item implements ZoneDamage {
         return UPGRADING_COST;
     }
 
+    @Override
+    public int getCurrentLevel() {
+        return CURRENT_LEVEL;
+    }
+
+    @Override
+    public void setCurrentLevel(int currentLevel) {
+        CURRENT_LEVEL = currentLevel;
+    }
+
 }

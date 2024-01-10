@@ -1,8 +1,11 @@
 package menu;
 
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.TimerTask;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -10,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import assets.Button;
+import assets.Colors;
+import assets.Fonts;
 import control.GameControl;
 import model.Game;
 import model.Player;
@@ -19,6 +24,12 @@ import view.GameView;
 public class MenuView extends JPanel {
     public final static int WINDOW_WIDTH = 1280;
     public final static int WINDOW_HEIGHT = 720;
+
+    private final static int DISPLAY_MESSAGE_DURATION = 3000;
+    private final static int FONT_SIZE = 24;
+
+    private Player player;
+    private String interfaceMessage;
 
     public MenuView(Player player) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -120,6 +131,30 @@ public class MenuView extends JPanel {
         gameControl.startGame();
     }
 
-    private Player player;
+    public void displayMessage(String message) {
+        this.interfaceMessage = message;
+        java.util.Timer displayDuration = new java.util.Timer();
+        displayDuration.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                interfaceMessage = null;
+                repaint();
+            }
+        }, DISPLAY_MESSAGE_DURATION);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
+        if (interfaceMessage == null) {
+            return;
+        }
+        FontMetrics fontMetrics = g.getFontMetrics();
+        int x = (getWidth() - fontMetrics.stringWidth(interfaceMessage)) / 2;
+        int y = getHeight() - (fontMetrics.getHeight() + fontMetrics.getAscent());
+        g.setColor(Colors.SHOP_INTERFACE_MESSAGE_COLOR);
+        g.drawString(this.interfaceMessage, x, y);
+    }
 
 }

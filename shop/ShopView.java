@@ -6,9 +6,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.LinkedList;
 
 import assets.*;
@@ -19,14 +22,15 @@ import view.*;
 public class ShopView extends JPanel {
 
     private final static int PADDING = 16;
+    private final static int DISPLAY_MESSAGE_DURATION = 3000;
+    private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 7 / 2;
+    private final static int FONT_SIZE = 24;
 
     public class ShopSlot extends JPanel {
         private WeaponDisplay weaponDisplay;
         private Slot slot;
         private Button upgradeButton;
         private Button unlockButton;
-
-        private final static int SLOT_WIDTH = GameView.IMAGE_WIDTH * 2, SLOT_HEIGHT = GameView.IMAGE_HEIGHT * 7 / 2;
 
         public ShopSlot(Slot slot) {
 
@@ -49,7 +53,8 @@ public class ShopView extends JPanel {
                     Weapon weapon = slot.getWeapon();
                     int upgradingCost = weapon.getUpgradingCost();
                     if (!player.hasEnoughCredit(upgradingCost)) {
-                        // FIXME : Show not enough credit message
+                        displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
+                        ShopView.this.repaint();
                         return;
                     }
                     weapon.upgrade();
@@ -57,7 +62,8 @@ public class ShopView extends JPanel {
                     try {
                         player.savePlayerData();
                     } catch (Exception e) {
-                        // FIXME Show error message in GUI
+                        displayMessage(InterfaceMessages.SAVING_DATA_ERROR);
+                        ShopView.this.repaint();
                     }
 
                     updatePlayerCredit();
@@ -81,14 +87,16 @@ public class ShopView extends JPanel {
                     Weapon weapon = slot.getWeapon();
                     int unlockingCost = weapon.getUnlockingCost();
                     if (!player.hasEnoughCredit(unlockingCost)) {
-                        // FIXME : Show not enough credit message
+                        displayMessage(InterfaceMessages.NOT_ENOUGH_CREDIT);
+                        ShopView.this.repaint();
                         return;
                     }
                     player.lostCredit(unlockingCost);
                     try {
                         player.savePlayerData();
                     } catch (Exception e) {
-                        // FIXME Show error message in GUI
+                        displayMessage(InterfaceMessages.SAVING_DATA_ERROR);
+                        repaint();
                     }
 
                     slot.unlock();
@@ -122,6 +130,7 @@ public class ShopView extends JPanel {
     private Player player;
     private LabeledIcon playerCreditLabel;
     private List<ShopSlot> slots;
+    private String interfaceMessage;
 
     public ShopView(Player player) {
         super();
@@ -147,7 +156,7 @@ public class ShopView extends JPanel {
             slots.add(shopSlot);
             slotsPanel.add(shopSlot);
         }
-        slotsPanel.setSize(MenuView.WINDOW_WIDTH, ShopSlot.SLOT_HEIGHT);
+        slotsPanel.setSize(MenuView.WINDOW_WIDTH, SLOT_HEIGHT);
         ;
         this.add(slotsPanel);
         Button goToMenuButton = Button.largeMenuButton(Button.GO_TO_MENU_BUTTON_LABEL);
@@ -155,16 +164,16 @@ public class ShopView extends JPanel {
         goToMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                try {
-                    player.savePlayerData();
-                } catch (Exception e) {
-                    // FIXME Show error message in GUI
-                }
                 MenuView menuView = new MenuView(player);
                 JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(ShopView.this);
                 parentFrame.setContentPane(menuView);
                 parentFrame.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
                 parentFrame.repaint();
+                try {
+                    player.savePlayerData();
+                } catch (Exception e) {
+                    displayMessage(InterfaceMessages.SAVING_DATA_ERROR);
+                }
             }
         });
         this.setSize(MenuView.WINDOW_WIDTH, MenuView.WINDOW_HEIGHT);
@@ -178,5 +187,31 @@ public class ShopView extends JPanel {
         int playerCredit = player.getCredit();
         String playerCreditText = String.valueOf(playerCredit);
         this.playerCreditLabel.setText(playerCreditText);
+    }
+
+    public void displayMessage(String message) {
+        this.interfaceMessage = message;
+        java.util.Timer displayDuration = new java.util.Timer();
+        displayDuration.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                interfaceMessage = null;
+                ShopView.this.repaint();
+            }
+        }, DISPLAY_MESSAGE_DURATION);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setFont(Fonts.sansSerifBoldFont(FONT_SIZE));
+        if (interfaceMessage == null) {
+            return;
+        }
+        FontMetrics fontMetrics = g.getFontMetrics();
+        int x = (fontMetrics.stringWidth(interfaceMessage)) / 2;
+        int y = getHeight() - (fontMetrics.getHeight() + fontMetrics.getAscent());
+        g.setColor(Colors.SHOP_INTERFACE_MESSAGE_COLOR);
+        g.drawString(this.interfaceMessage, x, y);
     }
 }

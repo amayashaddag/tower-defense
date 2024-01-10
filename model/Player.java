@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
+
+import java.util.HashMap;
 
 public class Player implements Serializable {
 
@@ -21,10 +24,11 @@ public class Player implements Serializable {
 
     private final static String DATA_REPOSITORY_PATH = "resources/data/";
     private final static String PLAYER_DATA_FILE = "player-data-file.txt";
+    private final static String WEAPONS_DATA_FILE = "weapons-data-file.txt";
 
     public final static int TOWERS_INVENTORY_SIZE = 2;
     public final static int ITEMS_INVENTORY_SIZE = 4;
-    public static final int INITIAL_CREDIT = 400;
+    public static final int INITIAL_CREDIT = 40;
 
     private final Slot[] DEFAULT_TOWERS_INVENTORY = {
             new Slot(Slot.SIMPLE_TOWER_INDEX, true),
@@ -42,7 +46,8 @@ public class Player implements Serializable {
 
         Player savedPlayer;
         try {
-            savedPlayer = readPlayerData();
+            savedPlayer = readPlayerUnlockingData();
+            readPlayerWeaponLevels();
         } catch (Exception e) {
             savedPlayer = null;
         }
@@ -157,7 +162,26 @@ public class Player implements Serializable {
         return credit >= price;
     }
 
-    public void savePlayerData() throws IOException {
+    private Weapon getWeaponFromIndex(String index) {
+        for (Slot s : DEFAULT_TOWERS_INVENTORY) {
+            if (s.getIndex().equals(index)) {
+                return s.getWeapon();
+            }
+        }
+        for (Slot s : DEFAULT_ITEMS_INVENTORY) {
+            if (s.getIndex().equals(index)) {
+                return s.getWeapon();
+            }
+        }
+        return null;
+    }
+
+    public void savePlayerData() throws IOException, ClassNotFoundException {
+        saveUnlockingPlayerData();
+        savePlayerWeaponLevels();
+    }
+
+    private void saveUnlockingPlayerData() throws IOException {
         String url = DATA_REPOSITORY_PATH + PLAYER_DATA_FILE;
         File playerDataFile = new File(url);
         FileOutputStream playerDataFileStream = new FileOutputStream(playerDataFile);
@@ -166,7 +190,7 @@ public class Player implements Serializable {
         playerDataObjectStream.close();
     }
 
-    public Player readPlayerData() throws IOException, ClassNotFoundException {
+    private Player readPlayerUnlockingData() throws IOException, ClassNotFoundException {
         String url = DATA_REPOSITORY_PATH + PLAYER_DATA_FILE;
         File playerDataFile = new File(url);
         FileInputStream playerDataFileStream = new FileInputStream(playerDataFile);
@@ -174,5 +198,52 @@ public class Player implements Serializable {
         Player savedPlayer = (Player) playerDataObjectStream.readObject();
         playerDataObjectStream.close();
         return savedPlayer;
+    }
+
+    private void savePlayerWeaponLevels() throws IOException {
+        Map<String, Integer> weaponLevels = getWeaponLevels();
+        String url = DATA_REPOSITORY_PATH + WEAPONS_DATA_FILE;
+        File weaponsDataFile = new File(url);
+        FileOutputStream weaponsDataOutputStream = new FileOutputStream(weaponsDataFile);
+        ObjectOutputStream weaponsDataObjectStream = new ObjectOutputStream(weaponsDataOutputStream);
+        weaponsDataObjectStream.writeObject(weaponLevels);
+        weaponsDataObjectStream.close();
+    }
+
+    private void readPlayerWeaponLevels() throws IOException, ClassNotFoundException, ClassCastException {
+        String url = DATA_REPOSITORY_PATH + WEAPONS_DATA_FILE;
+        File weaponsDataFile = new File(url);
+        FileInputStream weaponsDataInputStream = new FileInputStream(weaponsDataFile);
+        ObjectInputStream weaponsDataObjectStream = new ObjectInputStream(weaponsDataInputStream);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> weaponsData = (Map<String, Integer>) weaponsDataObjectStream.readObject();
+        applyWeaponLevels(weaponsData);
+        weaponsDataObjectStream.close();
+    }
+
+    private void applyWeaponLevels(Map<String, Integer> weaponLevels) {
+        for (String weaponIndex : weaponLevels.keySet()) {
+            int weaponLevel = weaponLevels.get(weaponIndex);
+            Weapon associatedWeaponInstance = getWeaponFromIndex(weaponIndex);
+            associatedWeaponInstance.setCurrentLevel(weaponLevel);
+        }
+    }
+
+    private Map<String, Integer> getWeaponLevels() {
+        Map<String, Integer> weaponLevelsMap = new HashMap<>();
+        for (Slot s : towersInventory) {
+            String weaponIndex = s.getIndex();
+            Weapon associatedWeaponInstance = s.getWeapon();
+            int weaponLevel = associatedWeaponInstance.getCurrentLevel();
+            weaponLevelsMap.put(weaponIndex, weaponLevel);
+        }
+        for (Slot s : itemsInventory) {
+            String weaponIndex = s.getIndex();
+            Weapon associatedWeaponInstance = s.getWeapon();
+            int weaponLevel = associatedWeaponInstance.getCurrentLevel();
+            weaponLevelsMap.put(weaponIndex, weaponLevel);
+        }
+        return weaponLevelsMap;
     }
 }
