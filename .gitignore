@@ -1,1 +1,2 @@
-build
+build/
+resources/data/player-data-file.txt

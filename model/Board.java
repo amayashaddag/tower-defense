@@ -33,7 +33,7 @@ public class Board {
     
     public static final Coordinates EASY_MODE_BASE_COORDINATES = new Coordinates(6, 10);
     public static final Coordinates MEDIUM_MODE_BASE_COORDINATES = new Coordinates(6,10);
-    public static final Coordinates HARD_MODE_BASE_COORDINATES = new Coordinates(3,5);
+    public static final Coordinates HARD_MODE_BASE_COORDINATES = new Coordinates(3,10);
     
     public static final Coordinates EASY_MODE_STARTING_COORDINATES = new Coordinates(0,0);
     public static final Coordinates MEDIUM_MODE_STARTING_COORDINATES = new Coordinates(0,0);
