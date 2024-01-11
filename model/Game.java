@@ -13,6 +13,7 @@ import mobs.Mob;
 import java.awt.event.ActionEvent;
 
 import tools.*;
+import towers.SimpleTower;
 import towers.Tower;
 
 public class Game {
@@ -96,16 +97,7 @@ public class Game {
     }
 
     public void addTower() {
-        System.out.println(this.currentPlayer.getTowersInventory());
-        System.out.print("Enter inventory slot : ");
-        int towersInventoryIndex = scanner.nextInt();
-        Tower t;
-        try {
-            t = this.currentPlayer.getTowerFromIndex(towersInventoryIndex);
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Error! Slot doesn't exist.");
-            return;
-        }
+        Tower t = new SimpleTower();
         Coordinates c = this.readCoordinates();
         if (c == null)
             return;
