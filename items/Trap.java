@@ -8,9 +8,9 @@ import tools.Coordinates;
 
 public class Trap extends Item implements SingleTargetDamage {
 
-    private static int DAMAGE = 3;
+    private static final int DAMAGE = 3;
     private static int CURRENT_LEVEL;
-    private final static int MAX_ATTACKS = 10;
+    private static int MAX_ATTACKS = 10;
     private int attacks = 0;
     private Timer attackTimer;
     private static final int COST = 10;
@@ -28,8 +28,7 @@ public class Trap extends Item implements SingleTargetDamage {
     }
 
     public void upgrade() {
-        DAMAGE++;
-        CURRENT_LEVEL++;
+        MAX_ATTACKS+=5;
     }
 
     public static int getLevel() {

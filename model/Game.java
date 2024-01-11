@@ -291,6 +291,9 @@ public class Game {
         rounds.add(new Triplet(2, 5, 15));
         rounds.add(new Triplet(2, 10, 20));
         rounds.add(new Triplet(5, 10, 20));
+        rounds.add(new Triplet(0, 0, 30));
+        rounds.add(new Triplet(0, 0, 40));
+
         return rounds;
     }
 

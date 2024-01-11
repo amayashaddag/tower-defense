@@ -12,6 +12,7 @@ public class Freeze extends Item implements ZoneDamage {
     private static int FREEZE_DURATION = 5;
     private static int CURRENT_LEVEL = 0;
     private static int RANGE = 1;
+    
     private static final int COST = 10;
     private static final int MAX_LEVEL = 2;
 

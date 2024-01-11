@@ -13,10 +13,10 @@ public class Poison extends Item implements ZoneDamage {
     private static int CURRENT_LEVEL = 0;
     private static int POISON_DURATION = 3;
     private static int DAMAGE = 1;
-    private final int RANGE = 3;
+    
+    private static final int RANGE = 3;
     private static final int COST = 10;
     private static final int MAX_LEVEL = 2;
-
     private static final int UNLOCKING_COST = 100;
     private static final int UPGRADING_COST = 100;
 
