@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Compile the Java code
+javac --release 11 -d build app/* assets/* control/* debug/* items/* menu/* mobs/* model/* shop/* tools/* towers/* view/*
+
+# Check the argument provided
+if [ "$1" == "console" ]; then
+    java -cp build app.ConsoleGame
+elif [ "$1" == "graphical" ]; then
+    java -cp build app.GraphicalGame
+else
+    echo "Invalid argument. Please use 'console' or 'graphical'."
+fi
